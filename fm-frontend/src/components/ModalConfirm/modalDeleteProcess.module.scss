@@ -1,0 +1,110 @@
+.deleteDialog {
+  p {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  div {
+    text-align: left;
+  }
+
+  button {
+    padding: 15px;
+    width: 150px;
+    border-radius: 1rem;
+  }
+
+  button:first {
+    background-color: red;
+  }
+
+  & :global(.modal-body) {
+    padding: 0;
+  }
+
+  & :global(.modal-content) {
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #f1f2f4;
+    box-sizing: border-box;
+    box-shadow: 0px 32px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
+
+  .deleteIcon {
+    width: 48px;
+    height: 48px;
+    background: #ffeaea;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+
+    > i {
+      color: #f03d3d;
+      font-size: 22px;
+    }
+  }
+
+  .deleteTitle {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 28px;
+    color: #0a1f44;
+    margin-bottom: 30px;
+    margin-top: 15px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d3748;
+  }
+
+  .actionButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    button {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:last-child {
+        background: #00a9eb;
+        border: none;
+        color: #fff;
+        border-radius: 6px;
+        font-weight: 600;
+        box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      }
+
+      &:first-child {
+        margin-right: 15px;
+        background: #ffffff;
+        border: 1px solid #e1e4e8;
+        box-sizing: border-box;
+        box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+        border-radius: 6px;
+        color: #4e5d78;
+      }
+    }
+  }
+
+  .deleteButton {
+    background: #ff4a3d !important;
+  }
+  .primaryColor {
+    background: var(--current-primary-color) !important;
+  }
+}

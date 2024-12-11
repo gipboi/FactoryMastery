@@ -1,0 +1,20 @@
+.tag {
+  border-radius: 6px;
+  font-size: 14px;
+  text-transform: capitalize;
+  border: 1px solid gray;
+  color: gray;
+  background-color: rgba(185, 185, 185, 0.474);
+}
+
+.editor {
+  border: 1px solid #ffd466;
+  color: #ffd466;
+  background-color: #fffbeb;
+}
+
+.viewer {
+  border: 1px solid #91a3ff;
+  color: #91a3ff;
+  background-color: #f0f3ff;
+}

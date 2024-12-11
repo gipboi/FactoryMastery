@@ -1,0 +1,34 @@
+.container {
+  margin-top: 8px;
+  width: 100%;
+
+  .fieldLabel {
+    font-size: 12px;
+  }
+
+  .dropdown {
+    // margin-top: 6px;
+    border-radius: 8px;
+    > div {
+      border-color: inherit;
+    }
+  }
+
+  .required {
+    color: #020202;
+  }
+}
+
+// [class*='css-yk16xz-control'] {
+//   border-radius: 8px !important;
+//   border-color: #e1e4e8;
+//   color: #6c757d;
+// }
+// [class*='css-1pahdxg-control'] {
+//   border-radius: 8px !important;
+//   border-color: var(--current-primary-color) !important;
+//   box-shadow: var(--current-primary-color) !important;
+//   &:hover {
+//     border-color: var(--current-primary-color) !important;
+//   }
+// }

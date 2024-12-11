@@ -1,0 +1,81 @@
+@import 'styles/layout';
+
+$large-screen: xl, lg;
+$small-screen: md, sm, esm;
+
+.SaveDraftSuccess {
+  & :global(.modal-content) {
+    border-radius: 12px;
+
+    & > :global(.modal-body) {
+      padding: 32px 48px 42px;
+    }
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    p {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 28px;
+      text-align: center;
+      color: #323a46;
+      margin-top: 15px;
+      margin-bottom: 30px;
+    }
+  }
+
+  .fieldWrapper {
+    margin-bottom: 30px;
+
+    span {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 20px;
+      color: #6c757d;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+
+    .inputField {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      background: #ffffff;
+      border: 1px solid #e1e4e8;
+      box-sizing: border-box;
+      border-radius: 8px;
+      padding: 0 15px;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      color: #0a1f44;
+    }
+  }
+
+  .actionButton {
+    button {
+      width: 100%;
+      height: 48px;
+      line-height: 48px;
+      text-align: center;
+      background: #0bcf97;
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffffff;
+    }
+  }
+}

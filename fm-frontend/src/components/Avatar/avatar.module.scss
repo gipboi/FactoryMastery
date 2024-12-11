@@ -1,0 +1,23 @@
+.avatar {
+  border-radius: 50px;
+  width: 24px !important;
+  height: 24px !important;
+
+  div > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  &.large {
+    width: 128px !important;
+    height: 128px !important;
+    border-radius: 50%;
+    div > span {
+      font-size: 24px;
+    }
+  }
+}

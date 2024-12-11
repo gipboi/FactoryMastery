@@ -1,0 +1,98 @@
+@import 'styles/layout';
+
+$large-screen: xl, lg;
+$small-screen: md, sm, esm;
+
+.detailDialog {
+  & :global(.modal-content) {
+    padding: 20px;
+    border-radius: 20px;
+
+    & > :global(.modal-body) > div {
+      margin-top: 40px;
+    }
+  }
+
+  h4 {
+    
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 32px;
+    color: #323a46;
+    margin-bottom: 30px;
+  }
+
+  .groupNameWrapper {
+    label {
+      
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 20px;
+      color: #6c757d;
+      margin-bottom: 4px;
+    }
+
+    input {
+      border: 1px solid #e1e4e8;
+      box-sizing: border-box;
+      border-radius: 8px;
+    }
+  }
+
+  .actionBtns {
+    margin-top: 30px;
+
+    @include bootstrap-respond($large-screen) {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+
+      button {
+        border-radius: 10px;
+        padding: 10px 5px;
+        width: 150px;
+        margin-left: 20px;
+      }
+    }
+
+    @include bootstrap-respond($small-screen) {
+      display: flex;
+      flex-direction: column;
+
+      button {
+        border-radius: 10px;
+        padding: 10px 5px;
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+
+    button {
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 22px;
+
+      &:first-child {
+        background: #ffffff;
+        border: 1px solid #e1e4e8;
+        box-sizing: border-box;
+        color: #4e5d78;
+      }
+
+      &:last-child {
+        background: #00a9eb;
+        color: #ffffff;
+
+        @include bootstrap-respond($large-screen) {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}

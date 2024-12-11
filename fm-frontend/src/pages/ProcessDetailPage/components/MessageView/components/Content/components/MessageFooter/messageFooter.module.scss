@@ -1,0 +1,115 @@
+@import 'styles/layout';
+
+$small-screen: sm, esm;
+$large-screen: md, lg, xl;
+
+.container {
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 8px 10px 0 10px;
+  width: 100%;
+  background: white;
+  display: block;
+  min-height: 60px;
+  bottom: 0;
+  left: 0;
+  box-shadow: 0 -5px 18px -18px #373a3c;
+  position: absolute;
+
+  .layout {
+    padding-left: 0px;
+    padding-right: 0px;
+
+    .comment {
+      display: flex;
+      border: 1px solid #e6e6e6;
+      border-radius: 4px;
+
+      .textInput {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        border-radius: 8px;
+
+        textarea {
+          width: 100%;
+          border-width: 0px;
+          
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 22px;
+          resize: none;
+
+          &::-webkit-input-placeholder {
+            color: #b0b7c3;
+          }
+
+          &:-moz-placeholder {
+            /* Firefox 18- */
+            color: #b0b7c3;
+          }
+
+          &::-moz-placeholder {
+            /* Firefox 19+ */
+            color: #b0b7c3;
+          }
+
+          &:-ms-input-placeholder {
+            color: #b0b7c3;
+          }
+
+          &::placeholder {
+            color: #b0b7c3;
+          }
+
+          &::-webkit-scrollbar {
+            width: 0px;
+          }
+
+          &:focus {
+            outline: none;
+            border-width: 0px;
+          }
+        }
+      }
+
+      .attachment {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 41px;
+        color: #00a9eb;
+        font-size: 28px;
+        margin: 0px 6px;
+      }
+    }
+
+    .saveButton {
+      padding: 10px 5px;
+      background-color: #00a9eb;
+      float: right;
+      border-radius: 8px;
+
+      @include bootstrap-respond($small-screen) {
+        margin-top: 5px;
+        width: 100%;
+      }
+
+      @include bootstrap-respond($large-screen) {
+        width: 90%;
+      }
+    }
+
+    .attachmentTag {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      & > div {
+        margin: 10px 30px 10px 0;
+      }
+    }
+  }
+}

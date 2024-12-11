@@ -1,0 +1,25 @@
+@import 'styles/layout';
+@import 'styles/constant';
+
+$large-screen: xl, lg, md;
+$small-screen: sm, esm;
+
+.checkboxInputWrapper {
+  display: flex;
+  > label {
+    margin-left: 8px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  & :global(.custom-control-input):checked ~ :global(.custom-control-label)::before {
+    color: map-get($custom-colors, 'branding-blue');
+    border-color: map-get($custom-colors, 'branding-blue');
+    background-color: map-get($custom-colors, 'branding-blue');
+  }
+}

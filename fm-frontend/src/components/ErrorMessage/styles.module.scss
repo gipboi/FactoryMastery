@@ -1,0 +1,10 @@
+@import 'styles/constant';
+
+.errorText {
+  color: map-get($custom-colors, 'alert-red');
+  margin: 0;
+}
+
+.smallSpacingTop {
+  padding-top: 8px;
+}

@@ -1,0 +1,40 @@
+.profileWrapper {
+  position: relative;
+
+  .iconEdit {
+    background-color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    text-align: center;
+    left: 95px;
+    bottom: -10px;
+    padding-top: 6px;
+  }
+
+  .submit {
+    background: white;
+
+    .iconSubmit {
+      color: white;
+      padding-bottom: 6px;
+    }
+  }
+
+  .iconCancel {
+    left: 6px;
+    padding-bottom: 6px;
+  }
+}
+
+.avatar {
+  border-radius: 70px;
+  height: 137px !important;
+  width: 137px !important;
+}
+
+.pointer {
+  cursor: pointer;
+}

@@ -1,0 +1,81 @@
+@import 'styles/layout';
+
+.container {
+  .fieldWrapper {
+    label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      line-height: 20px;
+      color: #6c757d;
+    }
+  }
+
+  .groupList {
+    margin-top: 4px;
+    max-height: 240px;
+    // overflow: auto;
+    margin-bottom: 24px;
+
+    .itemWrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e0e4ea;
+      height: 48px;
+      padding-right: 5px;
+
+      .nameWrapper {
+        display: flex;
+        align-items: center;
+        width: 60%;
+        position: relative;
+
+        .iconWrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 10px;
+          background: #6c757d;
+          border-radius: 10000px;
+          color: white;
+          width: 33px;
+          height: 33px;
+          > svg {
+            width: 24px;
+            height: 24px;
+          }
+        }
+
+        span {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 22px;
+          color: #6c757d;
+        }
+      }
+
+      .rightSide {
+        width: 40%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        .permissionDropdown {
+          width: 50%;
+          display: inline-block;
+          margin-bottom: 4px;
+        }
+
+        .deleteIconWrapper {
+          width: 44px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-left: 8px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

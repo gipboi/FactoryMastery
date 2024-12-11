@@ -1,0 +1,108 @@
+@import 'styles/layout';
+@import 'styles/constant';
+
+$large-screen: xl, lg;
+$small-screen: md, sm, esm;
+
+.container {
+  padding-right: 48px;
+  padding-left: 16px;
+
+  @include bootstrap-respond($small-screen) {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .inlineImage {
+    width: 120px;
+    height: 96px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e0;
+    object-fit: contain;
+    margin-bottom: 12px;
+  }
+
+  .layout {
+    display: flex;
+    flex-direction: row;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    align-items: flex-start;
+
+    padding-left: 0px;
+    padding-right: 0px;
+
+    & > div[class*='iconBuilder_shape'] {
+      min-width: 40px;
+      min-height: 40px;
+    }
+
+    .icon {
+      svg {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    .taskInformation {
+      width: 100%;
+      margin-left: 16px;
+
+      .description {
+        margin-bottom: 4px;
+        text-align: justify;
+
+        > p {
+          width: 100%;
+          margin-bottom: 4px;
+        }
+
+        > *:not(:empty) + p:is(:empty) {
+          margin-bottom: 0;
+          height: 16px;
+        }
+      }
+
+      .completedDescription {
+        font-size: 16px;
+        font-weight: bold;
+        color: #323a46;
+      }
+
+      .decisionPointCard {
+        .title {
+          
+          font-style: normal;
+          font-weight: bold;
+          font-size: 14px;
+          line-height: 14px;
+          color: #323a46;
+          margin-bottom: 14.5px;
+          margin-top: 21px;
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
+          &:hover {
+            color: #2c8ef8;
+            transition: all 0.3s ease-in-out;
+          }
+        }
+
+        .decisionPoint {
+          border-left: 3px solid #2c8ef8;
+          padding-left: 8px;
+
+          div:last-child {
+            > img {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .divider {
+      width: calc(100% - 32px);
+    }
+  }
+}

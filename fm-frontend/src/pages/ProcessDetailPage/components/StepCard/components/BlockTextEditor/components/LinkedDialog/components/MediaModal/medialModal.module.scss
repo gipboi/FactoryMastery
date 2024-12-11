@@ -1,0 +1,96 @@
+@import 'styles/constant';
+$branding-blue: map-get($custom-colors, 'branding-blue');
+
+.collectionLayout {
+  margin-top: 16px;
+  border-radius: 8px;
+  background: #f7fafc;
+
+  [class*='react-pdf__Page__canvas'] {
+    max-height: 135px !important;
+  }
+
+  .elementPlaceholder {
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    width: fit-content;
+    width: 96px;
+    height: 96px;
+    position: relative;
+
+    .thumbnailCloseButton {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      background: rgba(0, 0, 0, 0.36);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      border: none;
+      color: white;
+
+      &:focus {
+        box-shadow: none;
+      }
+
+      svg {
+        width: 7px;
+        height: 7px;
+      }
+    }
+
+    & > div {
+      height: 100%;
+      max-width: 100%;
+    }
+  }
+
+  .fileImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 96px !important;
+    width: 96px !important;
+    font-size: 24px;
+
+    div {
+      width: 100%;
+    }
+  }
+
+  .active {
+    border: 2px solid $branding-blue;
+  }
+
+  img {
+    border-radius: 4px;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.mediaButton {
+  width: 100% !important;
+  height: 32px !important;
+  color: $branding-blue;
+  border: 1px solid $branding-blue;
+  background: white;
+
+  svg {
+    margin-right: 8px;
+  }
+
+  &:hover {
+    background-color: $branding-blue;
+    color: #ffffff;
+
+    svg {
+      filter: invert(34%) sepia(0%) saturate(0%) hue-rotate(12deg) brightness(188%) contrast(111%);
+    }
+  }
+}
+
+.pdfThumbnail {
+  height: 140px;
+}

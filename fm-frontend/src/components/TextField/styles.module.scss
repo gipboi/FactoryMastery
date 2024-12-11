@@ -1,0 +1,15 @@
+@import 'styles/constant';
+@import 'styles/maintheme';
+
+.hfTextField {
+  &:global(.form-control-light) {
+    background-color: $gray-100 !important;
+    border-color: $gray-100 !important;
+  }
+
+  resize: none;
+}
+
+.errorWrapper {
+  border: 1px solid map-get($custom-colors, 'alert-red') !important;
+}

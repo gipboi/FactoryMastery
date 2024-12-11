@@ -1,0 +1,50 @@
+@import 'styles/constant';
+@import 'styles/maintheme';
+
+@mixin button-shadow($color) {
+  box-shadow: $btn-box-shadow rgba($color, 0.5);
+}
+
+.hfButton {
+  border-radius: 10px;
+
+  &:global(.btn) {
+    :global(.mdi) {
+      &:before {
+        line-height: initial;
+      }
+    }
+  }
+
+  &:global(.btn-rounded) {
+    border-radius: 2em;
+  }
+
+  &:global(.btn-outline-info) {
+    border-color: var(--current-primary-color);
+    color: var(--current-primary-color);
+    transition: all 200ms ease-in-out;
+    &:hover,
+    &:active {
+      background-color: var(--current-primary-color);
+      color: white;
+      border-color: transparent;
+      transition: all 200ms ease-in-out;
+    }
+  }
+
+  // Button Shadows
+  @each $color, $value in $theme-colors {
+    &:global(.btn-#{$color}) {
+      @include button-shadow($value);
+    }
+  }
+
+  &:global(.btn-link) {
+    box-shadow: none !important;
+  }
+}
+
+.hfButton:focus {
+  outline: 3px groove map-get($custom-colors, 'disable-grey');
+}

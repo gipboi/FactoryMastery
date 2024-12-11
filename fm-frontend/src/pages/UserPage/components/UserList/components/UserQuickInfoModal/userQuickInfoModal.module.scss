@@ -1,0 +1,18 @@
+.groupTag {
+  box-sizing: border-box;
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin: 6px 3px 0px !important;
+  white-space: nowrap;
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 0px;
+}
+
+.col {
+  padding-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+}

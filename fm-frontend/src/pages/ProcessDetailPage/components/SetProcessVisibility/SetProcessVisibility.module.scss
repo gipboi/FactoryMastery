@@ -1,0 +1,78 @@
+@import 'styles/layout';
+
+$large-screen: xl, lg;
+$small-screen: md, sm, esm;
+
+.setProcessVisibility {
+  & :global(.modal-content) {
+    border-radius: 12px;
+
+    & > :global(.modal-body) {
+      padding: 32px 48px 42px;
+    }
+  }
+
+  h4 {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 32px;
+    color: #323a46;
+    margin-bottom: 25px;
+  }
+
+  .fieldWrapper {
+    margin-bottom: 30px;
+
+    span {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 20px;
+      color: #313a46;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+  }
+
+  .actionBtns {
+    button {
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      height: 48px;
+
+      &:first-child {
+        background: #ffffff;
+        border: 1px solid #e1e4e8;
+        box-sizing: border-box;
+      }
+
+      &:last-child {
+        background: #00a9eb;
+        @include bootstrap-respond($large-screen) {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    @include bootstrap-respond($large-screen) {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+
+      button {
+        width: 150px;
+        margin-left: 20px;
+      }
+    }
+
+    @include bootstrap-respond($small-screen) {
+      display: flex;
+      flex-direction: column;
+
+      button {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+  }
+}

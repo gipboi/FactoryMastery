@@ -1,0 +1,43 @@
+@import 'styles/layout';
+
+$large-screen: lg, xl;
+$small-screen: md, sm, esm;
+
+.container {
+  margin-left: 0px;
+  margin-right: 0px;
+  border-bottom: 1px solid #dee2e6;
+
+  .layout {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+
+    .title {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .icon {
+        img {
+          width: 23px;
+          height: 23px;
+        }
+      }
+
+      .text {
+        padding-left: 7.5px;
+        font-weight: bold;
+        color: #707070;
+        font-size: 16px;
+      }
+    }
+
+    .close {
+      cursor: pointer;
+      font-size: 22px;
+    }
+  }
+}

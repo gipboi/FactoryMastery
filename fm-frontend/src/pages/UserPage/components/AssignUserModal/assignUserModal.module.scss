@@ -1,0 +1,102 @@
+@import 'styles/layout';
+
+$large-screen: xl, lg;
+$small-screen: md, sm, esm;
+
+.groupList {
+  height: 350px;
+  overflow-y: scroll;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  margin-top: 12px;
+  padding: 16px 0;
+  border-radius: 8px;
+  max-height: 368px;
+  background: #f7fafc;
+}
+
+.assignUserModal {
+  & :global(.modal-content) {
+    border-radius: 12px;
+
+    & > :global(.modal-body) {
+      padding: 32px 48px;
+    }
+  }
+
+  .groupIcon {
+    margin-left: 5px;
+    & :global(div) {
+      user-select: none;
+    }
+  }
+
+  .divider {
+    width: 100%;
+    margin: 11px 0;
+  }
+
+  .button {
+    padding: 13px 36px;
+    font-weight: 600;
+  }
+
+  .heading {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 32px;
+    color: #323a46;
+    margin-bottom: 32px;
+  }
+
+  label {
+    margin: 0;
+  }
+
+  .userCheckbox {
+    width: 574px;
+  }
+
+  .actionBtns {
+    button {
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      padding: 13px 36px;
+
+      &:first-child {
+        background: #ffffff;
+        border: 1px solid #e1e4e8;
+        box-sizing: border-box;
+      }
+
+      &:last-child {
+        background: #00a9eb;
+        @include bootstrap-respond($large-screen) {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    @include bootstrap-respond($large-screen) {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+
+      button {
+        margin-left: 20px;
+      }
+    }
+
+    @include bootstrap-respond($small-screen) {
+      display: flex;
+      flex-direction: column;
+
+      button {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+  }
+}

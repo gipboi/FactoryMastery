@@ -1,0 +1,103 @@
+@import 'styles/constant';
+
+$white-color: #ffffff;
+
+.container {
+  margin-top: 16px;
+
+  .decisionPoints {
+    display: flex;
+    flex-direction: column;
+
+    .actionButton {
+      color: var(--current-primary-color);
+      border: 1px solid var(--current-primary-color);
+      background: $white-color;
+      &:hover {
+        color: $white-color;
+        background: var(--current-primary-color);
+        border-radius: 6px;
+      }
+    }
+
+    .actionButtonActive {
+      color: $white-color;
+      background: var(--current-primary-color);
+    }
+
+    .infoContainer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+
+    .decisionPts {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin: 5px 0;
+
+      .removeButton {
+        cursor: pointer;
+        margin-left: 18px;
+        svg {
+          width: 12px;
+        }
+      }
+
+      .inputField {
+        width: 100%;
+        text-align: left;
+        margin: 0 10px 0 0;
+      }
+
+      button {
+        min-height: 38px;
+      }
+
+      i {
+        font-size: 18px;
+      }
+    }
+    .smallSpacingBottom {
+      margin-bottom: 16px !important;
+    }
+  }
+
+  .btnActionWithIcon {
+    border: 1px solid var(--current-primary-color);
+    color: var(--current-primary-color);
+    background: transparent;  
+    border-radius: 8px;
+    margin: 10px 0;
+    width: 100%;
+
+    svg {
+      margin-right: 8px;
+      > path {
+        fill: var(--current-primary-color);
+      }
+    }
+
+    &:hover {
+      background: var(--current-primary-color);
+      color: $white-color;
+      
+      svg {
+        filter: brightness(0) invert(1);
+      }
+    }
+  }
+
+  .dashedBorder {
+    border-style: dashed;
+  }
+
+  .actionContainer {
+    button:nth-child(1) {
+      margin-right: 8px;
+    }
+  }
+}

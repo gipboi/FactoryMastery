@@ -1,0 +1,62 @@
+@import "../../styles/index.scss";
+
+.leftSideMenu {
+  width: $leftbar-width;
+  height: 100vh;
+  background: $primary-100;
+  box-shadow: $shadow;
+  position: fixed;
+  transition: width 0.2s ease-out, background-color 0.2s ease-out;
+  padding: 0 10px 0 10px;
+}
+
+.leftSideMenuMobile {
+  width: $leftbar-width-mobile; /* Adjust this width to accommodate only icons */
+  transition: width 0.2s ease-out;
+  overflow: hidden;
+}
+
+.logoSection {
+  display: flex;
+  width: 100%;
+  height: 100px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 15px 0;
+}
+
+.pageLink {
+  width: 100%;
+  text-decoration: none;
+  text-align: center;
+  color: black;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.pageLinkActive {
+  //*TODO: Update color later
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.sectionHeader {
+  margin-top: 20px;
+  font-weight: bolder;
+  font-size: 0.9em;
+  color: $gray-900;
+  align-self: start;
+  text-align: left;
+  padding-left: 5px;
+}
+
+.separator {
+  width: 90%;
+  border: none;
+  margin: 5px 0 10px 0;
+  border-top: 1.5px solid black;
+
+  .logOutSeparator {
+    margin-top: 10px;
+  }
+}

@@ -1,0 +1,255 @@
+@import "styles/layout";
+
+$small-screen: sm, esm;
+$medium-screen: md;
+$large-screen: lg, xl;
+
+.container {
+  margin-top: 15px;
+
+  > div {
+    margin-bottom: 20px;
+  }
+}
+
+.actionWrapper {
+  align-items: center;
+
+  .textSuccess {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+    display: inline-block;
+    color: #0bcf97;
+    margin-right: 15px;
+  }
+
+  .buttonPublish {
+    padding: 0 15px;
+    height: 40px;
+    line-height: 40px;
+    background: #ffffff;
+    border: 1px solid #0bcf97;
+    box-sizing: border-box;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    color: #0bcf97;
+    margin-right: 10px;
+  }
+
+  .returnVersionWrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .returnVersionText {
+    height: 30px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    background: #eef2f7;
+    border: 1px solid #e0e4ea;
+    box-sizing: border-box;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    margin-bottom: 0;
+    margin-right: 10px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    color: #323a46;
+
+    svg {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  }
+
+  .buttonReturn {
+    padding: 0 15px;
+    height: 40px;
+    line-height: 40px;
+    background: #ffffff;
+    border: 1px solid #00a9eb;
+    box-sizing: border-box;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    color: #00a9eb;
+    margin-right: 10px;
+
+    svg {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  }
+
+  .buttonAcknowledge {
+    padding: 0 15px;
+    height: 40px;
+    line-height: 40px;
+    background: #ffffff;
+    border: 1px solid #f03d3d;
+    box-sizing: border-box;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    color: #f03d3d;
+    margin-right: 10px;
+  }
+
+  & + div {
+    margin-top: 16px;
+  }
+}
+
+.draftActionsButton {
+  .publishDraftButton {
+    background: white !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px !important;
+    height: auto !important;
+    line-height: 16px !important;
+    color: #323a46 !important;
+
+    &:hover {
+      color: #5fcaf4 !important;
+    }
+  }
+
+  > button {
+    background: #ffffff;
+    border: 1px solid #5fcaf4;
+    box-sizing: border-box;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    color: #5fcaf4;
+    font-size: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    line-height: 40px;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    width: 40px;
+    max-width: 40px;
+
+    i {
+      font-size: 14px;
+    }
+  }
+
+  :global(.dropdown-item) {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    height: auto !important;
+    line-height: 16px !important;
+    color: #323a46 !important;
+    padding: 0px !important;
+    margin-left: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+
+    &:hover {
+      color: #5fcaf4 !important;
+      background-color: transparent;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
+
+  :global(.dropdown-menu) {
+    left: auto !important;
+    right: 0 !important;
+    transform: unset !important;
+    top: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid #f1f2f4 !important;
+    box-sizing: border-box !important;
+    box-shadow: 0px 32px 40px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+  }
+
+  .highlightText {
+    color: #f03d3d !important;
+  }
+}
+
+.draggableContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-items: center;
+  background: #ffffff;
+  margin: 0 0 12px 0;
+  box-shadow: initial;
+  border-radius: 8px;
+  position: relative;
+
+  &.isDragging {
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.08);
+  }
+  .dragIcon {
+    position: absolute;
+    display: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 1000;
+    transition: all 0.25s;
+  }
+  > div:hover {
+    .dragIcon {
+      display: unset;
+      transition: all 0.25s;
+    }
+  }
+  &.isDragDisabled {
+    cursor: pointer;
+    .dragIcon {
+      display: none !important;
+    }
+  }
+}
+
+.noPadding {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.icon {
+  cursor: pointer;
+  path {
+    fill: var(--chakra-colors-gray-700);
+  }
+  &.active {
+    path {
+      fill: white;
+    }
+  }
+}

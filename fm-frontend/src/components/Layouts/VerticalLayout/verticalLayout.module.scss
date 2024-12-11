@@ -1,0 +1,40 @@
+@import "../../../styles/index.scss";
+
+.wrapper {
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+
+  .sidebarContainer {
+    position: absolute;
+    z-index: 9999;
+    height: 100%;
+  }
+}
+
+.contentPageWithTransition {
+  transition: margin-left 0.2s ease-out;
+}
+
+.content {
+  height: 100vh;
+
+  background: rgba(gray, 0.1);
+}
+
+.contentWrapper {
+  position: relative;
+  left: $leftbar-width;
+  top: $topbar-height + $topbar-content-height;
+  width: calc(100vw - #{$leftbar-width});
+  transition: left 0.2s ease-out, width 0.2s ease-out,
+    background-color 0.2s ease-out;
+  padding: 24px;
+  height: calc(100vh - #{$topbar-height} - #{$topbar-content-height});
+  overflow-y: auto;
+}
+
+.contentWrapperMobile {
+  left: $leftbar-width-mobile;
+  width: calc(100vw - #{$leftbar-width-mobile});
+}

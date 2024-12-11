@@ -1,0 +1,74 @@
+.deleteDialog {
+  & :global(.modal-content) {
+    border-radius: 0.75rem;
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  p {
+    font-size: 18px;
+    font-weight: bold;
+
+    &:first-of-type {
+      margin-top: 20px;
+      color: #f03d3d;
+    }
+
+    &:last-of-type {
+      margin-bottom: 28px;
+    }
+  }
+
+  div {
+    text-align: center;
+  }
+
+  button {
+    padding: 15px;
+    width: 150px;
+    border-radius: 1rem;
+  }
+
+  button:first {
+    background-color: red;
+  }
+
+  i {
+    font-size: 25px;
+    color: red;
+    background-color: rgba(255, 0, 0, 0.2);
+    border-radius: 50%;
+    padding: 5px 10px;
+  }
+
+  .actionBtns {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    button {
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .deleteButton {
+      border: none;
+      background-color: #f03d3d;
+      color: #ffffff;
+    }
+
+    .cancelButton {
+      background: #ffffff;
+      border: 1px solid #e1e4e8;
+      box-sizing: border-box;
+      color: #4e5d78;
+    }
+  }
+}

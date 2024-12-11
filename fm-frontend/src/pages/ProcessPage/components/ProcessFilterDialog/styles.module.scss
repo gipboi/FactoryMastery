@@ -1,0 +1,158 @@
+@import 'styles/layout';
+
+$large-screen: xl, lg, md;
+$small-screen: sm, esm;
+
+.filterDialog {
+  max-width: none;
+  max-height: none;
+  
+
+  > div {
+    background: #ffffff;
+    border: 1px solid #f1f2f4;
+    box-sizing: border-box;
+    box-shadow: 0px 32px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
+
+  @include bootstrap-respond($large-screen) {
+    width: 700px;
+  }
+  @include bootstrap-respond($small-screen) {
+    width: 100vw;
+    margin: 0;
+  }
+
+  & :global(.modal-content) {
+    width: 100%;
+    padding: 15px;
+  }
+
+  h4 {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 32px;
+    color: #323a46;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    i {
+      font-size: 23px;
+      cursor: pointer;
+    }
+  }
+
+  .body {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    @include bootstrap-respond($large-screen) {
+      flex-direction: row;
+    }
+    @include bootstrap-respond($small-screen) {
+      flex-direction: column;
+    }
+
+    .sorts {
+      margin-top: 10px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      & :global(.custom-control) {
+        margin: 7px 0;
+      }
+
+      > label {
+        font-style: normal;
+        font-weight: bold;
+        font-size: 10px;
+        line-height: 16px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #313a46;
+      }
+
+      .radioInputWrapper > label {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 22px;
+        display: flex;
+        align-items: center;
+        color: #0a1f44;
+      }
+    }
+
+    .filters {
+      margin-top: 10px;
+      flex: 2 1;
+      display: flex;
+      flex-direction: column;
+
+      input {
+        margin-bottom: 7px;
+      }
+
+      > label {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #313a46;
+
+        &:not(:first-of-type) {
+          margin-top: 12px;
+        }
+      }
+    }
+  }
+
+  .actionBtns {
+    width: 100%;
+    margin-top: 45px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    @include bootstrap-respond($large-screen) {
+      flex-direction: row;
+    }
+    @include bootstrap-respond($small-screen) {
+      flex-direction: column;
+    }
+
+    button {
+      padding: 12px 0;
+      border-radius: 10px;
+      @include bootstrap-respond($large-screen) {
+        width: 120px;
+        margin-left: 15px;
+      }
+      @include bootstrap-respond($small-screen) {
+        width: 100%;
+        margin-top: 15px;
+      }
+    }
+
+    button:last-child {
+      background-color: var(--current-primary-color);
+      border-color: var(--current-primary-color);
+      box-shadow: none;
+    }
+  }
+}

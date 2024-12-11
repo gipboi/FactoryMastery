@@ -1,0 +1,43 @@
+.container {
+  .selectIconLabel {
+    
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    color: #313a46;
+  }
+
+  .bulletSelect {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    align-items: center;
+    margin-top: 8px;
+    padding-bottom: 8px;
+    gap: 12px;
+    grid-gap: 12px;
+
+    & > div {
+      margin: 0px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .bulletActive {
+      img {
+        box-shadow: 7px 7px 6px #0000001f !important;
+        opacity: 1;
+      }
+    }
+
+    img {
+      opacity: 0.4;
+      border-radius: 50%;
+      width: 50px !important;
+      height: 50px !important;
+    }
+  }
+}

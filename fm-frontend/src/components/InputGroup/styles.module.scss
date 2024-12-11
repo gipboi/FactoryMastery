@@ -1,0 +1,18 @@
+@import 'styles/constant';
+
+.inputField {
+  background-color: map-get($custom-colors, 'placeholder-grey') !important;
+}
+
+.errorText {
+  color: map-get($custom-colors, 'alert-red');
+  margin: 0;
+}
+
+.smallSpacingBottom {
+  margin-bottom: 8px;
+}
+
+.smallSpacingTop {
+  padding-top: 8px;
+}

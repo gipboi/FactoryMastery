@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  align-items: center;
+  margin-right: 8px;
+  cursor: pointer;
+
+  .icon {
+    display: flex;
+    color: #00a9eb;
+    font-size: 18px;
+    margin-right: 8px;
+  }
+
+  .label {
+    margin-right: 8px;
+    color: #00a9eb;
+    
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 12px;
+
+    a {
+      color: #00a9eb;
+    }
+  }
+
+  .close {
+    display: flex;
+  }
+}

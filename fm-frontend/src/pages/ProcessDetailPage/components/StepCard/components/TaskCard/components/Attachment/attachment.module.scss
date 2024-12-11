@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: 9px;
+
+  .iconStyle {
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .label {
+    
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 20px;
+    color: #00a9eb;
+    margin-left: 8px;
+    cursor: pointer;
+    word-break: break-all;
+  }
+}

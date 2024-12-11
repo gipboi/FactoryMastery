@@ -1,0 +1,25 @@
+.collectionLayout {
+  display: flex;
+  overflow-x: hidden;
+  margin-top: 12px;
+  padding: 16px 0;
+  border-radius: 8px;
+  max-height: 368px;
+  background: #f7fafc;
+}
+
+.stepSection {
+  .title {
+    
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    color: #313a46;
+  }
+
+  .options {
+    margin-top: 8px;
+    position: relative;
+  }
+}

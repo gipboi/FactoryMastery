@@ -1,0 +1,120 @@
+//Core files
+@import "./maintheme";
+
+// Structure
+// @import 'layouts/responsive';
+// @import 'layouts/general';
+// @import 'layouts/left-menu';
+// @import 'layouts/topbar';
+// @import 'layouts/right-sidebar';
+// @import 'layouts/page-head';
+// @import 'layouts/footer';
+// @import 'layouts/horizontal-nav';
+
+//Fonts
+@font-face {
+  font-family: "Roboto";
+  src: local("Roboto Light"), local("Roboto-Light"),
+    url("./fonts/Roboto-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: local("Roboto Regular"), local("Roboto-Regular"),
+    url("./fonts/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: local("Roboto Medium"), local("Roboto-Medium"),
+    url("./fonts/Roboto-Medium.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: local("Roboto Bold"), local("Roboto-Bold"),
+    url("./fonts/Roboto-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+//Components
+// @import "custom/components/mixins";
+// @import "custom/components/accordions";
+// @import "custom/components/avatar";
+// @import "custom/components/breadcrumb";
+// @import "custom/components/buttons";
+// @import "custom/components/badge";
+// @import "custom/components/card";
+// @import "custom/components/dropdown";
+// @import "custom/components/forms";
+// @import "custom/components/modal";
+// @import "custom/components/nav";
+// @import "custom/components/pagination";
+// @import "custom/components/popover";
+// @import "custom/components/print";
+// @import "custom/components/progress";
+// @import "custom/components/reboot";
+// @import "custom/components/ribbons";
+// @import "custom/components/switch";
+// @import "custom/components/tables";
+// @import "custom/components/type";
+// @import "custom/components/utilities";
+// @import "custom/components/widgets";
+// @import "custom/components/social";
+// @import "custom/components/steps";
+// @import "custom/components/preloader";
+// @import "custom/components/hero";
+
+//Pages
+// @import "custom/pages/authentication";
+// @import "custom/pages/components-demo";
+// @import "custom/pages/error";
+// @import "custom/pages/faq";
+// @import "custom/pages/maintenance";
+// @import "custom/pages/tasks";
+// @import "custom/pages/email";
+// @import "custom/pages/timeline";
+
+// Vendors
+// @import "./node_modules/react-bootstrap-table-next/dist/react-bootstrap-table2.min";
+
+// Plugins
+// @import "custom/plugins/apexcharts";
+// @import "custom/plugins/britechart";
+// @import "custom/plugins/calendar";
+// @import "custom/plugins/chartjs";
+// @import "custom/plugins/datatable";
+// @import './plugins/datepicker';
+// @import "custom/plugins/draft-wysiwyg";
+// @import "custom/plugins/dropzone";
+// @import "custom/plugins/maps";
+// @import "custom/plugins/metisMenu";
+// @import "custom/plugins/rangeslider";
+// @import "custom/plugins/react-select";
+// @import "custom/plugins/slimscroll";
+// @import "custom/plugins/simplemde";
+// @import "custom/plugins/typehead";
+// @import "custom/plugins/frappe-gantt";
+
+// icons
+// @import './icons';
+// @import './layout';
+@import "./constant";
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: "Roboto";
+
+  button:disabled,
+  button[disabled] {
+    cursor: not-allowed !important;
+  }
+}

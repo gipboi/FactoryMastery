@@ -1,0 +1,132 @@
+@import 'styles/layout';
+@import 'styles/constant';
+
+.overviewHeader {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: none;
+  padding: 32px;
+  margin-bottom: 25px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+
+  @include bootstrap-respond($large-screen) {
+    padding-top: 25px;
+  }
+
+  @include bootstrap-respond($small-screen) {
+    padding-top: 15px;
+  }
+
+  .header {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 40px;
+    color: #323a46;
+    margin-bottom: 0px;
+  }
+
+  button {
+    padding: 0;
+    line-height: 30px;
+    border: none;
+    background-color: transparent;
+    box-shadow: none !important;
+    color: #6c757d;
+    font-size: 20px;
+
+    &:hover {
+      background-color: transparent;
+      color: #6c757d;
+    }
+  }
+}
+
+.avatar {
+  border-radius: 70px;
+  height: 137px !important;
+  width: 137px !important;
+}
+
+.info {
+  padding-top: 8px;
+  padding-bottom: 8px;
+
+  strong {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 19px;
+    color: #313a46;
+    font-style: normal;
+    white-space: nowrap;
+  }
+
+  span {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    // margin-left: 50px;
+  }
+}
+
+.separator {
+  color: #e0e4ea;
+  margin-bottom: 24px;
+}
+
+.modalWrapper {
+  padding: 32px;
+  padding-top: 0px;
+}
+
+.sendMsgButton {
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+.noPaddingTop {
+  padding-top: 0px;
+}
+
+.nameWrapper {
+  display: flex;
+  align-items: center;
+
+  .iconEdit {
+    margin-left: 5px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+}
+
+.groupTag {
+  background: #eef2f7;
+  border: 1px solid #e0e4ea;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin: 6px 3px 0px !important;
+  white-space: nowrap;
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 0px;
+
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 20px;
+  color: #323a46;
+}
+
+.col {
+  padding-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+}

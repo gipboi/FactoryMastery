@@ -1,0 +1,81 @@
+@import 'styles/maintheme';
+
+.hfSelectField {
+  > div {
+    border: $input-border-width solid $input-border-color;
+    background-color: $input-bg !important;
+
+    &:hover {
+      border: $input-border-width solid $input-border-color;
+    }
+  }
+
+  &:global(.rbt-token) {
+    background-color: var(--current-primary-color) !important;
+    color: var(--current-primary-color) !important;
+  }
+
+  &:global(.rbt-input-multi).focus {
+    box-shadow: none !important;
+    background-color: $input-focus-bg !important;
+    border-color: $input-focus-border-color !important;
+  }
+}
+
+:local(.hfSelectField)__control--is-focused {
+  border-color: $input-focus-border-color !important;
+  box-shadow: none !important;
+}
+
+:local(.hfSelectField)__indicator-separator {
+  display: none !important;
+}
+
+:local(.hfSelectField)__dropdown-indicator {
+  color: $gray-600 !important;
+}
+
+:local(.hfSelectField)__menu {
+  background-color: $dropdown-bg !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: $dropdown-border-radius !important;
+  z-index: $zindex-dropdown !important;
+}
+
+:local(.hfSelectField)__menu-list {
+  border: $dropdown-border-width solid $dropdown-border-color !important;
+  border-radius: $dropdown-border-radius !important;
+}
+
+:local(.hfSelectField)__option {
+  padding: $dropdown-item-padding-y $dropdown-item-padding-x !important;
+  color: $dropdown-link-color !important;
+
+  &:hover {
+    color: $dropdown-link-hover-color !important;
+    background-color: $dropdown-link-hover-bg !important;
+  }
+}
+
+:local(.hfSelectField)__option--is-focused,
+:local(.hfSelectField)__option--is-selected {
+  color: $dropdown-link-hover-color !important;
+  background-color: $dropdown-link-hover-bg !important;
+}
+
+:local(.hfSelectField)__multi-value {
+  background-color: var(--current-primary-color) !important;
+  color: var(--current-primary-color) !important;
+
+  :local(.hfSelectField)__multi-value__label {
+    color: var(--current-primary-color) !important;
+  }
+
+  :local(.hfSelectField)__multi-value__remove {
+    &:hover {
+      background-color: var(--current-primary-color) !important;
+      color: var(--current-primary-color) !important;
+    }
+  }
+}

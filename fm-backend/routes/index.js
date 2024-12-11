@@ -1,0 +1,44 @@
+import express from "express";
+import { authRoute } from "./auth/index.js";
+import { adminRoute } from "./admin/index.js";
+import { organizationRoute } from "./organization/index.js";
+import { userRoute } from "./user/index.js";
+import { groupRoute } from "./group/index.js";
+import { groupMemberRoute } from "./groupMember/index.js";
+import { processRoute } from "./process/index.js";
+import { tagRoute } from "./tag/index.js";
+import { documentTypeRoute } from "./documentType/index.js";
+import { stepRoute } from "./step/index.js";
+import { cmsRoute } from "./cms/index.js";
+import { mediaRoute } from "./media/index.js";
+import { blockRoute } from "./block/index.js";
+import { decisionPointRoute } from "./decisionPoint/index.js";
+import { decisionPointStepRoute } from "./decisionPoint/decision-point-step.js";
+import { decisionPointMediaRoute } from "./decisionPoint/decision-point-media.js";
+import { groupProcessRoute } from "./groupProcess/index.js";
+import { favoriteRoute } from "./favorite/index.js";
+import { notificationRoute } from "./notification/index.js";
+
+const router = express.Router();
+
+router.use("/auth", authRoute);
+router.use("/admin", adminRoute);
+router.use("/organizations", organizationRoute);
+router.use("/users", userRoute);
+router.use("/groups", groupRoute);
+router.use("/group-members", groupMemberRoute);
+router.use("/processes", processRoute);
+router.use("/tags", tagRoute);
+router.use("/document-types", documentTypeRoute);
+router.use("/steps", stepRoute);
+router.use("/cms", cmsRoute);
+router.use("/media", mediaRoute);
+router.use("/blocks", blockRoute);
+router.use("/decision-points", decisionPointRoute);
+router.use("/decision-point-steps", decisionPointStepRoute);
+router.use("/decision-point-medias", decisionPointMediaRoute);
+router.use("/group-processes", groupProcessRoute);
+router.use("/favorites", favoriteRoute);
+router.use("/notifications", notificationRoute);
+
+export { router as routes };

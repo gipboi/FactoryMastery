@@ -1,0 +1,76 @@
+@import 'styles/maintheme';
+
+.fmModalDialog {
+  // Title text within header
+  &:global(.modal-title) {
+    margin-top: 0;
+  }
+
+  // Modal Positions
+  &.modalTop {
+    margin: 0 auto;
+  }
+
+  // Right Modal
+  &.modalRight {
+    position: absolute;
+    right: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    height: 100%;
+    margin: 0;
+    background-color: $modal-content-bg;
+    align-content: center;
+
+    button:global(.close) {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1;
+    }
+  }
+
+  // Left Modal
+  &.modalLeft {
+    position: absolute;
+    left: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    height: 100%;
+    margin: 0;
+    background-color: $modal-content-bg;
+    align-content: center;
+
+    button:global(.close) {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1;
+    }
+  }
+
+  &:global(.modal) {
+    &:global(.show) {
+      .modalRight {
+        transform: translate(0, 0) !important;
+      }
+    }
+  }
+
+  // Bottom modal
+  &.modalBottom {
+    display: flex;
+    flex-flow: column nowrap;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    height: 100%;
+    margin: 0 auto;
+    align-content: center;
+  }
+
+  .closeIcon {
+    cursor: pointer;
+  }
+}

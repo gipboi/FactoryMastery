@@ -1,0 +1,20 @@
+.hfSeparator {
+  display: flex !important;
+  align-items: center;
+  text-align: center;
+}
+
+.hfSeparator::before,
+.hfSeparator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #000;
+}
+
+.hfSeparator:not(:empty)::before {
+  margin-right: 25px;
+}
+
+.hfSeparator:not(:empty)::after {
+  margin-left: 25px;
+}

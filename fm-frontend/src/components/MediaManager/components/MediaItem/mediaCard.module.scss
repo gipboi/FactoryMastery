@@ -1,0 +1,66 @@
+@import 'styles/constant';
+
+.mediaCard {
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
+  height: 90px;
+
+  .cardBody {
+    width: 80%;
+  }
+
+  img,
+  i {
+    margin-left: 10px;
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+
+  .mediaCaption {
+    font-weight: bold;
+    font-size: medium;
+  }
+
+  .mediaName {
+    font-size: smaller;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .actionMenu {
+    margin-right: 10px;
+    & > button {
+      padding: 0 6px 4px 6px;
+      border-radius: 50% !important;
+      background: transparent;
+      border: 1px solid transparent;
+    }
+
+    & > button:active,
+    & > button:focus {
+      background: #e9ecef;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    background: rgba(map-get($custom-colors, 'branding-blue'), 0.1) !important;
+
+    .actionMenu {
+      & > button {
+        background: #e9ecef;
+      }
+    }
+  }
+}
+
+.pdfThumbnail {
+  width: 72px !important;
+  height: 72px !important;
+}

@@ -1,0 +1,19 @@
+@import "styles/layout";
+@import "styles/constant";
+
+$large-screen: xl, lg, md;
+$small-screen: sm, esm;
+
+.groupList {
+  height: 350px;
+  overflow-y: scroll;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  margin-top: 12px;
+  padding: 16px 0;
+  border-radius: 8px;
+  max-height: 368px;
+  background: #f7fafc;
+}

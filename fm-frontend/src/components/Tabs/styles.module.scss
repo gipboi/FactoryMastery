@@ -1,0 +1,62 @@
+@import "../../styles/layout";
+
+$small-screen: sm, esm;
+
+.container {
+  justify-content: space-around;
+  border: none;
+  margin-top: 20px;
+
+  .header {
+    border-bottom: 2px solid rgba(152, 166, 173, 0.2);
+    cursor: pointer;
+    flex: 1;
+    color: #c9ced6;
+
+    div {
+      pointer-events: none;
+    }
+
+    ul {
+      margin-bottom: 0px;
+    }
+  }
+
+  .active {
+    color: #0bcf97;
+    border-bottom: 2px solid #0bcf97;
+  }
+
+  .tabLabel {
+    
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 12px;
+    text-align: center;
+
+    @include bootstrap-respond($small-screen) {
+      font-size: 10px;
+    }
+  }
+}
+
+.noContentPadding {
+  margin-bottom: 0px !important;
+}
+
+.countNotifications {
+  float: right;
+  height: 21px;
+  line-height: 21px;
+  padding: 0 5px;
+  background: #0bcf97;
+  border-radius: 4px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #ffffff;
+  position: absolute;
+  right: 30px;
+  bottom: 5px;
+}

@@ -1,0 +1,379 @@
+@startuml FactoryMastery Entity Relationship Diagram
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity User {
+  id: String
+  email: String <<limit: 255>>
+  username: String <<limit: 255>>
+  encryptedPassword: String <<limit: 255, default: "", null: false>>
+  firstName: String <<limit: 255>>
+  lastName: String <<limit: 255>>
+  fullName: String
+  mobilePhone: String <<limit: 255>>
+  workPhone: String <<limit: 255>>
+  address1: String <<limit: 255>>
+  address2: String <<limit: 255>>
+  city: String <<limit: 255>>
+  state: String <<limit: 255>>
+  zip: String <<limit: 255>>
+  image: String <<limit: 255>>
+  authRole: String
+  tokens: String <<limit: 65535>>
+  admin: boolean <<default: false>>
+  owner: boolean <<default: false, null: false>>
+  superAdmin: boolean <<default: false>>
+  manager: boolean <<default: false>>
+  disabled: boolean <<default: false>>
+  isResetPassword: boolean
+  resetPasswordToken: String <<limit: 255>>
+  resetPasswordSentAt: DateTime
+  signInCount: int <<limit: 4, default: 0, null: false>>
+  currentSignInAt: DateTime
+  lastSignInAt: DateTime
+  currentSignInIp: String <<limit: 255>>
+  lastSignInIp: String <<limit: 255>>
+  organizationId: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+entity UserSession {
+  id: String
+  userId: String
+  date: DateTime
+  count: int <<limit: 4, default: 1>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Organization {
+  id: String
+  name: String <<limit: 255>>
+  phone: String <<limit: 255>>
+  license: String <<limit: 255>>
+  trialExpirationDate: DateTime
+  status: int <<limit: 4, default: 2>>
+  subdomain: String <<limit: 255>>
+  role: String <<limit: 255>>
+  publicProcessUrl: String <<limit: 255>>
+  image: String <<limit: 255>>
+  logo: String <<limit: 255>>
+  dashboardBannerText: String <<limit: 65535>>
+  horizontalLogo: String <<limit: 255>>
+  welcomeMessageContent: String <<limit: 65535>>
+  welcomeMessageText: String <<limit: 255>>
+  welcomeMessageImage: String <<limit: 255>>
+  isLightSideBar: boolean <<default: false, null: false>>
+  sidebarIconColor: int <<limit: 4, default: 0>>
+  isThemeSetting: boolean <<default: false>>
+  isModularProcess: boolean <<default: false>>
+  isReportTool: boolean <<default: false>>
+  isCollectionFeature: boolean <<default: false>>
+  isMarketPlace: boolean <<default: false>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Group {
+  id: String
+  name: String <<limit: 255>>
+  organizationId: String
+  description: String <<limit: 65535>>
+  isCompanyGroup: boolean <<default: false>>
+  archived: boolean <<default: false>>
+  deleted: boolean <<default: false>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity GroupMember {
+  id: String
+  permission: String
+  groupId: String
+  userId: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity GroupsProcess {
+  groupId: String
+  processId: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+
+entity UserProcess {
+  userId: String
+  processId: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Process {
+  id: String
+  name: String <<limit: 255>>
+  description: String <<limit: 65535>>
+  owner: String <<limit: 255>>
+  startDate: DateTime
+  endDate: DateTime
+  createdBy: String
+  image: String <<limit: 255>>
+  totalTime: String <<limit: 255, default: "00:00:00">>
+  organizationId: String
+  collectionId: String
+  status: int <<limit: 4, default: 1, null: false>>
+  reason: String <<limit: 255>>
+  primaryGroupId: String
+  documentTypeId: String
+  publishedDate: DateTime
+  rejectedDate: DateTime
+  rejectedById: String
+  publishedById: String
+  procedureType: number
+  procedureIcon: String <<limit: 255>>
+  procedureIconColor: String <<limit: 255>>
+  isPublished: boolean <<default: false>>
+  version: String
+  releaseNote: String
+  editorNote: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Collection {
+  id: String
+  name: String <<limit: 255>>
+  organizationId: String
+  mainMedia: String <<limit: 255>>
+  overview: String <<limit: 65535>>
+  public: boolean <<default: false>>
+  archived: boolean <<default: false>>
+  archivedAt: DateTime
+  isVisible: boolean <<default: true>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity CollectionGroup {
+  collectionId: String
+  groupId: String
+}
+
+entity DocumentType {
+  id: String
+  name: String <<limit: 255>>
+  organizationId: String
+  description: String <<limit: 65535>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Tag {
+  id: String
+  name: String <<limit: 255>>
+  organizationId: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity CollectionsProcess {
+  collectionId: String
+  processId: String
+  position: int <<limit: 4>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity ProcessesTag {
+  processId: String
+  tagId: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Step {
+  id: String
+  name: String <<limit: 255>>
+  time: String <<limit: 255>>
+  processId: String
+  layoutId: String
+  position: int <<limit: 4>>
+  archived: boolean <<default: false>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Block {
+  id: String
+  type: String <<limit: 255>>
+  content: String <<limit: 16777215>>
+  stepId: String <<limit: 4>>
+  position: int <<limit: 4>>
+  mediaId: String
+  mediaTitle: String <<limit: 255>>
+  isDisableMediaLabel: boolean
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity BlockMedia {
+  blockId: String
+  mediaId: String
+    createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity DecisionPoint {
+  id: String
+  title: String <<limit: 255>>
+  blockId: String
+  position: int
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity DecisionPointStep {
+  stepId: String
+  decisionPointId: String
+}
+
+entity DecisionPointMedia {
+  decisionPointId: String
+  mediaId: String
+  mediaTitle: String <<limit: 255>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Media {
+  organizationId: String
+  name: String <<limit: 255>>
+  image: String <<limit: 255>>
+  document: String <<limit: 255>>
+  originalImage: String <<limit: 255>>
+  url: String <<limit: 255>>
+  mediaType: int <<limit: 4>>
+  videoThumbnailUrl: String <<limit: 255>>
+  stepId: String
+  video: String <<limit: 255>>
+  originalFile: String <<limit: 255>>
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Favorite {
+  id: String
+  userId: String
+  processId: String
+  collectionId: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Comment {
+  id: String
+  content: String
+  processId: String
+  collectionId: String
+  userId: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity AuditTrail {
+  id: String
+  request: String
+  response: String
+  route: String
+  status: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+entity Notification {
+  id: String
+  title: String
+  reason: String
+  type: String
+  subType: String
+  rejectionReason: String
+  description: String
+  comment: String
+  isSeen: String
+  reviewerId: String
+  userId: String
+  authorId: String
+  processWorkflowId: String
+  processId: String
+  stepId: String
+  createdBy: String
+  organizationId: String
+  createdAt: DateTime <<null: false>>
+  updatedAt: DateTime <<null: false>>
+}
+
+User ||..o{ Process
+User ||..o{ UserSession
+User ||..o{ GroupMember
+User ||..o{ Comment
+User ||..o{ Favorite
+User ||..o{ UserProcess
+User ||..o{ DecisionPoint
+User ||..o{ DocumentType
+User ||..o{ Media
+User ||..o{ Notification
+
+Group ||..o{ GroupMember
+Group ||..o{ GroupsProcess
+
+Process ||..o{ GroupsProcess
+Process ||..o{ UserProcess
+Process ||..o{ Step
+Process ||..o{ CollectionsProcess
+Process ||..o{ ProcessesTag
+Process ||..o{ Comment
+Process ||..o{ Favorite
+Process ||..o{ Block
+Process ||..o{ Notification
+
+Collection ||..o{ CollectionsProcess
+Collection }|..o{ Process
+Collection ||..o{ Comment
+Collection ||..o{ CollectionGroup
+Collection ||..o{ Favorite
+
+Step ||..o{ Media
+Step ||..o{ Block
+Step ||..o{ DecisionPointStep
+Step ||..o{ Notification
+
+Block ||..o{ DecisionPoint
+Block ||..o{ BlockMedia
+
+DecisionPoint ||..o{ DecisionPointStep
+DecisionPoint ||..o{ DecisionPointMedia
+
+Media ||..o{ Block
+Media ||..o{ BlockMedia
+Media ||..o{ DecisionPointMedia
+
+Tag ||..o{ ProcessesTag
+
+DocumentType ||..o{ Process
+
+Organization ||..o{ Collection
+Organization ||..o{ DocumentType
+Organization ||..o{ Tag
+Organization ||..o{ Group
+Organization ||..o{ Media
+Organization ||..o{ Process
+Organization ||..o{ Tag
+Organization ||..o{ Notification
+
+@enduml

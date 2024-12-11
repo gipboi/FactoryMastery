@@ -1,0 +1,28 @@
+@import "styles/constant";
+@import "styles/layout";
+
+.dialog {
+  @include bootstrap-respond($large-screen) {
+    max-width: 700px;
+    width: 700px;
+  }
+
+  @include bootstrap-respond($small-screen) {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.uploadPanel {
+  display: flex;
+  margin-bottom: 15px;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.progress {
+  div {
+    background-color: rgba( $primary-500, var(--bs-bg-opacity)) !important;
+  }
+}

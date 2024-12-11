@@ -1,0 +1,21 @@
+/*********************** CUSTOM GLOBAL STYLING FOR PROJECT *****************************/
+$custom-colors: ();
+$custom-colors: map-merge(
+  (
+    'branding-blue': #4A8DB7,
+    'placeholder-grey': #f1f3fa,
+    'disable-grey': #adb5bd,
+    'border-grey': #c1c8d0,
+    'default-black': #313a46,
+    'alert-red': #cb2e25
+  ),
+  $custom-colors
+);
+
+$large-screen: xl, md, lg;
+$small-screen: esm, sm;
+
+$primary-500: #4A8DB7;
+$primary-700: #0062a9;
+
+$shadow-base: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06);

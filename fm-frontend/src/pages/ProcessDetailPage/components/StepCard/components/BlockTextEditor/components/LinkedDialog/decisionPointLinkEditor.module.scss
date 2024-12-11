@@ -1,0 +1,97 @@
+.container {
+  margin-top: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+  margin-bottom: 24px;
+
+  .stepSection {
+    .title {
+      
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 19px;
+      color: #313a46;
+    }
+
+    .options {
+      margin-top: 8px;
+      position: relative;
+    }
+  }
+
+  .mediaSection {
+    margin-top: 29px;
+    margin-bottom: 29px;
+
+    .title {
+      
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 19px;
+      color: #313a46;
+    }
+
+    .collectionLayout {
+      display: flex;
+      overflow-x: scroll;
+      margin-top: 10px;
+      padding-bottom: 10px;
+
+      .elementPlaceholder {
+        height: 98px;
+
+        &:not(:last-child) {
+          margin-right: 13px;
+        }
+
+        svg,
+        img,
+        i {
+          height: 96px;
+          width: auto;
+          min-width: 96px;
+
+          border: 1px solid #e6e6e6;
+          align-items: center;
+          justify-content: center;
+          display: flex;
+
+          border-radius: 4px;
+          margin-bottom: 8px;
+        }
+      }
+
+      .elementActive {
+        svg,
+        img,
+        i {
+          box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+        }
+      }
+    }
+  }
+
+  .actionButtons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 16px;
+    border-top: 1px solid #e2e8f0;
+
+    button {
+      border-radius: 10px;
+      padding: 10px 0;
+      margin: 0 5px;
+      width: 150px;
+    }
+
+    .saveButton {
+      // INFO: override bootstrap background color
+      background-color: var(--current-primary-color) !important;
+      margin-left: 10px;
+    }
+  }
+}

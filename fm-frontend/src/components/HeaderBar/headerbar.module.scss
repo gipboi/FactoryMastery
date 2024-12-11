@@ -1,0 +1,23 @@
+@import "../../styles/index.scss";
+
+.topBarWrapper {
+  position: fixed;
+  left: $leftbar-width;
+  top: 0;
+  right: 0;
+  z-index: 1001;
+
+  transition: left 0.2s ease-out, background-color 0.2s ease-out;
+}
+
+.topBarWrapperMobile {
+  left: $leftbar-width-mobile;
+}
+
+.commonHeader {
+  height: $topbar-height;
+}
+
+.pageHeader {
+  height: $topbar-content-height;
+}

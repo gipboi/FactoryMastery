@@ -1,0 +1,21 @@
+export const getUserDetailProjectPipeline = {
+  $project: {
+    _id: false,
+    id: "$_id",
+    createdAt: true,
+    updatedAt: true,
+    encryptedPassword: true,
+    lastSignInAt: true,
+    firstName: true,
+    lastName: true,
+    username: true,
+    image: true,
+    email: true,
+    isInactive: true,
+    disabled: true,
+    organizationId: true,
+    groupMembers: true,
+    groups: true,
+    authRole: true,
+  },
+};

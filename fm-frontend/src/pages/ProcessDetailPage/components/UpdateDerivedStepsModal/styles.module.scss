@@ -1,0 +1,43 @@
+.container {
+  background-color: #dae1ff;
+  height: 56px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 16px 16px 12px;
+  border-left: 4px solid #4962ff;
+
+  .reviewButton {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    color: #2d3748;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  .updateButton {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+    color: #2d3748;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}
+
+.transition {
+  bottom: -100px;
+  transition: all 0.5s ease;
+}

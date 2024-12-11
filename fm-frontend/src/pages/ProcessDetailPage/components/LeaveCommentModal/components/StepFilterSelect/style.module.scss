@@ -1,0 +1,37 @@
+.wrapper {
+  padding-left: 10px;
+}
+
+.stepWrapper {
+  display: flex;
+  align-items: center;
+  background: white;
+}
+
+.processWrapper {
+  padding-left: 20px;
+}
+
+.background {
+  background: #bebebe28;
+}
+
+.option {
+  svg {
+    margin-right: 10px;
+  }
+}
+
+.valueContainer {
+  display: flex;
+  align-items: center;
+  width: calc(100% - 40px);
+
+  .valueChildren {
+    margin-left: 5px;
+  }
+}
+
+.optionLabel {
+  padding-left: 10px;
+}

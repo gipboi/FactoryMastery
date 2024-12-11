@@ -1,0 +1,145 @@
+@import 'styles/layout';
+
+$large-screen: xl, lg;
+$small-screen: md, sm, esm;
+
+.createDialog {
+  & :global(.modal-content) {
+    border-radius: 12px;
+
+    & > :global(.modal-body) {
+      padding: 32px 48px 42px;
+    }
+  }
+
+  .fieldWrapper {
+    margin-bottom: 20px;
+
+    &:nth-child(4),
+    &:nth-child(5) {
+      margin-bottom: 32px;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 20px;
+      color: #6c757d;
+    }
+  }
+
+  .documentTypeInput {
+    label {
+      margin-bottom: 0;
+    }
+
+    .selectInput {
+      margin-top: 0;
+    }
+  }
+
+  h4 {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 32px;
+    color: #323a46;
+    margin-bottom: 32px;
+  }
+
+  .processSelects {
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 150px;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #ffffff;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #a1a1a1;
+    }
+
+    svg {
+      margin-right: 20px;
+      opacity: 0.3;
+      margin-bottom: 12px;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      &:global(.selected) {
+        opacity: 1;
+      }
+    }
+
+    .colorPick {
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      margin-right: 20px;
+      opacity: 0.3;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      &:global(.selected) {
+        opacity: 1;
+      }
+    }
+  }
+
+  .actionButtonWrapper {
+    button {
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      height: 48px;
+
+      &:first-child {
+        background: #ffffff;
+        border: 1px solid #e1e4e8;
+        box-sizing: border-box;
+      }
+
+      &:last-child {
+        background: var(--current-primary-color);
+        border-color: var(--current-primary-color);
+        box-shadow: none;
+        @include bootstrap-respond($large-screen) {
+          margin-left: 10px;
+        }
+      }
+    }
+
+    @include bootstrap-respond($large-screen) {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+
+      button {
+        width: 150px;
+        margin-left: 20px;
+      }
+    }
+
+    @include bootstrap-respond($small-screen) {
+      display: flex;
+      flex-direction: column;
+
+      button {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .icon {
+    cursor: pointer;
+  }
+}

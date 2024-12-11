@@ -1,0 +1,94 @@
+.container {
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 0px;
+  margin-bottom: 20px;
+  cursor: default;
+
+  .noSpacing {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .avatar {
+    display: flex;
+    justify-content: space-around;
+
+    img {
+      width: 33px;
+      height: 33px;
+      border-radius: 50%;
+    }
+  }
+
+  .message {
+    .author {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      
+
+      .name {
+        color: #000000;
+        font-weight: bold;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 14px;
+      }
+
+      .createdAt {
+        color: #adb5bd;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 13px;
+        text-align: right;
+      }
+    }
+
+    .content {
+      text-align: justify;
+      padding-top: 8px;
+      color: #000000;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 16px;
+      white-space: pre-wrap;
+    }
+
+    .attachment {
+      display: flex;
+      flex-direction: column;
+      margin-top: 6px;
+
+      .imageAttach {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        & > * {
+          margin-right: 10px;
+          margin-bottom: 10px;
+        }
+      }
+
+      .otherAttach {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        & > * {
+          margin-right: 10px;
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+
+  .floatSelect {
+    display: flex;
+    align-items: center;
+  }
+}

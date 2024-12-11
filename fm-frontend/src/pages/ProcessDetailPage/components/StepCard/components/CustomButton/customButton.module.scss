@@ -1,0 +1,18 @@
+@import 'styles/constant';
+
+$color-white: #ffffff;
+
+.primary {
+  background: var(--current-primary-color) !important;
+  border: none;
+  color: $color-white !important;
+  &:hover,
+  &:active {
+    background-color: var(--current-primary-color) !important;
+    opacity: 0.8;
+  }
+}
+
+.outline {
+  background: $color-white;
+}

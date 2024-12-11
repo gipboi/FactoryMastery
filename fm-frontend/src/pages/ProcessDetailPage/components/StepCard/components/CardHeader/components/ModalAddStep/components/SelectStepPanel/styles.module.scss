@@ -1,0 +1,24 @@
+@import 'styles/constant';
+
+$branding-blue: map-get($custom-colors, 'branding-blue');
+
+.panelContainer {
+  background-color: #f7fafc;
+  height: 300px;
+  overflow-y: scroll;
+  border-radius: 4px;
+  margin-top: 12px;
+
+  .stepName {
+    color: #313a46;
+    margin-left: 12px;
+    &:hover {
+      color: $branding-blue;
+    }
+  }
+}
+
+.dropDown {
+  background: none;
+  border: none;
+}

@@ -1,0 +1,171 @@
+@import "../.././../../../../styles/layout";
+
+$small-screen: sm, esm;
+$large-screen: md, lg, xl;
+$border-color: #e2e8f0;
+
+.editDialog {
+  position: relative;
+  margin: 0px !important;
+
+  [class*="rdw-editor-toolbar"] {
+    padding: 8px 16px;
+    border: none;
+    border-bottom: 1px solid $border-color;
+    vertical-align: middle;
+  }
+
+  [class*="rdw-dropdown-wrapper rdw-fontfamily-dropdown"] {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+
+  [class*="rdw-option-wrapper"] {
+    border: 1px solid transparent;
+    width: 24px;
+    height: 24px;
+  }
+
+  [class*="rdw-link-modal"] {
+    height: fit-content;
+  }
+
+  [class*="rdw-editor-wrapper"] {
+    border-radius: 8px;
+    padding: 8px 0 8px;
+    border: 1px solid $border-color;
+  }
+
+  [class*="rdw-editor-main"] {
+    color: black;
+  }
+
+  & :global(.modal-content) {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .dialogHeader {
+    border-width: 0px;
+    padding-left: 24px;
+    border-bottom: 1px solid $border-color;
+
+    h5 {
+      
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 28px;
+      color: #1a202c;
+    }
+
+    button {
+      display: none;
+    }
+  }
+}
+
+.dialogBody {
+  padding: 0px;
+
+  [class*="public-DraftStyleDefault-block"] {
+    margin: 0px;
+  }
+}
+
+.blockContent {
+  color: #2d3748;
+  font-size: 14px;
+  font-size: medium;
+  font-weight: 500;
+  line-height: 24px;
+  margin-bottom: 16px;
+}
+
+.editBox {
+  height: 300px !important;
+  border-radius: 4px;
+  padding-left: 16px;
+}
+
+.actionButtons {
+  @include bootstrap-respond($large-screen) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    // button {
+    //   border-radius: 10px;
+    //   padding: 10px 5px;
+    //   width: 150px;
+    // }
+  }
+
+  @include bootstrap-respond($small-screen) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .saveGroup {
+    width: 100%;
+  }
+
+  .saveBtn {
+    background: var(--current-primary-color);
+
+    @include bootstrap-respond($large-screen) {
+      margin-left: 10px;
+    }
+  }
+}
+
+.deleteDialog {
+  text-align: center;
+
+  & :global(.modal-body) {
+    padding: 0;
+  }
+
+  & :global(.modal-content) {
+    padding: 30px 30px 40px;
+    background: #ffffff;
+    border: 1px solid #f1f2f4;
+    box-sizing: border-box;
+    box-shadow: 0px 32px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
+
+  .deleteIcon {
+    width: 48px;
+    height: 48px;
+    background: #ffeaea;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+
+    > i {
+      color: #f03d3d;
+      font-size: 22px;
+    }
+  }
+
+  .deleteTitle {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 28px;
+    text-align: center;
+    color: #0a1f44;
+    margin-bottom: 30px;
+    margin-top: 15px;
+  }
+
+}
+
+.smallSpacingTop {
+  margin: 24px !important;
+}
+
+.smallSpacingBottom {
+  margin-bottom: 16px !important;
+}

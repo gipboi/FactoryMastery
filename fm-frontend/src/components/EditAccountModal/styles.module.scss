@@ -1,0 +1,74 @@
+@import '../../styles/layout';
+@import '../../styles/constant';
+
+.headerWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.separator {
+  color: #e0e4ea;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.header {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 40px;
+  color: #323a46;
+  margin-bottom: 0px;
+}
+
+.modalWrapper {
+  padding: 32px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.modalHeader {
+  padding: 32px;
+  padding-bottom: 0px;
+  border-bottom: none;
+}
+
+.overviewHeader {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: none;
+  padding: 32px;
+  margin-bottom: 25px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+
+  @include bootstrap-respond($large-screen) {
+    padding-top: 25px;
+  }
+
+  @include bootstrap-respond($small-screen) {
+    padding-top: 15px;
+  }
+
+  button {
+    padding: 0;
+    line-height: 30px;
+    border: none;
+    background-color: transparent;
+    box-shadow: none !important;
+    color: #6c757d;
+    font-size: 20px;
+
+    &:hover {
+      background-color: transparent;
+      color: #6c757d;
+    }
+  }
+}
+
+.footer {
+  border-top: none;
+}
