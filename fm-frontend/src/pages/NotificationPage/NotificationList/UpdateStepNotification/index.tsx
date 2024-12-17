@@ -1,4 +1,4 @@
-import { Button, HStack, useDisclosure } from "@chakra-ui/react";
+import { Button, HStack, Tooltip, useDisclosure } from "@chakra-ui/react";
 import { getProcessById } from "API/process";
 // import { updateDerivedStep } from "API/step";
 import cx from "classnames";
@@ -76,10 +76,26 @@ const UpdateChangeCommonStepNotification = ({
   return (
     <>
       <HStack style={{ cursor: "pointer" }}>
-        <Avatar
-          name={getName(notification?.author) ?? ""}
-          src={notification?.author?.image ?? ""}
-        />
+        <Tooltip
+          label={getName(notification?.author) ?? ""}
+          height="36px"
+          fontSize="14px"
+          lineHeight="20px"
+          fontWeight="400"
+          padding={2}
+          placement="top-start"
+          background="#5C5C5C"
+          color="white"
+          hasArrow
+          borderRadius="4px"
+          shouldWrapChildren
+        >
+          <Avatar
+            name={getName(notification?.author) ?? ""}
+            src={notification?.author?.image ?? ""}
+            isMiddle
+          />
+        </Tooltip>
         <div>
           <span className={cx(styles.object, styles.textContent)}>
             {detailNoti}

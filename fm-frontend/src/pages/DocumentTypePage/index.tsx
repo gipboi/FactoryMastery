@@ -22,7 +22,6 @@ import { IDocumentType } from "interfaces/documentType";
 import { ITheme } from "interfaces/theme";
 import debounce from "lodash/debounce";
 import { observer } from "mobx-react";
-// import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import routes from "routes";

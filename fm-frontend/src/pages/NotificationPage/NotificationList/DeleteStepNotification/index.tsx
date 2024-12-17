@@ -39,6 +39,7 @@ const UpdateChangeCommonStepNotification = ({
         <Avatar
           name={getName(notification?.author) ?? ""}
           src={notification?.author?.image ?? ""}
+          isMiddle
         />
         <div>
           <span className={cx(styles.object, styles.textContent)}>

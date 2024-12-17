@@ -1,22 +1,16 @@
-import { useState } from "react";
-import { Button, HStack, useDisclosure } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import cx from "classnames";
 import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { primary500 } from "themes/globalStyles";
 import { seenNotification } from "API/notification";
-import { getProcessById } from "API/process";
-import { updateDerivedStep } from "API/step";
-import Image from "components/Image";
 import { INotificationWithRelations } from "interfaces/notification";
 import { ITheme } from "interfaces/theme";
 import routes from "routes";
 import { convertToNotificationActionDescription } from "utils/notification";
 import styles from "../../styles.module.scss";
 import { NotificationTypeEnum } from "config/constant/enums/notification";
-import StepDetailModal from "pages/ProcessDetailPage/components/StepDetailModal";
 import { getName } from "utils/user";
 import Avatar from "components/Avatar";
 
@@ -29,56 +23,12 @@ const UpdateChangeCommonStepNotification = ({
 }: IUpdateChangeCommonStepNotificationProps) => {
   const { notificationStore, organizationStore } = useStores();
   const navigate = useNavigate();
-  const [isConfirmUpdate, setIsConfirmUpdate] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const {
-    isOpen: isOpenStepDetail,
-    onOpen: onOpenStepDetail,
-    onClose: onCloseStepDetail,
-  } = useDisclosure();
   const { organization } = organizationStore;
   const currentTheme: ITheme = organization?.theme ?? {};
   const detailNoti: string =
     notification?.type === NotificationTypeEnum.UPDATED_STEP_NOTIFICATION
       ? `Step ${notification?.step?.name ?? ""}`
       : `Process ${notification?.process?.name ?? ""}`;
-
-  async function updateStep() {
-    const commonStepId = notification?.stepId;
-    const processDetail = await getProcessById(notification.processId, {
-      include: [
-        {
-          relation: "steps",
-        },
-      ],
-    });
-    const steps = processDetail?.steps ?? [];
-    const derivedStepsNeedToUpdate = steps.filter((step) => {
-      if (step?.originalStepId) {
-        return step?.originalStepId === commonStepId;
-      }
-      return false;
-    });
-    try {
-      setIsLoading(true);
-      toast.success("Update steps successfully");
-      await Promise.all(
-        derivedStepsNeedToUpdate.map((derivedStep) => {
-          return updateDerivedStep(
-            derivedStep?.id ?? "",
-            derivedStep?.originalStepId ?? ""
-          );
-        })
-      );
-      notificationStore.fetchNotifications();
-      notificationStore.aggregateCountNotifications();
-      setIsLoading(false);
-    } catch (error: any) {
-      toast.error(`Something went wrong ${error}`);
-    } finally {
-      onCloseStepDetail();
-    }
-  }
 
   return (
     <>
@@ -204,7 +154,7 @@ const UpdateChangeCommonStepNotification = ({
         </div>
       </HStack>
 
-      {isOpenStepDetail && (
+      {/* {isOpenStepDetail && (
         <StepDetailModal
           displayStepIds={[notification?.stepId]}
           stepId={notification?.stepId}
@@ -212,7 +162,7 @@ const UpdateChangeCommonStepNotification = ({
           onClose={onCloseStepDetail}
           handleUpdate={updateStep}
         />
-      )}
+      )} */}
     </>
   );
 };

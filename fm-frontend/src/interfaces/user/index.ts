@@ -95,6 +95,12 @@ export interface IUsersFilterForm {
   userTypes: string[];
   groups: IOption<string>[];
   sortBy?: string;
+  users?: IOption<string>[];
+}
+
+export interface INotificationUsersFilterForm {
+  sortBy?: string;
+  users: IOption<string>[];
 }
 
 export interface IMemberItem {

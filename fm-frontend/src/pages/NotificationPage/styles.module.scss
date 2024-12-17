@@ -1,8 +1,12 @@
-.container {
-  display: flex;
-  flex-direction: column;
+.listContainer {
   align-items: center;
   padding: 29px 42px;
   background: #ffffff;
   border-radius: 8px;
+  width: 100%;
+}
+
+.spacing {
+  width: 100%;
+  padding-bottom: 20px !important;
 }

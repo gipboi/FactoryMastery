@@ -25,6 +25,7 @@ export interface INotification {
   ecnSuggestionId: string;
   isSeen?: boolean;
   deletedName?: string;
+  keyword?: string;
 }
 
 export interface INotificationRelations {

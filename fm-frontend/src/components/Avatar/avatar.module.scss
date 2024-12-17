@@ -20,4 +20,12 @@
       font-size: 24px;
     }
   }
+  &.middle {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    div > span {
+      font-size: 24px;
+    }
+  }
 }

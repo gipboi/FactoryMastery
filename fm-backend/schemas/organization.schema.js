@@ -20,7 +20,7 @@ const organizationSchema = new Schema(
     welcomeMessageText: String,
     welcomeMessageImage: String,
     isLightSideBar: { type: Boolean, default: false },
-    sidebarIconColor: { type: Number },
+    sidebarIconColor: { type: String },
     isThemeSetting: { type: Boolean, default: false },
     isModularProcess: { type: Boolean, default: false },
     isReportTool: { type: Boolean, default: false },

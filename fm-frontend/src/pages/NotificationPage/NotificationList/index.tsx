@@ -5,18 +5,16 @@ import { NotificationTypeEnum } from "config/constant/enums/notification";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
-import useIntersectionObserver from "hooks/useIntersectionObserver";
 import { useStores } from "hooks/useStores";
 import debounce from "lodash/debounce";
 import { observer } from "mobx-react";
-import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Col, Row } from "reactstrap";
 import routes from "routes";
 import DeleteCommonStepNotification from "./DeleteStepNotification";
 import UpdateChangeCommonStepNotification from "./UpdateStepNotification";
 import styles from "./styles.module.scss";
 import CommentStepNotification from "./CommentStepNotification";
+import { Box } from "@chakra-ui/react";
 
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
@@ -38,39 +36,17 @@ dayjs.updateLocale("en", {
   },
 });
 
-let page = 0;
 const NotificationList = () => {
   const navigate = useNavigate();
   const { notificationStore, stepStore } = useStores();
-  const { isFetching, notificationFilter, notifications } = notificationStore;
+  const { notifications } = notificationStore;
   const notificationList = Array.isArray(notifications) ? notifications : [];
 
-  function fetchMore() {
-    notificationStore.setListFilter({
-      ...notificationFilter,
-      skip: ++page * (notificationFilter.limit ?? 10),
-    });
-    notificationStore.fetchNotifications(true);
-  }
-  const debouncedFetchMore = debounce(fetchMore, 300);
-  const ref = useRef(null);
-  const isBottomVisible = useIntersectionObserver(
-    ref,
-    {
-      threshold: 0,
-    },
-    false
-  );
-
-  useEffect(() => {
-    isBottomVisible && !isFetching && debouncedFetchMore();
-  }, [isBottomVisible]);
-
   return (
-    <Row className={styles.container}>
+    <div className={styles.container}>
       {notificationList.map((notification) => {
         return (
-          <Row
+          <Box
             className={cx(styles.notificationItem, {
               [styles.notificationItemNotSeen]: !notification.isSeen,
             })}
@@ -89,7 +65,7 @@ const NotificationList = () => {
               seenNotification(notification?.id ?? "");
             }}
           >
-            <Col md="10" className={styles.notificationContent}>
+            <Box className={styles.notificationContent}>
               {notification?.type ===
                 NotificationTypeEnum.COMMENT_STEP_NOTIFICATION && (
                 <CommentStepNotification notification={notification} />
@@ -108,19 +84,19 @@ const NotificationList = () => {
               ].includes(notification?.type as NotificationTypeEnum) && (
                 <DeleteCommonStepNotification notification={notification} />
               )}
-            </Col>
-            <Col md="2">
+            </Box>
+            <Box >
               <span className={styles.timestamp}>
                 {dayjs(notification?.createdAt).fromNow(true)}
               </span>
-            </Col>
-          </Row>
+            </Box>
+          </Box>
         );
       })}
-      <div ref={ref} className={styles.threshold}>
+      {/* <div ref={ref} className={styles.threshold}>
         {isFetching && <GlobalSpinner />}
-      </div>
-    </Row>
+      </div> */}
+    </div>
   );
 };
 

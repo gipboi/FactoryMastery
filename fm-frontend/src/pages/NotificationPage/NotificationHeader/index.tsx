@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useStores } from 'hooks/useStores'
-import { Row } from 'reactstrap'
 import styles from './styles.module.scss'
+import { Box } from '@chakra-ui/react'
 
 const NotificationHeader = () => {
   const { notificationStore } = useStores()
@@ -10,9 +10,9 @@ const NotificationHeader = () => {
   }, [])
 
   return (
-    <Row className={styles.header}>
+    <Box className={styles.header}>
       <h2 className={styles.title}>Notifications</h2>
-    </Row>
+    </Box>
   )
 }
 

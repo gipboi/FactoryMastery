@@ -127,7 +127,7 @@ entity Process {
   totalTime: String <<limit: 255, default: "00:00:00">>
   organizationId: String
   collectionId: String
-  status: int <<limit: 4, default: 1, null: false>>
+  status: String
   reason: String <<limit: 255>>
   primaryGroupId: String
   documentTypeId: String
@@ -135,7 +135,7 @@ entity Process {
   rejectedDate: DateTime
   rejectedById: String
   publishedById: String
-  procedureType: number
+  procedureType: String
   procedureIcon: String <<limit: 255>>
   procedureIconColor: String <<limit: 255>>
   isPublished: boolean <<default: false>>

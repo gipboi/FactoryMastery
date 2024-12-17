@@ -33,9 +33,8 @@ dayjs.extend(relativeTime);
 function NotificationBell() {
   const { notificationStore, authStore } = useStores();
   const {
-    notifications,
-    countNotifications = 0,
-    countNotSeenNotifications = 0,
+    notificationBells: notifications,
+    countNotSeenNotificationBells: countNotSeenNotifications = 0,
   } = notificationStore;
   const page = 0;
   const pageSize = 10;
@@ -43,7 +42,7 @@ function NotificationBell() {
   const isMobile: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.MD);
 
   function fetchData() {
-    const filter: IFilter<INotificationWithRelations> = {
+    notificationStore.fetchNotificationBells({
       where: {
         userId: authStore?.userDetail?.id,
         $or: [
@@ -62,10 +61,7 @@ function NotificationBell() {
       limit: pageSize,
       skip: page * pageSize,
       order: "createdAt DESC",
-    };
-    notificationStore.setListFilter(filter);
-    notificationStore.fetchNotifications();
-    notificationStore.aggregateCountNotifications();
+    });
   }
 
   useEffect(() => {
@@ -77,98 +73,126 @@ function NotificationBell() {
   return (
     <div className={styles.container}>
       <Menu>
-        {countNotSeenNotifications > 0 && (
-          <div className={styles.notificationCount}>
-            {countNotSeenNotifications}
-          </div>
-        )}
-        <MenuButton
-          as={IconButton}
-          onClick={() => notificationStore.fetchNotifications()}
-          aria-label="Notifications"
-          background="transparent"
-          _hover={{ background: "transparent" }}
-          _active={{ background: "transparent" }}
-          border="none"
-          icon={
-            <SvgIcon iconName="notification-bell" size={isMobile ? 24 : 20} />
-          }
-          variant="outline"
-        />
+        {({ onClose }) => (
+          <>
+            {countNotSeenNotifications > 0 && (
+              <div className={styles.notificationCount}>
+                {countNotSeenNotifications}
+              </div>
+            )}
+            <MenuButton
+              as={IconButton}
+              onClick={fetchData}
+              aria-label="Notifications"
+              background="transparent"
+              _hover={{ background: "transparent" }}
+              _active={{ background: "transparent" }}
+              border="none"
+              icon={
+                <SvgIcon
+                  iconName="notification-bell"
+                  size={isMobile ? 24 : 20}
+                />
+              }
+              variant="outline"
+            />
 
-        <MenuList className={styles.menu}>
-          <HStack
-            className={styles.header}
-            justifyContent="space-between"
-            padding="12px 16px"
-            borderBottom="1px solid #E2E8F0"
-          >
-            <div className={styles.title}>Notifications</div>
-            <chakra.div
-              onClick={async () => {
-                await notificationStore.seenAllNotifications();
-                toast.success("Marked all as read");
-                fetchData();
-              }}
-              className={styles.mark}
-              color="var(--current-primary-color)"
-              _hover={{
-                color: "var(--current-primary-color)" ?? "primary.700",
-                opacity: 0.8,
-              }}
-            >
-              Mark all as read
-            </chakra.div>
-          </HStack>
-          <div className={styles.listNotifications}>
-            {notifications.map((notification, index) => (
-              <MenuItem
-                key={index}
-                background="transparent"
-                border="none"
-                _hover={{ background: colors.primary[50] }}
-                className={cx({ [styles.unseen]: !notification.isSeen })}
+            <MenuList className={styles.menu}>
+              <HStack
+                className={styles.header}
+                justifyContent="space-between"
+                padding="12px 16px"
+                borderBottom="1px solid #E2E8F0"
               >
-                <HStack
-                  className={cx(styles.notificationItem)}
-                  key={notification.id}
-                  onClick={() => {
-                    navigate(routes.notifications.value);
-                    seenNotification(notification?.id ?? "");
-                  }}
-                >
-                  <HStack className={styles.notificationContent}>
-                    {notification?.type ===
-                      NotificationTypeEnum.COMMENT_STEP_NOTIFICATION && (
-                      <CommentNotification notification={notification} />
-                    )}
-                    {[
-                      NotificationTypeEnum.UPDATED_STEP_NOTIFICATION,
-                      NotificationTypeEnum.UPDATED_PROCESS_NOTIFICATION,
-                    ].includes(notification?.type as NotificationTypeEnum) && (
-                      <UpdateCommonStepNotification
-                        notification={notification}
-                      />
-                    )}
-                    {[
-                      NotificationTypeEnum.DELETED_STEP_NOTIFICATION,
-                      NotificationTypeEnum.DELETED_PROCESS_NOTIFICATION,
-                    ].includes(notification?.type as NotificationTypeEnum) && (
-                      <DeleteCommonStepNotification
-                        notification={notification}
-                      />
-                    )}
-                  </HStack>
-                  <HStack>
-                    <span className={styles.timestamp}>
-                      {dayjs(notification?.createdAt).fromNow(true)}
-                    </span>
-                  </HStack>
+                <div className={styles.title}>Notifications</div>
+
+                <HStack spacing={4}>
+                  <chakra.div
+                    onClick={() => {
+                      navigate(routes.notifications.value);
+                      onClose();
+                    }}
+                    className={styles.mark}
+                    color="var(--current-primary-color)"
+                    _hover={{
+                      color: "var(--current-primary-color)" ?? "primary.700",
+                      opacity: 0.8,
+                    }}
+                  >
+                    See all
+                  </chakra.div>
+                  <chakra.div
+                    onClick={async () => {
+                      await notificationStore.seenAllNotifications();
+                      toast.success("Marked all as read");
+                      fetchData();
+                    }}
+                    className={styles.mark}
+                    color="var(--current-primary-color)"
+                    _hover={{
+                      color: "var(--current-primary-color)" ?? "primary.700",
+                      opacity: 0.8,
+                    }}
+                  >
+                    Mark all as read
+                  </chakra.div>
                 </HStack>
-              </MenuItem>
-            ))}
-          </div>
-        </MenuList>
+              </HStack>
+              <div className={styles.listNotifications}>
+                {notifications.map((notification, index) => (
+                  <MenuItem
+                    key={index}
+                    background="transparent"
+                    border="none"
+                    _hover={{ background: colors.primary[50] }}
+                    className={cx({ [styles.unseen]: !notification.isSeen })}
+                  >
+                    <HStack
+                      className={cx(styles.notificationItem)}
+                      key={notification.id}
+                      onClick={() => {
+                        navigate(routes.notifications.value);
+                        seenNotification(notification?.id ?? "");
+                      }}
+                    >
+                      <HStack className={styles.notificationContent}>
+                        {notification?.type ===
+                          NotificationTypeEnum.COMMENT_STEP_NOTIFICATION && (
+                          <CommentNotification notification={notification} />
+                        )}
+                        {[
+                          NotificationTypeEnum.UPDATED_STEP_NOTIFICATION,
+                          NotificationTypeEnum.UPDATED_PROCESS_NOTIFICATION,
+                        ].includes(
+                          notification?.type as NotificationTypeEnum
+                        ) && (
+                          <UpdateCommonStepNotification
+                            notification={notification}
+                          />
+                        )}
+                        {[
+                          NotificationTypeEnum.DELETED_STEP_NOTIFICATION,
+                          NotificationTypeEnum.DELETED_PROCESS_NOTIFICATION,
+                        ].includes(
+                          notification?.type as NotificationTypeEnum
+                        ) && (
+                          <DeleteCommonStepNotification
+                            notification={notification}
+                          />
+                        )}
+                      </HStack>
+                      <HStack>
+                        <span className={styles.timestamp}>
+                          {dayjs(notification?.createdAt).fromNow(true)}
+                        </span>
+                      </HStack>
+                    </HStack>
+                  </MenuItem>
+                ))}
+              </div>
+            </MenuList>
+          </>
+        )}
       </Menu>
     </div>
   );

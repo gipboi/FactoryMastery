@@ -6,7 +6,6 @@ import {
   handleError,
   successHandler,
 } from "../utils/index.js";
-import { clone } from "lodash";
 
 export class NotificationService {
   constructor() {}
@@ -24,7 +23,11 @@ export class NotificationService {
         populateOptions = buildPopulateOptions(filter?.include);
       }
 
-      const dataPromise = Notification.find(filter?.where);
+      const { keyword, ...whereFilter } = filter?.where;
+
+      const dataPromise = Notification.find({
+        ...whereFilter,
+      });
 
       if (filter?.offset || filter?.skip) {
         dataPromise.skip(filter?.offset || filter?.skip);
@@ -33,7 +36,11 @@ export class NotificationService {
         dataPromise.limit(filter?.limit);
       }
 
-      const data = await dataPromise.populate(populateOptions);
+      const data = await dataPromise
+        .sort({
+          createdAt: -1,
+        })
+        .populate(populateOptions);
       const formattedData = getValidArray(data).map((n) =>
         this.formatNotification(n)
       );
