@@ -90,14 +90,10 @@ const CkTable = (props: ITableProps) => {
   const columns: Column<object>[] = (useMemo(() => headerList, [headerList]) ||
     []) as Column<object>[];
   const navigate = useNavigate();
-  // const { spinnerStore, organizationStore, collectionStore } = useStores();
   const { spinnerStore } = useStores();
   const { isLoading } = spinnerStore;
   const isEmptyTable: boolean = tableData?.length === 0;
-  // const { organization } = organizationStore;
-  // const currentTheme: ITheme = organization?.theme ?? {};
   const currentTheme: ITheme = {};
-  // TODO: Integrate later
   const sortBy = useMemo(
     () =>
       isManualSort ? [] : [{ id: headerList[0]?.accessor ?? "", desc: false }],

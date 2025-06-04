@@ -14,6 +14,7 @@ import {
 import get from 'lodash/get'
 import startCase from 'lodash/startCase'
 import { Controller, useFormContext } from 'react-hook-form'
+
 export interface IFormItemProps {
   name: string
   label?: string
@@ -35,7 +36,12 @@ export interface IFormItemProps {
   hideErrorMessage?: boolean
   maxLength?: number
   rules?: any
+  pattern?: {
+    value: RegExp
+    message: string
+  }
 }
+
 const FormInput = (props: IFormItemProps) => {
   const {
     name,
@@ -56,8 +62,10 @@ const FormInput = (props: IFormItemProps) => {
     autoComplete,
     hideErrorMessage,
     maxLength,
-    rules
+    rules,
+    pattern
   } = props
+
   const {
     register,
     formState: { errors },
@@ -110,6 +118,7 @@ const FormInput = (props: IFormItemProps) => {
           {...disabledProps}
           {...register(name, {
             required: isRequired ? `${label ?? startCase(name)} is required` : false,
+            pattern: pattern,
             ...rules
           })}
         />
@@ -117,7 +126,11 @@ const FormInput = (props: IFormItemProps) => {
         <Controller
           name={name}
           control={control}
-          rules={{ required: true }}
+          rules={{ 
+            required: isRequired, 
+            pattern: pattern,
+            ...rules 
+          }}
           render={({ field }) => (
             <NumberInput focusBorderColor="teal.500" {...field} min={min}>
               <NumberInputField maxLength={maxLength} />

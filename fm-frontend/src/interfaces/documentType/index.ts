@@ -9,8 +9,8 @@ export interface IDocumentType {
   updatedAt?: Date;
   description?: string;
   organizationId?: string;
-  icon?: { type: number; color: string };
   iconBuilder?: IIconBuilder;
+  icon?: IIconBuilder;
   creator?: IUser;
   createdBy?: number;
   iconId?: string;

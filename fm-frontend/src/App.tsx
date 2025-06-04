@@ -15,29 +15,27 @@ import { getSubdomain } from "utils/domain";
 import { AuthenticateParams } from "constants/enums/auth";
 import { primary500 } from "themes/globalStyles";
 import GlobalSpinner from "components/GlobalSpinner";
+import { SUPER_ADMIN_DOMAIN } from "constants/admin";
 
 const App = observer(() => {
-  const { authStore, organizationStore } = rootStore;
+  const { authStore } = rootStore;
   const [loading, setLoading] = useState(false);
   const subDomain = getSubdomain();
   const isInSubdomain: boolean =
-    !!subDomain && subDomain !== "app" && subDomain !== "admin";
-  const isInAdmin = subDomain && subDomain === "admin";
+    !!subDomain && subDomain !== "app";
+  const isInAdmin = subDomain && subDomain === SUPER_ADMIN_DOMAIN;
   const query = new URLSearchParams(window?.location?.search);
   const accessToken: string = query.get(AuthenticateParams.ACCESS_TOKEN) || "";
 
   useEffect(() => {
     setLoading(false);
-    // setTimeout(() => {
-    //   setLoading(false);
-    // }, 2000);
   }, []);
 
   useEffect(() => {
     authStore.getMyUser();
     setLoading(true);
-    // if in subdomain need to verify the domain, or else have to redirect back to main page
-    if (isInSubdomain && !isInAdmin) {
+    // *INFO: If in subdomain need to verify the domain, or else have to redirect back to main page
+    if (isInSubdomain) {
       rootStore.organizationStore
         .getOrganizationBySubdomain(subDomain)
         .then(() => setLoading(false))
@@ -60,10 +58,10 @@ const App = observer(() => {
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty("--current-primary-color", primary500);
-    // root.style.setProperty('--current-secondary-color', secondary)
+    root.style.setProperty('--current-secondary-color', primary500)
   }, []);
 
-  return (
+  return (    
     <Fragment>
       {loading ? (
         <GlobalSpinner />

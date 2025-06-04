@@ -124,7 +124,7 @@ const UserQuickInfoModal = (props: IUserQuickInfoModalProps) => {
               {!isHideSendMessage && (
                 <HStack alignItems="flex-start" height="64px">
                   <CustomButton
-                    content="Send message"
+                    content={isMobile ? '' : 'Send message'}
                     className="outline"
                     color="gray.700"
                     fontSize="sm"

@@ -1,0 +1,103 @@
+@import "styles/layout";
+
+$largeScreen: xl, lg, md;
+$smallScreen: esm, sm;
+
+.container {
+  .layout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .label {
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 40px;
+    color: #4b5563;
+    padding-right: 18px;
+
+    @include bootstrap-respond($smallScreen) {
+      padding-bottom: 8px;
+    }
+  }
+
+  .viewModeGroup {
+    border-radius: 10px;
+
+    Button {
+      border-radius: 10px 0 0 10px;
+      outline: none;
+      color: #6b7280;
+      background-color: #fff;
+      border-color: #fff;
+      font-size: 20px;
+      padding-left: 8px;
+      padding-right: 8px;
+
+      &:last-child {
+        border-radius: 0 10px 10px 0;
+      }
+    }
+
+    .active {
+      color: #fff;
+      background-color: #4b5563;
+      border-color: #4b5563;
+    }
+  }
+
+  .actionBtns {
+    display: flex;
+    flex-wrap: wrap;
+
+    @include bootstrap-respond($largeScreen) {
+      flex-direction: row;
+    }
+
+    @include bootstrap-respond($smallScreen) {
+      flex-direction: column;
+    }
+
+    button {
+      margin-left: 15px;
+      background-color: #00a9eb !important;
+      border-radius: 10px;
+      padding: 5px 7px;
+      border: none;
+      display: flex;
+      align-items: center;
+      height: 40px;
+
+      i {
+        font-size: 20px;
+      }
+    }
+
+    &.filterIcon > button {
+      width: 100px !important;
+      font-size: 16px;
+      padding: 10px 16px;
+      color: #4b5563 !important;
+      background-color: #fff !important;
+      border: 1px solid var(--gray-200, #e2e8f0) !important;
+      box-shadow: none;
+      &:hover {
+        background-color: #e2e8f0 !important;
+      }
+    }
+
+    &.active > button {
+      > p {
+        color: #fff !important;
+      }
+      background-color: var(--current-secondary-color) !important;
+      opacity: 1;
+      &:hover {
+        background-color: var(--current-secondary-color) !important;
+        opacity: 0.8;
+      }
+    }
+  }
+}

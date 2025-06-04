@@ -7,6 +7,7 @@ const documentTypeSchema = new Schema(
     description: String,
     organizationId: { type: Schema.Types.ObjectId, require: true },
     createdBy: { type: Schema.Types.ObjectId },
+    iconId: { type: Schema.Types.ObjectId },
     createdAt: { type: Date },
     updatedAt: { type: Date },
   },
@@ -25,6 +26,13 @@ documentTypeSchema.virtual("creator", {
   ref: "User", //The Model to use
   localField: "createdBy", //Find in Model, where localField
   foreignField: "_id", // is equal to foreignField
+});
+
+documentTypeSchema.virtual("icon", {
+  ref: "Icon", //The Model to use
+  localField: "iconId", //Find in Model, where localField
+  foreignField: "_id", // is equal to foreignField
+  justOne: true,
 });
 
 // Set Object and Json property to true. Default is set to false

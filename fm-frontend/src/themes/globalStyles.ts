@@ -9,6 +9,7 @@ export const primary700 = '#387097'
 export const secondary = '#727CF5'
 export const secondary100 = '#E3E6FE'
 export const secondary300 = '#ABB2FC'
+export const secondary500 = '#4A8DB7'
 export const tertiary = '#2A3E60'
 
 // TODO: Add focus border color later

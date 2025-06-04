@@ -1,5 +1,5 @@
 export const ProcessTypeColors = [
-  "#00A9EB",
+  "#4A8DB7",
   "#0BCF97",
   "#F03D3D",
   "#6B5EAE",

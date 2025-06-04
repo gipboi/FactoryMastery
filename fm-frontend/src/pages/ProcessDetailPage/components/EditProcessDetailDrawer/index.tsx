@@ -1,36 +1,37 @@
-import { useEffect, useState } from "react";
 import {
   Button,
+  chakra,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  VStack,
-  chakra,
-  HStack,
   FormLabel,
-} from "@chakra-ui/react";
-import { useStores } from "hooks/useStores";
-import get from "lodash/get";
-import { observer } from "mobx-react";
-import { FormProvider, useForm } from "react-hook-form";
-import { useParams } from "react-router";
-import { toast } from "react-toastify";
-import { IFilter } from "types/common/query";
-import { IOption } from "types/common/select";
-import { getDocumentTypes } from "API/documentType";
-import { updateProcessById, upsertProcessTags } from "API/process";
-import FormInput from "components/Chakra/FormInput";
-import FormDropdown from "components/FormDropdown";
-import FormDropdownInput from "components/FormInputs/DropdownInput";
-import { IDocumentType } from "interfaces/documentType";
-import { getValidArray } from "utils/common";
-import { getRenderProcess } from "../../utils";
-import { getDefaultValues } from "../EditProcessModal/utils";
-import { primary500 } from "themes/globalStyles";
+  HStack,
+  VStack,
+} from '@chakra-ui/react';
+import { getDocumentTypes } from 'API/documentType';
+import { updateProcessById, upsertProcessTags } from 'API/process';
+import FormInput from 'components/Chakra/FormInput';
+import FormDropdown from 'components/FormDropdown';
+import FormDropdownInput from 'components/FormInputs/DropdownInput';
+import { documentTypeIcon } from 'components/Icon';
+import { useStores } from 'hooks/useStores';
+import { IDocumentType } from 'interfaces/documentType';
+import get from 'lodash/get';
+import { observer } from 'mobx-react';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useParams } from 'react-router';
+import { toast } from 'react-toastify';
+import { primary500 } from 'themes/globalStyles';
+import { IFilter } from 'types/common/query';
+import { IOption } from 'types/common/select';
+import { getValidArray } from 'utils/common';
+import { getRenderProcess } from '../../utils';
+import { getDefaultValues } from '../EditProcessModal/utils';
 
 interface IProcessDetailDrawerProps {
   isOpen: boolean;
@@ -40,22 +41,28 @@ interface IProcessDetailDrawerProps {
 const EditProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
   const { isOpen, onClose } = props;
   const params = useParams();
-  const processId = String(get(params, "processId", ""));
-  const formId = "edit-process-form";
+  const processId = String(get(params, 'processId', ''));
+  const formId = 'edit-process-form';
 
-  const { processStore, organizationStore, tagStore, authStore } = useStores();
+  const {
+    processStore,
+    organizationStore,
+    tagStore,
+    authStore,
+    iconBuilderStore,
+  } = useStores();
   const { processDetail } = processStore;
   const { organization } = organizationStore;
   const { userDetail } = authStore;
   const organizationId: string =
-    organization?.id ?? userDetail?.organizationId ?? "";
+    organization?.id ?? userDetail?.organizationId ?? '';
   const currentTheme = organization?.theme ?? {};
 
   const defaultValues = getDefaultValues(processDetail);
   const methods = useForm({
     defaultValues,
-    mode: "onBlur",
-    reValidateMode: "onChange",
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
   });
   const { control, reset, handleSubmit } = methods;
   const [selectedTags, setSelectedTags] = useState<IOption<string>[]>(
@@ -69,16 +76,17 @@ const EditProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
   async function fetchDocumentTypeOptions(): Promise<void> {
     const filter: IFilter<IDocumentType> = {
       where: { organizationId },
-      order: ["name ASC"],
+      include: ['icon'],
+      order: ['name ASC'],
     };
     const documentTypes = await getDocumentTypes(filter).catch((e) => {
-      console.error("Error fetching document types", e);
+      console.error('Error fetching document types', e);
       return [];
     });
     const documentTypeOptions = documentTypes.map((documentType) => ({
-      label: documentType.name ?? "",
-      value: String(documentType?._id ?? documentType?.id ?? ""),
-      icon: documentType?.iconBuilder,
+      label: documentType.name ?? '',
+      value: String(documentType?._id ?? documentType?.id ?? ''),
+      icon: documentType?.icon ?? documentTypeIcon,
     }));
 
     setDocumentTypeOptions(documentTypeOptions);
@@ -87,10 +95,10 @@ const EditProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
   async function onSubmit(data: any): Promise<void> {
     try {
       let updatedProcessData = {
-        name: data?.name ?? "",
-        version: data?.version ?? "",
-        releaseNote: data?.releaseNote ?? "",
-        editorNote: data?.editorNote ?? "",
+        name: data?.name ?? '',
+        version: data?.version ?? '',
+        releaseNote: data?.releaseNote ?? '',
+        editorNote: data?.editorNote ?? '',
         documentTypeId: data?.documentTypeId?.value || undefined,
       };
 
@@ -99,14 +107,14 @@ const EditProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
         upsertProcessTags(
           processId,
           getValidArray<IOption<string>>(selectedTags).map(
-            (tag: IOption<string>) => tag?.value ?? ""
+            (tag: IOption<string>) => tag?.value ?? ''
           )
         ),
       ]);
       getRenderProcess(processId, processStore);
-      toast.success("Process updated successfully.");
+      toast.success('Process updated successfully.');
     } catch (error: any) {
-      toast.error("Process updated failed.");
+      toast.error('Process updated failed.');
     } finally {
       setIsSubmitting(false);
       onClose();
@@ -117,7 +125,7 @@ const EditProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
     if (isOpen) {
       tagStore.fetchTags({
         where: { organizationId },
-        order: ["name ASC"],
+        order: ['name ASC'],
       });
       fetchDocumentTypeOptions();
     }
@@ -133,8 +141,8 @@ const EditProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
           background="white"
           border="none"
           variant="outline"
-          _focus={{ borderColor: "unset" }}
-          _active={{ borderColor: "unset" }}
+          _focus={{ borderColor: 'unset' }}
+          _active={{ borderColor: 'unset' }}
         />
         <DrawerHeader
           borderBottom="1px solid"
@@ -162,7 +170,11 @@ const EditProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
                 <FormInput
                   name="version"
                   label="Process version"
-                  autoComplete="off"
+                  pattern={{
+                    value: /^\d+\.\d+\.\d+$/,
+                    message:
+                      'Please enter a valid version in format X.X.X (e.g. 1.0.0)',
+                  }}
                 />
                 <FormInput
                   name="releaseNote"
@@ -188,14 +200,14 @@ const EditProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
                   Document type
                 </FormLabel>
                 <FormDropdownInput
-                  controllerProps={{ name: "documentTypeId", control }}
+                  controllerProps={{ name: 'documentTypeId', control }}
                   inputProps={{
-                    name: "documentTypeId",
+                    name: 'documentTypeId',
                     // label: 'Document type',
                     options: documentTypeOptions,
                     hasIcon: true,
                     hasNoSeparator: true,
-                    placeholder: "Choose Document type",
+                    placeholder: 'Choose Document type',
                   }}
                 />
 

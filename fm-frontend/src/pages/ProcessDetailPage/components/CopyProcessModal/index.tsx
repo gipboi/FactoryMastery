@@ -10,23 +10,23 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
-} from "@chakra-ui/react";
-import FormInput from "components/Chakra/FormInput";
-import FormDropdownInput from "components/FormInputs/DropdownInput";
-import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+} from '@chakra-ui/react';
+import FormInput from 'components/Chakra/FormInput';
+import FormDropdownInput from 'components/FormInputs/DropdownInput';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 // import { getDocumentTypes } from 'API/documentType'
-import { useStores } from "hooks/useStores";
-import { IDocumentType } from "interfaces/documentType";
-import { observer } from "mobx-react";
-import { IFilter, IOptionWithIcon } from "types/common";
+import { useStores } from 'hooks/useStores';
+import { IDocumentType } from 'interfaces/documentType';
+import { observer } from 'mobx-react';
+import { IFilter, IOptionWithIcon } from 'types/common';
 // import { duplicateProcess } from 'API/process'
-import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
-import { getDocumentTypes } from "API/documentType";
-import { IProcess } from "interfaces/process";
-import { duplicateProcess } from "API/process";
-import routes from "routes";
+import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
+import { getDocumentTypes } from 'API/documentType';
+import { IProcess } from 'interfaces/process';
+import { duplicateProcess } from 'API/process';
+import routes from 'routes';
 
 interface ICopyProcessModalProps {
   isOpen: boolean;
@@ -54,17 +54,15 @@ const CopyProcessModal = ({
   const { authStore, processStore } = useStores();
   const { selectedProcess, process } = processStore;
   const sourceProcess = selectedProcess?.id ? selectedProcess : process;
-  const name = sourceProcess?.name ?? "Copy of Processes";
-  const documentType = sourceProcess?.documentType ?? "";
+  const name = sourceProcess?.name ?? 'Copy of Processes';
+  const documentType = sourceProcess?.documentType as IDocumentType;
+  
   const methods = useForm<IProcessDuplicateForm>({
     defaultValues: {
       name: `Copy of ${name}`,
       documentType: {
-        label: typeof documentType === "string" ? "" : documentType?.name ?? "",
-        value:
-          documentType && typeof documentType !== "string"
-            ? documentType.id
-            : "",
+        label: documentType?.name ?? '',
+        value: documentType?.id || documentType?._id || '',
       },
       copySharing: true,
       copyTags: true,
@@ -80,16 +78,18 @@ const CopyProcessModal = ({
   const { handleSubmit, control } = methods;
   async function fetchDocumentTypeOptions(): Promise<void> {
     const filter: IFilter<IDocumentType> = {
-      where: { organizationId: String(authStore?.userDetail?.organizationId ?? '') },
-      order: ["name ASC"],
+      where: {
+        organizationId: String(authStore?.userDetail?.organizationId ?? ''),
+      },
+      order: ['name ASC'],
     };
     const documentTypes = await getDocumentTypes(filter).catch((e) => {
-      console.error("Error fetching document types", e);
+      console.error('Error fetching document types', e);
       return [];
     });
     const documentTypeOptions = documentTypes.map((documentType) => ({
-      label: documentType.name ?? "",
-      value: documentType?.id ?? "",
+      label: documentType.name ?? '',
+      value: documentType?.id ?? documentType?._id ?? '',
       // icon: documentType?.iconBuilder,
     }));
     setDocumentTypeOptions(documentTypeOptions);
@@ -107,12 +107,12 @@ const CopyProcessModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      if (selectedProcess?.id || process?.id) {
+      if (selectedProcess?.id || selectedProcess?._id || process?.id || process?._id) {
         methods.reset({
           name: `Copy of ${name}`,
           documentType: {
             label: sourceProcess?.documentType?.name,
-            value: sourceProcess?.documentType?.id,
+            value: sourceProcess?.documentType?.id ?? sourceProcess?.documentType?._id,
           },
           copySharing: true,
           copyTags: true,
@@ -133,13 +133,13 @@ const CopyProcessModal = ({
         name: data?.name,
       });
       if (newProcess?.id && processId !== newProcess?.id) {
-        toast.success("Process duplicated successfully");
+        toast.success('Process duplicated successfully');
         navigate(routes.processes.processId.value(String(newProcess?.id)));
       } else {
-        throw new Error("Error duplicating process");
+        throw new Error('Error duplicating process');
       }
     } catch (error) {
-      toast.error("Error duplicating process");
+      toast.error('Error duplicating process');
     }
     setIsLoading(false);
     onClose();
@@ -168,7 +168,7 @@ const CopyProcessModal = ({
                   label="Process name"
                   placeholder="Enter process name"
                   isRequired={true}
-                  rules={{ required: "Process name is required" }}
+                  rules={{ required: 'Process name is required' }}
                 />
                 <Stack spacing={0}>
                   <FormLabel
@@ -180,13 +180,13 @@ const CopyProcessModal = ({
                     Document Type
                   </FormLabel>
                   <FormDropdownInput
-                    controllerProps={{ name: "documentType", control }}
+                    controllerProps={{ name: 'documentType', control }}
                     inputProps={{
-                      name: "documentType",
+                      name: 'documentType',
                       options: documentTypeOptions,
                       hasIcon: true,
                       hasNoSeparator: true,
-                      placeholder: "Choose Document type",
+                      placeholder: 'Choose Document type',
                     }}
                   />
                 </Stack>
@@ -203,7 +203,7 @@ const CopyProcessModal = ({
                   <FormInput name="copySharing">
                     <Checkbox
                       color="gray.700"
-                      {...methods.register("copySharing")}
+                      {...methods.register('copySharing')}
                     >
                       Copy all share settings
                     </Checkbox>
@@ -211,7 +211,7 @@ const CopyProcessModal = ({
                   <FormInput name="copyTags">
                     <Checkbox
                       color="gray.700"
-                      {...methods.register("copyTags")}
+                      {...methods.register('copyTags')}
                     >
                       Copy all existing tags
                     </Checkbox>
@@ -219,7 +219,7 @@ const CopyProcessModal = ({
                   <FormInput name="copyNote">
                     <Checkbox
                       color="gray.700"
-                      {...methods.register("copyNote")}
+                      {...methods.register('copyNote')}
                     >
                       Copy all notes
                     </Checkbox>

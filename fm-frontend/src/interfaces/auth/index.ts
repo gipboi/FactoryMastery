@@ -13,6 +13,7 @@ export interface ILoginResponse {
 }
 
 export interface AuthUserProfile {
+  _id?: string;
   id?: string;
   username?: string;
   email?: string;

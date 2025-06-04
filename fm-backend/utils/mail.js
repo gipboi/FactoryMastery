@@ -1,9 +1,10 @@
-import { CLIENT_BASE_URL } from "../config";
+import { CLIENT_BASE_URL } from '../config';
+import { AuthRoleEnum } from '../constants/enums/auth-role.enum';
 
 export function getOrgDomain(subdomain) {
   const baseUrl = new URL(CLIENT_BASE_URL);
   baseUrl.hostname = `${subdomain}.${baseUrl.hostname}`;
-  return baseUrl.toString()?.replace(/\/$/, "");
+  return baseUrl.toString()?.replace(/\/$/, '');
 }
 
 export function getResetPasswordByAdminTemplate({ name, password, subdomain }) {
@@ -40,17 +41,29 @@ export function getResetPasswordGeneralTemplate({
   `;
 }
 
-export function getInvitationTemplate({ name, password, orgName, subdomain }) {
+export function getInvitationTemplate({
+  name,
+  password,
+  orgName,
+  subdomain,
+  authRole,
+}) {
   const orgLink = getOrgDomain(subdomain);
+  const isSuperAdmin = authRole === AuthRoleEnum.SUPER_ADMIN;
 
   return `
     <div>
       <p>Hi ${name},</p>
       <p>You have been invited to join ${orgName}</p>
       <p>Here is your password:</p>
-      <p><strong>${password}</strong></p>
+      ${password ? `<p><strong>${password}</strong></p>`: ''}
       <p>Please click the link below to access the platform and set up your password:</p>
       <a href="${orgLink}/login">Access Platform</a>
+      ${
+        isSuperAdmin
+          ? `<p><strong>Confidential: Store this SuperAdmin password securely. It enables full administrative access.</strong></p> <p>Password: <strong>FactoryMastery@123</strong></p>`
+          : ''
+      }
     </div>
   `;
 }

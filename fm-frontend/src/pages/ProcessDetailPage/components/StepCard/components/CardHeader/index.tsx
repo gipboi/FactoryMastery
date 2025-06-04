@@ -8,36 +8,38 @@ import {
   Tooltip,
   useDisclosure,
   VStack,
-} from "@chakra-ui/react";
-import { uploadFile } from "API/cms";
-import { createMedia, updateMediaById } from "API/media";
-import { deleteStepById, updateStepById } from "API/step";
-import cx from "classnames";
-import DeleteDialog from "components/DeleteDialog";
-import { stepIcon } from "components/Icon";
-import IconBuilder from "components/IconBuilder";
-import InlineTextField from "components/InlineTextField";
+} from '@chakra-ui/react';
+import { uploadFile } from 'API/cms';
+import { createMedia, updateMediaById } from 'API/media';
+import { deleteStepById, updateStepById } from 'API/step';
+import cx from 'classnames';
+import DeleteDialog from 'components/DeleteDialog';
+import InlineTextField from 'components/InlineTextField';
 import MediaManager, {
   MediaFileType,
   MEDIATYPES,
-} from "components/MediaManager";
-import SvgIcon from "components/SvgIcon";
-import { EBreakPoint } from "constants/theme";
-import { AuthRoleNameEnum } from "constants/user";
-import useBreakPoint from "hooks/useBreakPoint";
-import { useStores } from "hooks/useStores";
-import { IMedia } from "interfaces/media";
-import { IStepWithRelations } from "interfaces/step";
-import { ITheme } from "interfaces/theme";
-import { observer } from "mobx-react";
-import { getRenderProcess } from "pages/ProcessDetailPage/utils/process";
-import React, { MouseEventHandler, useMemo, useState } from "react";
-import Highlighter from "react-highlight-words";
-import { Col } from "reactstrap";
-import colors from "themes/colors.theme";
-import { UpdateBody } from "types/common";
-import styles from "./cardHeader.module.scss";
-import ModalAddStep from "./components/ModalAddStep";
+} from 'components/MediaManager';
+import SvgIcon from 'components/SvgIcon';
+import { EBreakPoint } from 'constants/theme';
+import { AuthRoleNameEnum } from 'constants/user';
+import useBreakPoint from 'hooks/useBreakPoint';
+import { useStores } from 'hooks/useStores';
+import { IMedia } from 'interfaces/media';
+import { IStepWithRelations } from 'interfaces/step';
+import { ITheme } from 'interfaces/theme';
+import { observer } from 'mobx-react';
+import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder';
+import SelectIconModal from 'pages/IconBuilderPage/components/SelectIconModal';
+import { getRenderProcess } from 'pages/ProcessDetailPage/utils/process';
+import React, { MouseEventHandler, useEffect, useMemo, useState } from 'react';
+import Highlighter from 'react-highlight-words';
+import { Col } from 'reactstrap';
+import colors from 'themes/colors.theme';
+import { UpdateBody } from 'types/common';
+import styles from './cardHeader.module.scss';
+import ModalAddStep from './components/ModalAddStep';
+import { stepIcon } from 'components/Icon';
+import { EIconType } from 'interfaces/iconBuilder';
 
 interface ICardHeaderProps {
   name?: string;
@@ -80,7 +82,7 @@ const CardHeader = ({
   const {
     processStore,
     organizationStore,
-    // iconBuilderStore,
+    iconBuilderStore,
     authStore,
     commonLibraryStore,
   } = useStores();
@@ -114,10 +116,10 @@ const CardHeader = ({
   }
 
   async function handleDeleteStepConfirmed(): Promise<void> {
-    await deleteStepById(deleteStepId ?? "");
+    await deleteStepById(deleteStepId ?? '');
     if (processStore.process) {
-      setDeleteStepId("");
-      getRenderProcess(processStore.process.id ?? "", processStore);
+      setDeleteStepId('');
+      getRenderProcess(processStore.process.id ?? '', processStore);
       handleShowAutosave();
     }
   }
@@ -126,14 +128,14 @@ const CardHeader = ({
     fileToUpload: File,
     setUploadProgress: (percent: number) => any
   ) {
-    const category: any = fileToUpload.type.split("/")[0];
+    const category: any = fileToUpload.type.split('/')[0];
     const fileType = [MediaFileType.IMAGE, MediaFileType.VIDEO].includes(
       category
     )
       ? category
       : MediaFileType.FILE;
     const url = await uploadFile(
-      organizationStore.organization?.id ?? "",
+      organizationStore.organization?.id ?? '',
       fileType,
       fileToUpload,
       (data: any) => {
@@ -147,7 +149,7 @@ const CardHeader = ({
         mediaType: MEDIATYPES[fileType].mediaType,
         stepId: step.id,
         url,
-        [MEDIATYPES[fileType].column]: url.split("/").pop(),
+        [MEDIATYPES[fileType].column]: url.split('/').pop(),
         originalFile: fileToUpload.name,
       };
 
@@ -159,18 +161,18 @@ const CardHeader = ({
 
   async function handleChangeCaption(mediaId: string, caption: string) {
     await updateMediaById(mediaId, { name: caption });
-    await getRenderProcess(processStore.process.id ?? "", processStore);
+    await getRenderProcess(processStore.process.id ?? '', processStore);
   }
 
   const contents: string = useMemo(() => {
     return Array.isArray(step?.blocks)
-      ? step.blocks.map((block) => block?.content ?? "").join(" ")
-      : "";
+      ? step.blocks.map((block) => block?.content ?? '').join(' ')
+      : '';
   }, [step.blocks]);
 
   const searchIndex: number = String(searchText)
     .toLowerCase()
-    .split(" ")
+    .split(' ')
     .reduce((result, currentValue) => {
       const index: number = contents.toLowerCase().indexOf(currentValue);
       if (index > -1 && (index < result || result < 0)) {
@@ -197,38 +199,41 @@ const CardHeader = ({
       return result;
     }, searchIndex);
     const sliceStart: number =
-      contents.slice(maxStart, searchIndex).indexOf(" ") + maxStart + 1;
+      contents.slice(maxStart, searchIndex).indexOf(' ') + maxStart + 1;
     const sliceEnd: number =
       contents
         .slice(sliceStart + Math.max(60, contents.length - sliceStart))
-        .indexOf(" ") +
+        .indexOf(' ') +
       sliceStart +
       60;
 
-    return contents.slice(sliceStart, sliceEnd).replace(/<[^>]*>?/gm, " ");
+    return contents.slice(sliceStart, sliceEnd).replace(/<[^>]*>?/gm, ' ');
   }, [contents, searchIndex, searchText]);
 
   async function onSelect(iconId: string): Promise<void> {
-    // await updateStepById(step.id, { iconId });
-    getRenderProcess(processStore.process.id ?? "", processStore);
+    if (step?.id) {
+      // Check if step.id is defined
+      await updateStepById(step.id, { iconId });
+      getRenderProcess(processStore.process.id ?? '', processStore);
+    }
     onClose();
   }
 
   async function handleEditStepName(newTitle: string) {
     if (newTitle) {
-      await updateStepById(step?.id ?? "", {
+      await updateStepById(step?.id ?? '', {
         name: newTitle,
       }).then(() =>
-        getRenderProcess(processStore.process.id ?? "", processStore)
+        getRenderProcess(processStore.process.id ?? '', processStore)
       );
     }
   }
 
-  // useEffect(() => {
-  //   if (isEditing) {
-  //     iconBuilderStore.fetchStepIconList();
-  //   }
-  // }, [isEditing]);
+  useEffect(() => {
+    if (isEditing) {
+      iconBuilderStore.fetchStepIconList();
+    }
+  }, [isEditing]);
 
   return (
     <Col
@@ -252,11 +257,16 @@ const CardHeader = ({
         <HStack width="full">
           <div className={styles.layout}>
             <div className={styles.stepIcon}>
-              {step.iconId ? (
-                <IconBuilder icon={step.icon} size={32} isActive />
-              ) : (
-                <IconBuilder icon={stepIcon} size={32} isActive />
-              )}
+              <IconBuilder
+                icon={
+                  step?.icon ??
+                  iconBuilderStore.defaultIcons?.find(
+                    (icon) => icon.type === EIconType.STEP
+                  )
+                }
+                size={32}
+                isActive
+              />
               {isEditing && isManageMode && (
                 <SvgIcon
                   iconName="edit-hover-button"
@@ -309,8 +319,8 @@ const CardHeader = ({
                     class={cx(styles.title)}
                     highlightClassName={styles.highlight}
                     searchWords={[
-                      ...String(searchText).toUpperCase().split(" "),
-                      ...String(searchText).toLowerCase().split(" "),
+                      ...String(searchText).toUpperCase().split(' '),
+                      ...String(searchText).toLowerCase().split(' '),
                     ]}
                     autoEscape
                     textToHighlight={textToHighlight}
@@ -326,7 +336,7 @@ const CardHeader = ({
                 <>
                   <Button
                     gap={{ base: 0, md: 2 }}
-                    width={{ base: 10, md: "initial" }}
+                    width={{ base: 10, md: 'initial' }}
                     paddingX={{ base: 0, md: 4 }}
                     variant="outline"
                     background="white"
@@ -334,12 +344,12 @@ const CardHeader = ({
                     borderColor="red"
                     color="red"
                     fontWeight={500}
-                    fontSize={{ base: 0, md: "16px" }}
+                    fontSize={{ base: 0, md: '16px' }}
                     lineHeight="24px"
                     marginTop="8px"
                     className={styles.deleteButton}
-                    _hover={{ background: "red.500", color: "white" }}
-                    _active={{ background: "red.500", color: "white" }}
+                    _hover={{ background: 'red.500', color: 'white' }}
+                    _active={{ background: 'red.500', color: 'white' }}
                     onClick={handleDeleteStep}
                     disabled={lastStep}
                   >
@@ -349,7 +359,7 @@ const CardHeader = ({
 
                   <Button
                     gap={{ base: 0, md: 2 }}
-                    width={{ base: 10, md: "initial" }}
+                    width={{ base: 10, md: 'initial' }}
                     paddingX={{ base: 0, md: 4 }}
                     variant="outline"
                     borderRadius="6px"
@@ -357,19 +367,19 @@ const CardHeader = ({
                     fontWeight={500}
                     margin="8px"
                     marginRight="0px"
-                    fontSize={{ base: 0, md: "16px" }}
+                    fontSize={{ base: 0, md: '16px' }}
                     lineHeight="24px"
-                    background={currentTheme?.primaryColor ?? "primary.500"}
+                    background={currentTheme?.primaryColor ?? 'primary.500'}
                     _hover={{
-                      background: currentTheme?.primaryColor ?? "primary.700",
+                      background: currentTheme?.primaryColor ?? 'primary.700',
                       opacity: currentTheme?.primaryColor ? 0.8 : 1,
                     }}
                     _active={{
-                      background: currentTheme?.primaryColor ?? "primary.700",
+                      background: currentTheme?.primaryColor ?? 'primary.700',
                       opacity: currentTheme?.primaryColor ? 0.8 : 1,
                     }}
                     _focus={{
-                      background: currentTheme?.primaryColor ?? "primary.700",
+                      background: currentTheme?.primaryColor ?? 'primary.700',
                       opacity: currentTheme?.primaryColor ? 0.8 : 1,
                     }}
                     onClick={(e) => {
@@ -585,12 +595,12 @@ const CardHeader = ({
         handleShowAutosave={() => handleShowAutosave()}
       />
       <DeleteDialog
-        title={step.commonLibrary ? "Delete step?" : "Remove step?"}
+        title={step.commonLibrary ? 'Delete step?' : 'Remove step?'}
         isOpen={!!deleteStepId}
         message="Are you sure you want to REMOVE this step?"
-        toggle={() => setDeleteStepId("")}
+        toggle={() => setDeleteStepId('')}
         onDelete={handleDeleteStepConfirmed}
-        onCancel={() => setDeleteStepId("")}
+        onCancel={() => setDeleteStepId('')}
       />
       <ModalAddStep
         isOpen={showModalAddStep}
@@ -598,7 +608,7 @@ const CardHeader = ({
         procedureId={procedureId}
         handleShowAutosave={() => handleShowAutosave()}
       />
-      {/* <SelectIconModal isOpen={isOpen} onClose={onClose} onSelect={onSelect} /> */}
+      <SelectIconModal isOpen={isOpen} onClose={onClose} onSelect={onSelect} />
     </Col>
   );
 };

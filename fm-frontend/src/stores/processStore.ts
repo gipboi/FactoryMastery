@@ -1,17 +1,22 @@
-import { aggregateProcessesSearch, getAllProcesses, getDetailProcessById } from "API/process";
-import { updateStepBatch } from "API/step";
-import { ProcessList } from "constants/process";
+import {
+  aggregateProcessesSearch,
+  getAllProcesses,
+  getDetailProcessById,
+} from 'API/process';
+import { updateStepBatch } from 'API/step';
+import { ProcessList } from 'constants/process';
 import {
   IProcess,
   IProcessesFilterForm,
   IProcessWithRelations,
-} from "interfaces/process";
-import { IStep, IStepWithRelations } from "interfaces/step";
-import trim from "lodash/trim";
-import { makeAutoObservable } from "mobx";
-import { RootStore } from "stores";
-import { AggregationPipeline } from "types/common/aggregation";
-import { IFilter } from "types/common/query";
+} from 'interfaces/process';
+import { IStep, IStepWithRelations } from 'interfaces/step';
+import { debounce, escapeRegExp, set } from 'lodash';
+import trim from 'lodash/trim';
+import { makeAutoObservable } from 'mobx';
+import { RootStore } from 'stores';
+import { AggregationPipeline } from 'types/common/aggregation';
+import { IFilter } from 'types/common/query';
 
 class ProcessStore {
   rootStore: RootStore;
@@ -27,10 +32,10 @@ class ProcessStore {
     documentTypes: [],
     creators: [],
     groups: [],
-    sort: "",
+    sort: '',
   };
   isFetchingList: boolean = false;
-  selectedProcessId: string = "";
+  selectedProcessId: string = '';
   processSteps: IStep[] = [];
   newProcessGroupIds: string[] = [];
   expandingSteps: string[] = [];
@@ -40,6 +45,7 @@ class ProcessStore {
   timeFetchingList: number = new Date().getTime();
   numberOfProcesses: number = 0;
   canUserEditInProcessDetail = false;
+  isSearching: boolean | null = null;
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this);
@@ -83,7 +89,10 @@ class ProcessStore {
     processId?: string,
     filter: IFilter<IProcess> = {}
   ): Promise<void> {
-    const process = await this.getProcessDetailById(processId ?? "");
+    if (this.rootStore.iconBuilderStore.defaultIcons.length === 0) {
+      this.rootStore.iconBuilderStore.fetchCMSIconList();
+    }
+    const process = await this.getProcessDetailById(processId ?? '');
     this.process = process;
     // const notificationsOnStepUpdate = await getNotifications({
     //   where: {
@@ -96,7 +105,7 @@ class ProcessStore {
     //     (notification) => notification.stepId
     //   ) ?? [];
     this.selectedProcess = process;
-    this.selectedProcessId = processId ?? "";
+    this.selectedProcessId = processId ?? '';
   }
 
   public async setProcessStepPosition(
@@ -127,23 +136,26 @@ class ProcessStore {
   public async getAllProcessList(
     organizationId: string,
     offset: number,
-    keyword: string = ""
+    keyword: string = ''
   ): Promise<void> {
     const filter: IFilter<IProcess> = {
       where: {
         organizationId,
-        name: { $regex: trim(keyword), $options: "i" },
-        archivedAt: { $exists: false } as any,
+        name: { $regex: trim(keyword), $options: 'i' },
+        $or: [
+          { archivedAt: { $exists: false } },
+          { archivedAt: { $eq: null } } as any,
+        ],
       },
       offset: offset,
       limit: ProcessList.LIMIT,
-      order: ["updatedAt DESC"],
+      order: ['updatedAt DESC'],
       include: [
         {
-          relation: "documentType",
-          // scope: { include: [{ relation: "iconBuilder" }] },
+          relation: 'documentType',
+          // scope: { include: [{ relation: "icon" }] },
         },
-        { relation: "steps" },
+        { relation: 'steps' },
       ],
     };
 
@@ -171,6 +183,75 @@ class ProcessStore {
       ?.paginatedResults?.[0];
     this.processDetail = processDetail;
     return processDetail;
+  }
+
+  public async search(
+    keyword: string,
+    offset: number,
+    organizationId?: string,
+    documentTypeIds?: string[],
+    tagIds?: string[],
+    creatorIds?: string[]
+  ): Promise<void> {
+    const searchKeyword: string = escapeRegExp(trim(keyword));
+    try {
+      const filter = {
+        offset,
+        limit: ProcessList.LIMIT,
+        where: {
+          isPublished: true,
+          organizationId: organizationId ?? '',
+          name: { $regex: trim(searchKeyword), $options: 'i' },
+          $or: [
+            { archivedAt: { $exists: false } },
+            { archivedAt: { $eq: null } },
+          ],
+        },
+        order: ['updatedAt DESC'],
+        include: [
+          {
+            relation: 'documentType',
+            scope: { include: [{ relation: 'icon' }] },
+          },
+          { relation: 'steps' },
+          { relation: 'tags' },
+          { relation: 'creator' },
+        ],
+      };
+
+      if (documentTypeIds?.length) {
+        set(filter, 'where.documentTypeId', { $in: documentTypeIds });
+      }
+
+      if (creatorIds?.length) {
+        set(filter, 'where.createdBy', { $in: creatorIds });
+      }
+
+      const responseData = await getAllProcesses(filter as IFilter<IProcess>);
+      if (tagIds?.length) {
+        const filteredProcesses = responseData.filter((process) =>
+          process.tags?.some((tag: any) => tagIds.includes(tag?.tagId ?? ''))
+        );
+        this.processList = filteredProcesses;
+        return;
+      }
+
+      this.processList = responseData;
+    } catch (error) {
+      console.log('search Log ~ error', error);
+    }
+    this.isSearching = false;
+  }
+
+  debouncedSearch = debounce(this.search, 700);
+
+  public changeSearchText(
+    searchText: string,
+    offset?: number,
+    organizationId?: string
+  ): void {
+    this.isSearching = true;
+    this.debouncedSearch(searchText, offset ?? 0, organizationId);
   }
 }
 

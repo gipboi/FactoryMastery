@@ -1,7 +1,7 @@
-import { isEmpty } from "lodash";
-import trim from "lodash/trim";
-import { AggregationPipeline } from "types/common/aggregation";
-import { generateMatchObjectIdsQuery, getValidArray } from "utils/common";
+import { isEmpty } from 'lodash';
+import trim from 'lodash/trim';
+import { AggregationPipeline } from 'types/common/aggregation';
+import { generateMatchObjectIdsQuery, getValidArray } from 'utils/common';
 
 export function getGroupsPipeline(
   organizationId: string,
@@ -13,13 +13,13 @@ export function getGroupsPipeline(
   userIds?: string[],
   collectionIds?: string[]
 ): AggregationPipeline {
-  const sort = sortBy ? sortBy : "name";
+  const sort = sortBy ? sortBy : 'name';
   const pipeline: AggregationPipeline = [
     {
       $match: {
         $expr: {
           $eq: [
-            "$organizationId",
+            '$organizationId',
             {
               $toObjectId: organizationId,
             },
@@ -28,45 +28,54 @@ export function getGroupsPipeline(
         isDeleted: { $ne: true },
         name: {
           $regex: `.*${trim(keyword)}.*`,
-          $options: "i",
+          $options: 'i',
         },
       },
     },
     {
       $lookup: {
-        from: "groupmembers",
-        localField: "_id",
-        foreignField: "groupId",
-        as: "members",
+        from: 'groupmembers',
+        localField: '_id',
+        foreignField: 'groupId',
+        as: 'members',
       },
     },
     {
       $lookup: {
-        from: "collectiongroups",
-        let: { groupId: "$_id" },
+        from: 'collectiongroups',
+        localField: '_id',
+        foreignField: 'groupId',
+        let: { groupId: '$_id' },
         pipeline: [
           {
             $match: {
               $expr: {
-                $eq: ["$groupId", "$$groupId"],
+                $eq: ['$groupId', '$$groupId'],
               },
             },
           },
           {
             $lookup: {
-              from: "collections",
-              let: { collectionId: "$collectionId" },
+              from: 'collections',
+              let: { collectionId: '$collectionId' },
               pipeline: [
                 {
                   $match: {
-                    organizationId: "$organizationIdObj",
                     $expr: {
                       $and: [
-                        { $eq: ["$_id", "$$collectionId"] },
+                        {
+                          $eq: [
+                            '$organizationId',
+                            {
+                              $toObjectId: organizationId,
+                            },
+                          ],
+                        },
+                        { $eq: ['$_id', '$$collectionId'] },
                         {
                           $or: [
-                            { $eq: ["$archivedAt", null] },
-                            { $not: ["$archivedAt"] },
+                            { $eq: ['$archivedAt', null] },
+                            { $not: ['$archivedAt'] },
                           ],
                         },
                       ],
@@ -74,7 +83,7 @@ export function getGroupsPipeline(
                   },
                 },
               ],
-              as: "collection",
+              as: 'collection',
             },
           },
           {
@@ -83,7 +92,7 @@ export function getGroupsPipeline(
             },
           },
         ],
-        as: "collectionGroups",
+        as: 'collectionGroups',
       },
     },
   ];
@@ -91,8 +100,8 @@ export function getGroupsPipeline(
   if (!isEmpty(collectionIds)) {
     pipeline.push(
       generateMatchObjectIdsQuery(
-        "collectionGroups",
-        "collectionId",
+        'collectionGroups',
+        'collectionId',
         getValidArray(collectionIds)
       )
     );
@@ -100,7 +109,7 @@ export function getGroupsPipeline(
 
   if (!isEmpty(userIds)) {
     pipeline.push(
-      generateMatchObjectIdsQuery("members", "userId", getValidArray(userIds))
+      generateMatchObjectIdsQuery('members', 'userId', getValidArray(userIds))
     );
   }
 
@@ -108,24 +117,24 @@ export function getGroupsPipeline(
     const dataPipeline: AggregationPipeline = [
       {
         $lookup: {
-          from: "groupmembers",
-          localField: "_id",
-          foreignField: "groupId",
-          as: "members",
+          from: 'groupmembers',
+          localField: '_id',
+          foreignField: 'groupId',
+          as: 'members',
         },
       },
       {
         $lookup: {
-          from: "users",
-          localField: "members.userId",
-          foreignField: "_id",
-          as: "users",
+          from: 'users',
+          localField: 'members.userId',
+          foreignField: '_id',
+          as: 'users',
           pipeline: [
             {
               $match: {
                 $expr: {
                   $eq: [
-                    "$organizationId",
+                    '$organizationId',
                     {
                       $toObjectId: organizationId,
                     },
@@ -151,7 +160,7 @@ export function getGroupsPipeline(
       {
         $project: {
           _id: false,
-          id: "$_id",
+          id: '$_id',
           name: true,
           organizationId: true,
           createdAt: true,
@@ -161,10 +170,10 @@ export function getGroupsPipeline(
           archived: true,
           isDeleted: true,
           numberOfMembers: {
-            $size: "$users",
+            $size: '$users',
           },
           numberOfCollections: {
-            $size: "$collectionGroups",
+            $size: '$collectionGroups',
           },
         },
       },
@@ -173,7 +182,7 @@ export function getGroupsPipeline(
   } else {
     const countPipeline: AggregationPipeline = [
       {
-        $count: "totalResults",
+        $count: 'totalResults',
       },
     ];
     pipeline.push(...countPipeline);

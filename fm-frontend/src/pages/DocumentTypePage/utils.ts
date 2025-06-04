@@ -15,6 +15,7 @@ export function getHeaderList(): ITableHeader[] {
     {
       Header: "",
       accessor: ETableHeader.ICON,
+      width: 4
     },
     {
       Header: "Type Name",
@@ -79,27 +80,33 @@ export function getDocumentTypeByAggregation(
     },
     {
       $lookup: {
-        from: "iconBuilders",
-        let: { iconBuilderId: "$iconBuilderId" },
+        from: "icons",
+        let: { iconId: "$iconId" },
         pipeline: [
           {
             $match: {
               $expr: {
                 $and: [
-                  { $eq: ["$$iconBuilderId", "$_id"] },
+                  { $eq: ["$$iconId", "$_id"] },
                   { $ne: ["$isDeleted", true] },
                 ],
               },
             },
           },
         ],
-        as: "iconBuilder",
+        as: "icon",
+      },
+    },
+    {
+      $unwind: {
+        path: "$icon",
+        preserveNullAndEmptyArrays: true,
       },
     },
     {
       $addFields: {
         id: "$_id",
-      }
+      },
     },
     {
       $sort: sort,

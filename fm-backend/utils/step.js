@@ -81,6 +81,20 @@ export const stepIncludeFullDataPipeline = [
           },
         },
         {
+          $lookup: {
+            from: "icons",
+            localField: "iconId",
+            foreignField: "_id",
+            as: "icon",
+          },
+        },
+        {
+          $unwind: {
+            path: "$icon",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
           $sort: {
             position: 1,
           },
@@ -95,6 +109,20 @@ export const stepIncludeFullDataPipeline = [
       localField: "_id",
       foreignField: "stepId",
       as: "media",
+    },
+  },
+  {
+    $lookup: {
+      from: "icons",
+      localField: "iconId",
+      foreignField: "_id",
+      as: "icon",
+    },
+  },
+  {
+    $unwind: {
+      path: "$icon",
+      preserveNullAndEmptyArrays: true,
     },
   },
   {

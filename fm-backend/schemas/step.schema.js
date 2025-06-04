@@ -9,6 +9,7 @@ const stepSchema = new Schema(
     archived: { type: Boolean, default: false },
     layoutId: { type: Schema.Types.ObjectId },
     processId: { type: Schema.Types.ObjectId, require: true },
+    iconId: { type: Schema.Types.ObjectId },
     createdAt: { type: Date },
     updatedAt: { type: Date },
   },
@@ -21,6 +22,7 @@ stepSchema.virtual("process", {
   ref: "Process", //The Model to use
   localField: "processId", //Find in Model, where localField
   foreignField: "_id", // is equal to foreignField
+  justOne: true,
 });
 
 stepSchema.virtual("blocks", {
@@ -29,6 +31,20 @@ stepSchema.virtual("blocks", {
   foreignField: "stepId",
   strictPopulate: false,
   sort: { position: 1 },
+});
+
+stepSchema.virtual("icon", {
+  ref: "Icon", //The Model to use
+  localField: "iconId", //Find in Model, where localField
+  foreignField: "_id", // is equal to foreignField
+  justOne: true,
+});
+
+stepSchema.virtual("media", {
+  ref: "Media", //The Model to use
+  localField: "stepId", //Find in Model, where localField
+  foreignField: "_id", // is equal to foreignField
+  strictPopulate: false,
 });
 
 // Set Object and Json property to true. Default is set to false

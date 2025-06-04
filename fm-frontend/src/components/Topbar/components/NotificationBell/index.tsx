@@ -1,33 +1,32 @@
-import { useEffect } from "react";
 import {
-  MenuList,
-  MenuItem,
+  HStack,
+  IconButton,
   Menu,
   MenuButton,
-  IconButton,
-  HStack,
+  MenuItem,
+  MenuList,
   chakra,
-} from "@chakra-ui/react";
-import cx from "classnames";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import useBreakPoint from "hooks/useBreakPoint";
-import { useStores } from "hooks/useStores";
-import { observer } from "mobx-react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import colors from "themes/colors.theme";
-import { IFilter } from "types/common";
-import { seenNotification } from "API/notification";
-import SvgIcon from "components/SvgIcon";
-import { EBreakPoint } from "constants/theme";
-import { INotificationWithRelations } from "interfaces/notification";
-import routes from "routes";
-import CommentNotification from "./components/CommentNofication";
-import DeleteCommonStepNotification from "./components/DeleteCommonStepNotification";
-import UpdateCommonStepNotification from "./components/UpdateCommonStepNotification";
-import styles from "./styles.module.scss";
-import { NotificationTypeEnum } from "config/constant/enums/notification";
+} from '@chakra-ui/react';
+import { seenNotification } from 'API/notification';
+import cx from 'classnames';
+import SvgIcon from 'components/SvgIcon';
+import { NotificationTypeEnum } from 'config/constant/enums/notification';
+import { EBreakPoint } from 'constants/theme';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import useBreakPoint from 'hooks/useBreakPoint';
+import { useStores } from 'hooks/useStores';
+import { observer } from 'mobx-react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import routes from 'routes';
+import colors from 'themes/colors.theme';
+import CommentNotification from './components/CommentNofication';
+import DeleteCommonStepNotification from './components/DeleteCommonStepNotification';
+import UpdateCommonStepNotification from './components/UpdateCommonStepNotification';
+import styles from './styles.module.scss';
+import CommonNotification from './components/CommonNotification';
 dayjs.extend(relativeTime);
 
 function NotificationBell() {
@@ -51,16 +50,18 @@ function NotificationBell() {
           { type: NotificationTypeEnum.DELETED_STEP_NOTIFICATION },
           { type: NotificationTypeEnum.UPDATED_PROCESS_NOTIFICATION },
           { type: NotificationTypeEnum.DELETED_PROCESS_NOTIFICATION },
+          { type: NotificationTypeEnum.ARCHIVED_PROCESS_NOTIFICATION },
+          { type: NotificationTypeEnum.UPDATED_THREAD_STATUS },
         ],
       },
       include: [
-        { relation: "process" },
-        { relation: "author" },
-        { relation: "step" },
+        { relation: 'process' },
+        { relation: 'author' },
+        { relation: 'step' },
       ],
       limit: pageSize,
       skip: page * pageSize,
-      order: "createdAt DESC",
+      order: 'createdAt DESC',
     });
   }
 
@@ -85,8 +86,8 @@ function NotificationBell() {
               onClick={fetchData}
               aria-label="Notifications"
               background="transparent"
-              _hover={{ background: "transparent" }}
-              _active={{ background: "transparent" }}
+              _hover={{ background: 'transparent' }}
+              _active={{ background: 'transparent' }}
               border="none"
               icon={
                 <SvgIcon
@@ -115,7 +116,7 @@ function NotificationBell() {
                     className={styles.mark}
                     color="var(--current-primary-color)"
                     _hover={{
-                      color: "var(--current-primary-color)" ?? "primary.700",
+                      color: 'var(--current-primary-color)',
                       opacity: 0.8,
                     }}
                   >
@@ -124,13 +125,13 @@ function NotificationBell() {
                   <chakra.div
                     onClick={async () => {
                       await notificationStore.seenAllNotifications();
-                      toast.success("Marked all as read");
+                      toast.success('Marked all as read');
                       fetchData();
                     }}
                     className={styles.mark}
                     color="var(--current-primary-color)"
                     _hover={{
-                      color: "var(--current-primary-color)" ?? "primary.700",
+                      color: 'var(--current-primary-color)',
                       opacity: 0.8,
                     }}
                   >
@@ -150,9 +151,11 @@ function NotificationBell() {
                     <HStack
                       className={cx(styles.notificationItem)}
                       key={notification.id}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        seenNotification(notification?.id ?? '');
+
                         navigate(routes.notifications.value);
-                        seenNotification(notification?.id ?? "");
                       }}
                     >
                       <HStack className={styles.notificationContent}>
@@ -160,6 +163,7 @@ function NotificationBell() {
                           NotificationTypeEnum.COMMENT_STEP_NOTIFICATION && (
                           <CommentNotification notification={notification} />
                         )}
+
                         {[
                           NotificationTypeEnum.UPDATED_STEP_NOTIFICATION,
                           NotificationTypeEnum.UPDATED_PROCESS_NOTIFICATION,
@@ -170,9 +174,11 @@ function NotificationBell() {
                             notification={notification}
                           />
                         )}
+
                         {[
                           NotificationTypeEnum.DELETED_STEP_NOTIFICATION,
                           NotificationTypeEnum.DELETED_PROCESS_NOTIFICATION,
+                          NotificationTypeEnum.ARCHIVED_PROCESS_NOTIFICATION,
                         ].includes(
                           notification?.type as NotificationTypeEnum
                         ) && (
@@ -180,6 +186,17 @@ function NotificationBell() {
                             notification={notification}
                           />
                         )}
+
+                        {![
+                          NotificationTypeEnum.COMMENT_STEP_NOTIFICATION,
+                          NotificationTypeEnum.UPDATED_STEP_NOTIFICATION,
+                          NotificationTypeEnum.UPDATED_PROCESS_NOTIFICATION,
+                          NotificationTypeEnum.DELETED_STEP_NOTIFICATION,
+                          NotificationTypeEnum.DELETED_PROCESS_NOTIFICATION,
+                          NotificationTypeEnum.ARCHIVED_PROCESS_NOTIFICATION,
+                        ].includes(
+                          notification?.type as NotificationTypeEnum
+                        ) && <CommonNotification notification={notification} />}
                       </HStack>
                       <HStack>
                         <span className={styles.timestamp}>

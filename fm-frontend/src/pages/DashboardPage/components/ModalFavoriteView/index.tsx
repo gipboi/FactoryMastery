@@ -19,17 +19,16 @@ import SvgIcon from "components/SvgIcon";
 import { EBreakPoint } from "constants/theme";
 import useBreakPoint from "hooks/useBreakPoint";
 import { useStores } from "hooks/useStores";
+import { IProcess, IProcessWithRelations } from "interfaces/process";
 import { observer } from "mobx-react";
-// import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import routes from "routes";
 import { getValidArray } from "utils/common";
 import { ITheme } from "../../../../interfaces/theme";
 import styles from "./styles.module.scss";
-import { processIcon } from "components/Icon";
-import IconBuilder from "components/IconBuilder";
-import { IProcess } from "interfaces/process";
+import { blockIcon } from "components/Icon";
 
 interface IModalFavoriteView {
   isOpen: boolean;
@@ -37,6 +36,7 @@ interface IModalFavoriteView {
   handleOpenProcessDetail: (processId: string) => void;
   handleOpenCollectionDetail: (collectionId: string) => void;
 }
+
 const ModalFavoriteView = (props: IModalFavoriteView) => {
   const {
     isOpen,
@@ -116,7 +116,7 @@ const ModalFavoriteView = (props: IModalFavoriteView) => {
                 ? (item.collection?.organizationId ?? "", collectionImage)
                 : imgPlaceholder;
               const isProcess: boolean = !!item?.processId;
-              const process: IProcess =
+              const process: IProcessWithRelations =
                 (item?.process as any)?.[0] ?? item?.process;
               return (
                 <HStack
@@ -136,7 +136,7 @@ const ModalFavoriteView = (props: IModalFavoriteView) => {
                   <HStack spacing={4}>
                     {isProcess ? (
                       <Box className={styles.icon}>
-                        <IconBuilder icon={processIcon} size={40} isActive />
+                        <IconBuilder icon={process?.documentType?.icon ?? blockIcon} size={40} isActive />
                       </Box>
                     ) : (
                       <Box width="40px" height="40px" alignItems="flex-start">

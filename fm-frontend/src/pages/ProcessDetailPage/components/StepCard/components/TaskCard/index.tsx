@@ -1,26 +1,29 @@
-import { Center, HStack, Link, Stack, Text, VStack } from "@chakra-ui/react";
-import cx from "classnames";
-import LightBox from "components/LightBox";
-import MediaThumbnail from "components/MediaThumbnail";
-import SvgIcon from "components/SvgIcon";
-import { EMediaDefaultName } from "constants/media";
-import parse from "html-react-parser";
+import { Center, HStack, Link, Stack, Text, VStack } from '@chakra-ui/react';
+import cx from 'classnames';
+import LightBox from 'components/LightBox';
+import MediaThumbnail from 'components/MediaThumbnail';
+import SvgIcon from 'components/SvgIcon';
+import { EMediaDefaultName } from 'constants/media';
+import parse from 'html-react-parser';
+import { IBlockWithRelations } from 'interfaces/block';
 import {
   IDecisionPointMediaWithRelations,
   IDecisionPointStepWithRelations,
   IDecisionPointWithRelations,
-} from "interfaces/decisionPoint";
-import { IMedia } from "interfaces/media";
-import { IBlockWithRelations } from "interfaces/block";
-import { observer } from "mobx-react";
-import { useState } from "react";
-import { Col, Row, RowProps } from "reactstrap";
-import routes from "routes";
-import colors from "themes/colors.theme";
-import { primary500 } from "themes/globalStyles";
-import { getValidArray } from "utils/common";
-import styles from "./taskCard.module.scss";
-import { IStepWithRelations } from "interfaces/step";
+} from 'interfaces/decisionPoint';
+import { IMedia } from 'interfaces/media';
+import { IStepWithRelations } from 'interfaces/step';
+import { observer } from 'mobx-react';
+import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder';
+import { useState } from 'react';
+import { Col, Row, RowProps } from 'reactstrap';
+import routes from 'routes';
+import colors from 'themes/colors.theme';
+import { primary500 } from 'themes/globalStyles';
+import { getValidArray } from 'utils/common';
+import styles from './taskCard.module.scss';
+import { useStores } from 'hooks/useStores';
+import { EIconType } from 'interfaces/iconBuilder';
 
 interface ITaskCardProps extends RowProps {
   task: IBlockWithRelations;
@@ -31,6 +34,7 @@ interface ITaskCardProps extends RowProps {
 }
 
 const TaskCard = (props: ITaskCardProps) => {
+  const { iconBuilderStore } = useStores()
   const { task, isEditing, mediaList, selectedMedia, setSelectedMedia } = props;
   const [showLightBox, setShowLightBox] = useState<boolean>(false);
   const decisionPoints = task?.decisionPoints || [];
@@ -52,13 +56,7 @@ const TaskCard = (props: ITaskCardProps) => {
   return (
     <Row className={styles.container}>
       <Col className={styles.layout} md="12">
-        {/* {task?.icon ? (
-          <IconBuilder icon={task.icon} size={40} isActive />
-        ) : (
-          <div className={styles.icon}>
-            <SvgIcon iconName={task?.iconName} />
-          </div>
-        )} */}
+        <IconBuilder icon={task?.icon ?? iconBuilderStore.defaultIcons?.find((icon) => icon.type === EIconType.BLOCK)} size={40} isActive />
         <div className={styles.taskInformation}>
           <div
             className={cx(
@@ -74,7 +72,7 @@ const TaskCard = (props: ITaskCardProps) => {
           <Stack
             width="full"
             wrap="wrap"
-            flexDirection={task?.isDisableMediaLabel ? "row" : "column"}
+            flexDirection={task?.isDisableMediaLabel ? 'row' : 'column'}
             gap={3}
             spacing={0}
           >

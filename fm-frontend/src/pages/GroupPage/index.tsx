@@ -43,6 +43,7 @@ import styles from "./styles.module.scss";
 import { getHeaderList } from "./utils";
 import { GroupMemberPermissionEnum } from "constants/enums/group";
 import { AuthRoleNameEnum } from "constants/user";
+import { ECollectionFilterName } from "pages/CollectionsPage/components/FilterModal/contants";
 
 const GroupPage = () => {
   const [pageSize, setPageSize] = useState<number>(20);
@@ -165,7 +166,7 @@ const GroupPage = () => {
     pageIndex,
     userDetail?.organizationId,
     isOpenEdit,
-    // collectionIds,
+    collectionIds?.join(","),
     userIds?.join(","),
     sortBy,
   ]);
@@ -191,8 +192,8 @@ const GroupPage = () => {
     }
     function openCollectionInGroup() {
       if (group?.id) {
-        params.set("groups", String(group.id));
-        // navigate(`${routes.collections.value}?${params.toString()}`);
+        params.set(ECollectionFilterName.GROUPS, String(group.id));
+        navigate(`${routes.collections.value}?${params.toString()}`);
       }
     }
     return {

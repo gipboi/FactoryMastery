@@ -11,25 +11,27 @@ import {
   Tag,
   Text,
   VStack,
-} from "@chakra-ui/react";
-import { IPagination } from "components/Pagination";
-import { StepPosition } from "constants/processStep";
-import dayjs from "dayjs";
-import { useStores } from "hooks/useStores";
-import { IStep } from "interfaces/step";
-import { ITheme } from "interfaces/theme";
-import orderBy from "lodash/orderBy";
-import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-// import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder'
-import ItemProcess from "components/ItemProcess";
-import { AuthRoleNameEnum } from "constants/user";
-import routes from "routes";
-import { getValidArray } from "utils/common";
-import ProcessPagination from "./components/ProcessPagination";
-import Avatar from "components/Avatar";
-import { primary500 } from "themes/globalStyles";
+} from '@chakra-ui/react';
+import { IPagination } from 'components/Pagination';
+import { StepPosition } from 'constants/processStep';
+import dayjs from 'dayjs';
+import { useStores } from 'hooks/useStores';
+import { IStep } from 'interfaces/step';
+import { ITheme } from 'interfaces/theme';
+import orderBy from 'lodash/orderBy';
+import { observer } from 'mobx-react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ItemProcess from 'components/ItemProcess';
+import { AuthRoleNameEnum } from 'constants/user';
+import routes from 'routes';
+import { getValidArray } from 'utils/common';
+import ProcessPagination from './components/ProcessPagination';
+import Avatar from 'components/Avatar';
+import { primary500 } from 'themes/globalStyles';
+import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder';
+import { EIconType } from 'interfaces/iconBuilder';
+import { blockIcon } from 'components/Icon';
 
 interface ISummaryModalProps {
   isOpen: boolean;
@@ -39,7 +41,8 @@ interface ISummaryModalProps {
 
 const ProcessSummary = (props: ISummaryModalProps) => {
   const { isOpen, onClose, onEditProcess } = props;
-  const { processStore, authStore, organizationStore } = useStores(); //*INFO: Delete iconBuilderStore
+  const { processStore, authStore, organizationStore, iconBuilderStore } =
+    useStores();
   const { selectedProcessId, processDetail } = processStore;
   const navigate = useNavigate();
   const { groups = [], steps } = processDetail;
@@ -67,7 +70,7 @@ const ProcessSummary = (props: ISummaryModalProps) => {
     const selectPage: number = (page - 1) * StepPosition.ProcessStepLimit;
     if (isOpen && processDetail) {
       setDisplayProcessSteps(
-        orderBy(getValidArray(steps), "position").slice(
+        orderBy(getValidArray(steps), 'position').slice(
           selectPage,
           selectPage + StepPosition.ProcessStepLimit
         )
@@ -101,8 +104,8 @@ const ProcessSummary = (props: ISummaryModalProps) => {
           boxShadow="unset"
           border="unset"
           background="#fff"
-          _focus={{ background: "#fff", borderColor: "unset" }}
-          _active={{ background: "#fff", borderColor: "unset" }}
+          _focus={{ background: '#fff', borderColor: 'unset' }}
+          _active={{ background: '#fff', borderColor: 'unset' }}
         />
         <ModalBody padding={6}>
           <VStack spacing={6} alignItems="flex-start">
@@ -138,14 +141,11 @@ const ProcessSummary = (props: ISummaryModalProps) => {
               //     : "0"
               // }
               >
-                {/* <IconBuilder
-                  icon={iconBuilderStore.getIconById(
-                    processDetail?.documentType?.iconId ??
-                      EIconDefaultId.DOCUMENT_TYPE
-                  )}
+                <IconBuilder
+                  icon={processDetail?.documentType?.iconBuilder ?? blockIcon}
                   size={24}
                   isActive
-                /> */}
+                />
                 <Text
                   color="gray.700"
                   fontSize="16px"
@@ -156,12 +156,12 @@ const ProcessSummary = (props: ISummaryModalProps) => {
                   onClick={() => {
                     navigate(
                       routes.processes.processId.value(
-                        String(processDetail?.id ?? "")
+                        String(processDetail?.id ?? '')
                       )
                     );
                   }}
                 >
-                  {processDetail?.name ?? ""}
+                  {processDetail?.name ?? ''}
                 </Text>
               </HStack>
             </VStack>
@@ -183,36 +183,36 @@ const ProcessSummary = (props: ISummaryModalProps) => {
               </ItemProcess>
               <ItemProcess label="Last Updated">
                 <Text color="gray.700" fontSize="16px" fontWeight="400">
-                  {dayjs(processDetail?.updatedAt).format("MMMM DD, YYYY")}
+                  {dayjs(processDetail?.updatedAt).format('MMMM DD, YYYY')}
                 </Text>
               </ItemProcess>
               <ItemProcess label="Publish Date">
                 <Text color="gray.700" fontSize="16px" fontWeight="400">
                   {dayjs(
                     processDetail?.publishedDate ?? processDetail?.createdAt
-                  ).format("MMMM DD, YYYY")}
+                  ).format('MMMM DD, YYYY')}
                 </Text>
               </ItemProcess>
               <ItemProcess label="Release Notes">
                 <Text color="gray.700" fontSize="16px" fontWeight="400">
-                  {processDetail?.releaseNote ?? ""}
+                  {processDetail?.releaseNote ?? ''}
                 </Text>
               </ItemProcess>
               {!isBasicUser && (
                 <ItemProcess label="Editor Notes">
                   <Text color="gray.700" fontSize="16px" fontWeight="400">
-                    {processDetail?.editorNote ?? ""}
+                    {processDetail?.editorNote ?? ''}
                   </Text>
                 </ItemProcess>
               )}
               <ItemProcess label="Created By">
                 <HStack align="flex-start">
                   <Avatar
-                    name={processDetail?.creatorName ?? ""}
-                    src={processDetail?.creatorImage ?? ""}
+                    name={processDetail?.creatorName ?? ''}
+                    src={processDetail?.creatorImage ?? ''}
                   />
                   <Text color="gray.700" fontSize="16px" fontWeight="400">
-                    {processDetail?.creatorName ?? ""}
+                    {processDetail?.creatorName ?? ''}
                   </Text>
                 </HStack>
               </ItemProcess>
@@ -256,7 +256,7 @@ const ProcessSummary = (props: ISummaryModalProps) => {
               )} */}
               <ItemProcess label="Document Type">
                 <Text color="gray.700" fontSize="16px" fontWeight="400">
-                  {processDetail?.documentType?.name ?? ""}
+                  {processDetail?.documentType?.name ?? ''}
                 </Text>
               </ItemProcess>
               <ItemProcess label="Tags">
@@ -305,8 +305,8 @@ const ProcessSummary = (props: ISummaryModalProps) => {
                     fontWeight="500"
                     whiteSpace="normal"
                   >
-                    {(page - 1) * StepPosition.ProcessStepLimit + index + 1}.{" "}
-                    {step?.name ?? ""}
+                    {(page - 1) * StepPosition.ProcessStepLimit + index + 1}.{' '}
+                    {step?.name ?? ''}
                   </Text>
                 </HStack>
               )
@@ -322,17 +322,17 @@ const ProcessSummary = (props: ISummaryModalProps) => {
               fontWeight={500}
               fontSize="16px"
               lineHeight="24px"
-              background={currentTheme?.primaryColor ?? "primary.500"}
+              background={currentTheme?.primaryColor ?? 'primary.500'}
               _hover={{
-                background: currentTheme?.primaryColor ?? "primary.700",
+                background: currentTheme?.primaryColor ?? 'primary.700',
                 opacity: currentTheme?.primaryColor ? 0.8 : 1,
               }}
               _active={{
-                background: currentTheme?.primaryColor ?? "primary.700",
+                background: currentTheme?.primaryColor ?? 'primary.700',
                 opacity: currentTheme?.primaryColor ? 0.8 : 1,
               }}
               _focus={{
-                background: currentTheme?.primaryColor ?? "primary.700",
+                background: currentTheme?.primaryColor ?? 'primary.700',
                 opacity: currentTheme?.primaryColor ? 0.8 : 1,
               }}
               onClick={onEditProcess}

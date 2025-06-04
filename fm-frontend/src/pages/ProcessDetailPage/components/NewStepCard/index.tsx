@@ -2,16 +2,14 @@ import { useStores } from "hooks/useStores";
 import { useState } from "react";
 import { Col, Row } from "reactstrap";
 // import { createStep } from 'API/step'
+import { createStep } from "API/step";
 import Button from "components/Button";
 import Divider from "components/Divider";
-import InlineTextField from "components/InlineTextField";
-import SvgIcon from "components/SvgIcon";
-import styles from "./styles.module.scss";
-import { EIconDefaultId } from "interfaces/iconBuilder";
-import { getRenderProcess } from "pages/ProcessDetailPage/utils";
-import { createStep } from "API/step";
-import IconBuilder from "components/IconBuilder";
 import { stepIcon } from "components/Icon";
+import InlineTextField from "components/InlineTextField";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
+import { getRenderProcess } from "pages/ProcessDetailPage/utils";
+import styles from "./styles.module.scss";
 // import { getRenderProcess } from "pages/ProcessDetailPage/utils/process";
 
 interface NewStepCardProps {

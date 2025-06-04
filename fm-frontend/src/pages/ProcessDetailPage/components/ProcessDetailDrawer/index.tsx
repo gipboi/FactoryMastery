@@ -30,11 +30,12 @@ import routes from "routes";
 import { getValidArray } from "utils/common";
 // import { getName } from "utils/users";
 import ItemProcess from "components/ItemProcess";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
+import { useEffect } from "react";
 import { getName } from "utils/user";
 import ShareProcessToCollectionModal from "../ShareProcessToCollectionModal";
 import ShareProcessToGroupModal from "../ShareProcessToGroupModal";
 import ShareProcessToUserModal from "../ShareUserModal";
-import { useEffect } from "react";
 
 interface IProcessDetailDrawerProps {
   isOpen: boolean;
@@ -55,7 +56,7 @@ const ProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
   const isBasicUser =
     authStore?.userDetail?.authRole === AuthRoleNameEnum.BASIC_USER;
 
-  // const collections = getValidArray(process?.collections);
+  const collections = getValidArray(processDetail?.collections);
   const groups = getValidArray(processDetail?.groups);
   const usersProcess = getValidArray(processDetail?.userProcesses).map(
     (userProcess) => userProcess.user
@@ -185,13 +186,14 @@ const ProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
                 transition="200ms all"
                 _hover={{ backgroundColor: "gray.50", transition: "200ms all" }}
               >
-                {/* {process?.documentType?.iconBuilder && (
+                {processDetail?.documentType?.iconBuilder && (
                   <IconBuilder
-                    icon={process?.documentType?.iconBuilder}
+                    icon={processDetail?.documentType?.iconBuilder}
                     size={24}
                     isActive
                   />
-                )} */}
+                )}
+
                 <Text
                   width="100%"
                   color="gray.700"
@@ -220,6 +222,22 @@ const ProcessDetailDrawer = (props: IProcessDetailDrawerProps) => {
                   </Tag>
                 ))}
               </HStack>
+            </ItemProcess>
+
+            <ItemProcess
+              label={`Collections ${
+                collections.length === 0 ? "" : `(${collections.length})`
+              }`}
+            >
+              <ViewBox
+                link={routes.collections.value}
+                onClick={isBasicUser ? undefined : onOpenShareCollectionModal}
+                items={getValidArray(collections).map((collection) => ({
+                  id: collection.id ?? "",
+                  name: collection.name ?? "",
+                  imageUrl: collection?.mainMedia ?? "",
+                }))}
+              />
             </ItemProcess>
 
             <ItemProcess

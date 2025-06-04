@@ -1,0 +1,169 @@
+@import 'styles/layout';
+
+$large-screen: xl, lg;
+$small-screen: md, sm, esm;
+
+.shareGroupDialog {
+  & :global(.modal-content) {
+    border-radius: 12px;
+
+    & > :global(.modal-body) {
+      padding: 32px 48px 42px;
+    }
+  }
+
+  .fieldWrapper {
+    label {
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 20px;
+      color: #6c757d;
+    }
+  }
+
+  h4 {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 32px;
+    color: #323a46;
+    margin-bottom: 27px;
+  }
+
+  .groupList {
+    height: 240px;
+    overflow: auto;
+    margin-bottom: 27px;
+    padding: 5px;
+
+    .itemWrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e0e4ea;
+      height: 48px;
+      padding-right: 5px;
+      cursor: pointer;
+
+      .nameWrapper {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        position: relative;
+
+        .iconWrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 10px;
+          background: #6c757d;
+          border-radius: 10000px;
+          color: white;
+          width: 33px;
+          height: 33px;
+          > svg {
+            width: 24px;
+            height: 24px;
+          }
+        }
+
+        span {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 22px;
+          color: #6c757d;
+        }
+
+        &:hover {
+          .iconWrapper {
+            background: #00a9eb;
+          }
+
+          span {
+            color: #00a9eb;
+          }
+        }
+
+        &:hover {
+          .iconWrapper {
+            background: var(--current-primary-color) !important;
+          }
+
+          span {
+            color: var(--current-primary-color) !important;
+          }
+        }
+      }
+    }
+
+    .selectedItem {
+      .nameWrapper {
+        .iconWrapper {
+          background: #727cf5;
+        }
+
+        span {
+          color: #727cf5;
+        }
+
+        .checkIcon {
+          position: absolute;
+          right: 15px;
+          color: #727cf5;
+          width: 18px;
+        }
+      }
+    }
+  }
+
+  .actionBtns {
+    button {
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      height: 48px;
+
+      &:first-child {
+        background: #ffffff;
+        border: 1px solid #e1e4e8;
+        box-sizing: border-box;
+      }
+
+      &:last-child {
+        background: #00a9eb;
+        @include bootstrap-respond($large-screen) {
+          margin-left: 10px;
+        }
+      }
+      &:last-child {
+        background: var(--current-primary-color) !important;
+        border: unset;
+      }
+    }
+
+    @include bootstrap-respond($large-screen) {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+
+      button {
+        width: 150px;
+        margin-left: 20px;
+      }
+    }
+
+    @include bootstrap-respond($small-screen) {
+      display: flex;
+      flex-direction: column;
+
+      button {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+.spinnerContainer {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 50px;
+}

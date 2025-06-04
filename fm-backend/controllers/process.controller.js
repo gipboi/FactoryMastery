@@ -1,4 +1,4 @@
-import { ProcessService } from "../services/process.services.js";
+import { ProcessService } from '../services/process.services.js';
 
 async function get(req, res, next) {
   const processService = new ProcessService();
@@ -78,6 +78,31 @@ async function restoreProcess(req, res, next) {
   next();
 }
 
+async function getProcessRating(req, res, next) {
+  const processService = new ProcessService();
+  await processService.getProcessRating(req, res, next);
+  next();
+}
+
+
+async function createProcessRating(req, res, next) {
+  const processService = new ProcessService();
+  await processService.createProcessRating(req, res, next);
+  next();
+}
+
+async function getProcessRatingSummary(req, res, next) {
+  const processService = new ProcessService();
+  await processService.getProcessRatingSummary(req, res, next);
+  next();
+}
+
+async function getPdf(req, res, next) {
+  const processService = new ProcessService();
+  await processService.getPdf(req, res, next);
+  next();
+}
+
 export default {
   get,
   getProcessesByAggregate,
@@ -92,4 +117,8 @@ export default {
   duplicateProcess,
   archiveProcess,
   restoreProcess,
+  getProcessRating,
+  createProcessRating,
+  getProcessRatingSummary,
+  getPdf,
 };

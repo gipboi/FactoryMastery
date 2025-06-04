@@ -1,10 +1,10 @@
-import cx from "classnames";
-import Image from "components/Image";
-import { INotificationWithRelations } from "interfaces/notification";
-import { observer } from "mobx-react";
-import styles from "../styles.module.scss";
-import { convertToNotificationActionDescription } from "utils/notification";
-import { NotificationTypeEnum } from "config/constant/enums/notification";
+import cx from 'classnames';
+import Image from 'components/Image';
+import { INotificationWithRelations } from 'interfaces/notification';
+import { observer } from 'mobx-react';
+import styles from '../styles.module.scss';
+import { convertToNotificationActionDescription } from 'utils/notification';
+import { NotificationTypeEnum } from 'config/constant/enums/notification';
 
 const CommentNotification = ({
   notification,
@@ -20,16 +20,22 @@ const CommentNotification = ({
       />
       <div>
         <span className={cx(styles.object, styles.textContent)}>
-          {notification?.author?.firstName} {notification?.author?.lastName}{" "}
+          {notification?.author?.firstName} {notification?.author?.lastName}{' '}
         </span>
         <span className={styles.textContent}>
           {convertToNotificationActionDescription(
             notification?.type ?? NotificationTypeEnum.COMMENT_STEP_NOTIFICATION
           )}
         </span>
-        <span className={cx(styles.object, styles.textContent)}>
-          Process #{notification?.process?.name}
-        </span>
+        {notification?.process?.name ? (
+          <span className={cx(styles.object, styles.textContent)}>
+            Process #{notification?.process?.name}
+          </span>
+        ) : (
+          <span className={cx(styles.object, styles.textContent)}>
+            Step #{notification?.step?.name}
+          </span>
+        )}
       </div>
     </>
   );

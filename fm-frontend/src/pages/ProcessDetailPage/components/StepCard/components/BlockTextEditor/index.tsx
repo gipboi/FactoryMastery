@@ -1,10 +1,18 @@
 /* eslint-disable max-lines */
 import { Box, Divider, HStack, Text } from "@chakra-ui/react";
+import {
+  createBlock,
+  deleteBlockById,
+  updateBlockById,
+  upsertMedia,
+} from "API/block";
+import { updateMediaById } from "API/media";
 import cx from "classnames";
 import Button from "components/Button";
+import DeleteDialog from "components/DeleteDialog";
 import ModalDialog, { ModalDialogProps } from "components/ModalDialog";
-import SvgIcon from "components/SvgIcon";
 import { ErrorMessageEnum } from "constants/error";
+import { BlockTextContentType } from "constants/process";
 import {
   ContentState,
   DefaultDraftBlockRenderMap,
@@ -12,11 +20,13 @@ import {
   convertFromHTML,
   convertToRaw,
 } from "draft-js";
+import draftToHtml from "draftjs-to-html";
 import { useStores } from "hooks/useStores";
 import Immutable from "immutable";
+import { IBlockWithRelations } from "interfaces/block";
 import { IMedia } from "interfaces/media";
 import { IStepWithRelations } from "interfaces/step";
-import { IBlockWithRelations } from "interfaces/block";
+import { get } from "lodash";
 import { observer } from "mobx-react";
 import {
   clearOldDecisionPoint,
@@ -37,17 +47,6 @@ import LinkedDialog from "./components/LinkedDialog";
 import MediaModal from "./components/LinkedDialog/components/MediaModal";
 import { toolbarOption } from "./constants";
 import { BlockTextFormValues } from "./enums";
-import { updateMediaById } from "API/media";
-import draftToHtml from "draftjs-to-html";
-import { BlockTextContentType } from "constants/process";
-import { get } from "lodash";
-import {
-  createBlock,
-  deleteBlockById,
-  updateBlockById,
-  upsertMedia,
-} from "API/block";
-import DeleteDialog from "components/DeleteDialog";
 
 const blockRenderMap = Immutable.Map({
   unstyled: {
@@ -118,7 +117,7 @@ const BlockTextEditor = ({
   });
   const { getValues, reset, register } = methods;
 
-  const { processStore } = useStores();
+  const { processStore, iconBuilderStore } = useStores();
   const { process } = processStore;
   const [editorState, setEditorState] = useState<EditorState>(
     EditorState.createEmpty()
@@ -194,7 +193,7 @@ const BlockTextEditor = ({
 
     await updateBlockById(blockId, {
       content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
-      // iconId: Number(get(getValues(), `${BlockTextFormValues.ICON_ID}`, 0)),
+      iconId: String(get(getValues(), `${BlockTextFormValues.ICON_ID}`, "")),
       isDisableMediaLabel,
     });
     await upsertMedia(blockId, mediaIds);
@@ -233,7 +232,7 @@ const BlockTextEditor = ({
         content: draftToHtml(convertToRaw(editorState.getCurrentContent())),
         stepId: step?.id ?? "",
         position: Array.isArray(step?.blocks) ? step?.blocks?.length + 1 : 0,
-        // iconId: get(getValues(), `${BlockTextFormValues.ICON_ID}`, 0),
+        iconId: String(get(getValues(), `${BlockTextFormValues.ICON_ID}`, "")),
         isDisableMediaLabel,
       });
       await upsertMedia(newBlock?.id ?? "", mediaIds);
@@ -271,9 +270,9 @@ const BlockTextEditor = ({
     }
   }, [showMediaGallery]);
 
-  // useEffect(() => {
-  //   iconBuilderStore.fetchBlockIconList();
-  // }, []);
+  useEffect(() => {
+    iconBuilderStore.fetchBlockIconList();
+  }, []);
 
   return (
     <FormProvider {...methods}>

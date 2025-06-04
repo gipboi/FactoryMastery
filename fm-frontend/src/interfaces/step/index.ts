@@ -1,10 +1,9 @@
+import { IBlockWithRelations } from "interfaces/block";
 import { ICommonLibrary } from "interfaces/commonLibrary";
 import { IEcnSuggestionWithRelations } from "interfaces/ecnSuggestion";
 import { IIconBuilder } from "interfaces/iconBuilder";
 import { IMedia } from "interfaces/media";
 import { IProcessWithRelations } from "interfaces/process";
-import { IBlockWithRelations } from "interfaces/block";
-import { IAsyncSelectOption } from "interfaces";
 
 export interface IStep {
   id?: string;
@@ -18,7 +17,7 @@ export interface IStep {
   position?: number;
   quizId?: number;
   archived?: boolean;
-  iconId?: number;
+  iconId?: string;
   originalStepId?: string;
 
   icon?: IIconBuilder;

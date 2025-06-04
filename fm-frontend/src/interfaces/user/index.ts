@@ -1,6 +1,7 @@
 import { MemberTypeEnum } from "constants/enums/user";
 import { ICollection } from "interfaces/collection";
 import { IGroup, IGroupMember, IGroupOption } from "interfaces/groups";
+import { IOrganization } from "interfaces/organization";
 import { IProcessWithRelations } from "interfaces/process";
 import { IOption } from "types/common";
 
@@ -45,6 +46,7 @@ export interface IUser {
   permissionUpdatedAt?: Date;
   oldPassword?: string;
   newPassword?: string;
+  isAutoClaimThread?: boolean;
 }
 
 export interface ICreateEditUserRequest
@@ -62,14 +64,15 @@ export interface IUserWithRelations extends IUser {
   groups?: IGroup[];
   userCollections?: IUserCollection[];
   userProcesses?: IUserProcess[];
+  organization?: IOrganization;
 }
 
 export interface IUserCollection {
   id: string;
   userId: string;
   collectionId: string;
-  // collection: ICollection
-  collection: any;
+  collection: ICollection;
+  // collection: any;
 }
 
 export interface IUserProcess {
@@ -89,6 +92,7 @@ export interface IUserDetailForm {
   userType: string;
   password: string;
   groupPermissions: IGroupOption[];
+  organizations?: IOption<string>[];
 }
 
 export interface IUsersFilterForm {
@@ -96,6 +100,7 @@ export interface IUsersFilterForm {
   groups: IOption<string>[];
   sortBy?: string;
   users?: IOption<string>[];
+  organizations?: IOption<string>[];
 }
 
 export interface INotificationUsersFilterForm {
@@ -165,6 +170,7 @@ export interface IEditEditUserRequest
     | "lastName"
     | "image"
     | "disabled"
+    | "isAutoClaimThread"
   > {
   groups?: IGroupMember[];
   oldPassword?: string;

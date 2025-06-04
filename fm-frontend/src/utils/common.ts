@@ -1,6 +1,7 @@
 // import { S3FileTypeEnum } from 'constants/aws'
 // import { MediaType } from 'constants/media'
 import { LIMIT_PAGE_BREAK } from "constants/pagination";
+import { SupportMessageThreadStatus } from "interfaces/message";
 // import { IMedia } from 'interfaces/media'
 // import { getS3FileUrl } from './images'
 
@@ -65,17 +66,21 @@ export function isValidEmail(email: string) {
   return emailRegex.test(email) || "Enter valid email format";
 }
 
-export function generateMatchObjectIdsQuery(from: string, key: string, ids: string[]) {
+export function generateMatchObjectIdsQuery(
+  from: string,
+  key: string,
+  ids: string[]
+) {
   return {
     $match: {
       $expr: {
         $anyElementTrue: {
           $map: {
-            input: `$${from}`,
+            input: !from ? [`$${key}`] : `$${from}`,
             as: `${from}item`,
             in: {
               $in: [
-                `$$${from}item.` + key,
+                `$$${from}item` + `${!from ? "" : `.${key}`}`,
                 getValidArray(ids).map((id) => ({ $toObjectId: id })),
               ],
             },
@@ -84,4 +89,22 @@ export function generateMatchObjectIdsQuery(from: string, key: string, ids: stri
       },
     },
   };
+}
+
+export function getThreadStatusColor(
+  status: SupportMessageThreadStatus
+): string {
+  if (status === SupportMessageThreadStatus.UNCLAIMED) {
+    return "gray";
+  }
+  if (status === SupportMessageThreadStatus.CLAIMED) {
+    return "blue";
+  }
+  if (status === SupportMessageThreadStatus.RESOLVED) {
+    return "green";
+  }
+  if (status === SupportMessageThreadStatus.ALL) {
+    return "orange";
+  }
+  return "";
 }

@@ -1,0 +1,34 @@
+@import 'styles/constant';
+
+$color-white: #ffffff;
+$branding-blue: map-get($custom-colors, 'branding-blue');
+
+.primary-override {
+  background: var(--current-primary-color) !important;
+  border: none;
+  color: $color-white !important;
+  &:hover {
+    opacity: 0.8;
+  }
+  &:active {
+    opacity: 0.8;
+  }
+  &:focus {
+    opacity: 1;
+  }
+}
+
+.primary {
+  background: var(--current-primary-color);
+  border: none;
+  color: $color-white !important;
+  &:hover,
+  &:active {
+    background-color: var(--current-primary-color) !important;
+    opacity: 0.8;
+  }
+}
+
+.outline {
+  background: $color-white;
+}

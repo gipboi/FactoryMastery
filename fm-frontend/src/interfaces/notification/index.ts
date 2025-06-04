@@ -26,6 +26,7 @@ export interface INotification {
   isSeen?: boolean;
   deletedName?: string;
   keyword?: string;
+  messageThreadId?: string;
 }
 
 export interface INotificationRelations {

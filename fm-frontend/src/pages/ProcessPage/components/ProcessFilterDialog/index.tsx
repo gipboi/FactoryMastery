@@ -8,23 +8,23 @@ import {
   ModalHeader,
   ModalOverlay,
   VStack,
-} from "@chakra-ui/react";
-import Button from "components/Button";
-import FilterDropdown from "components/FilterDropdown";
-import { AuthRoleNameEnum } from "constants/user";
-import { useStores } from "hooks/useStores";
-import { IProcessesFilterForm } from "interfaces/process";
-import { ITheme } from "interfaces/theme";
-import { set } from "lodash";
-import { observer } from "mobx-react";
-import { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
-import routes from "routes";
-import { primary, primary500 } from "themes/globalStyles";
-import { IOption } from "types/common/select";
-import { getValidArray } from "utils/common";
-import { EDraftTab, EProcessesFilterFormName } from "../../constants";
+} from '@chakra-ui/react';
+import Button from 'components/Button';
+import FilterDropdown from 'components/FilterDropdown';
+import { AuthRoleNameEnum } from 'constants/user';
+import { useStores } from 'hooks/useStores';
+import { IProcessesFilterForm } from 'interfaces/process';
+import { ITheme } from 'interfaces/theme';
+import { set } from 'lodash';
+import { observer } from 'mobx-react';
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
+import routes from 'routes';
+import { primary, primary500 } from 'themes/globalStyles';
+import { IOption } from 'types/common/select';
+import { getValidArray } from 'utils/common';
+import { EDraftTab, EProcessesFilterFormName } from '../../constants';
 
 interface ProcessFilterDialogProps {
   isOpen: boolean;
@@ -41,7 +41,7 @@ const ProcessFilterDialog = (props: ProcessFilterDialogProps) => {
     documentTypeStore,
     tagStore,
     groupStore,
-    // collectionStore,
+    collectionStore,
   } = useStores();
   const { userDetail } = authStore;
   const { currentUserGroupMembers } = userStore;
@@ -55,7 +55,7 @@ const ProcessFilterDialog = (props: ProcessFilterDialogProps) => {
   );
   const isBasicUser = userDetail?.authRole === AuthRoleNameEnum.BASIC_USER;
   const currentTheme: ITheme = organization?.theme ?? {};
-  const organizationId = organization?.id ?? 0;
+  const organizationId = organization?.id ?? '';
   const [selectedGroups, setSelectedGroups] = useState<IOption<string>[]>([]);
   const [selectedTags, setSelectedTags] = useState<IOption<string>[]>([]);
   const [selectedDocumentTypes, setSelectedDocumentTypes] = useState<
@@ -64,18 +64,18 @@ const ProcessFilterDialog = (props: ProcessFilterDialogProps) => {
   const [selectedCollections, setSelectedCollections] = useState<
     IOption<string>[]
   >([]);
-  const persistedTab = `${params.get("tab") || EDraftTab.PROCESS}` as EDraftTab;
+  const persistedTab = `${params.get('tab') || EDraftTab.PROCESS}` as EDraftTab;
 
-  const defaultValues: Omit<IProcessesFilterForm, "creators" | "sort"> = {
+  const defaultValues: Omit<IProcessesFilterForm, 'creators' | 'sort'> = {
     collections: [],
     documentTypes: [],
     groups: [],
     tags: [],
   };
 
-  const methods = useForm<Omit<IProcessesFilterForm, "creators" | "sort">>({
+  const methods = useForm<Omit<IProcessesFilterForm, 'creators' | 'sort'>>({
     defaultValues,
-    mode: "onChange",
+    mode: 'onChange',
     resolver: async (data) => {
       return {
         values: data,
@@ -86,37 +86,37 @@ const ProcessFilterDialog = (props: ProcessFilterDialogProps) => {
 
   const { handleSubmit, setValue } = methods;
 
-  function onSubmit(data: Omit<IProcessesFilterForm, "creators" | "sort">) {
+  function onSubmit(data: Omit<IProcessesFilterForm, 'creators' | 'sort'>) {
     processStore.setProcessesFilter({
       ...processStore.processesFilter,
       ...data,
     });
-    params.set("page", "1");
+    params.set('page', '1');
     params.set(
-      "collectionIds",
+      'collectionIds',
       data?.collections?.length > 0
-        ? data.collections.map((collection) => collection.value).join(",")
-        : ""
+        ? data.collections.map((collection) => collection.value).join(',')
+        : ''
     );
     params.set(
-      "documentTypeIds",
+      'documentTypeIds',
       data?.documentTypes?.length > 0
-        ? data.documentTypes.map((documentType) => documentType.value).join(",")
-        : ""
+        ? data.documentTypes.map((documentType) => documentType.value).join(',')
+        : ''
     );
     params.set(
-      "groupIds",
+      'groupIds',
       data?.groups?.length > 0
-        ? data.groups.map((group) => group.value).join(",")
-        : ""
+        ? data.groups.map((group) => group.value).join(',')
+        : ''
     );
     params.set(
-      "tagIds",
+      'tagIds',
       data?.tags?.length
-        ? data.tags.map((tag) => tag?.value ?? "").join(",")
-        : ""
+        ? data.tags.map((tag) => tag?.value ?? '').join(',')
+        : ''
     );
-    params.set("filter", `${JSON.stringify(data)}`);
+    params.set('filter', `${JSON.stringify(data)}`);
 
     navigate(`${routes.processes.value}?${params.toString()}`);
     onClose();
@@ -138,27 +138,27 @@ const ProcessFilterDialog = (props: ProcessFilterDialogProps) => {
     if (!isOpen) return;
 
     if (persistedTab === EDraftTab.PROCESS) {
-      // collectionStore.fetchCollectionsByFilter({
-      //   userId: userDetail?.id,
-      //   organizationId,
-      //   isPublished: true,
-      // });
+      collectionStore.fetchCollectionsByFilter({
+        userId: userDetail?.id,
+        organizationId,
+        isVisible: true,
+      });
     }
     tagStore.fetchTags({
       where: { organizationId: String(organizationId) },
-      order: ["name ASC"],
-      fields: ["id", "name"],
+      order: ['name ASC'],
+      fields: ['id', 'name'],
     });
     documentTypeStore.fetchDocumentTypes({
       where: { organizationId: String(organizationId) },
       // include: ["iconBuilder"],
-      fields: ["id", "name"],
+      fields: ['id', 'name'],
     });
     const filterGroup = {
       where: { organizationId: String(organizationId) },
     };
     if (isBasicUser) {
-      set(filterGroup, "where._id", { $in: userGroupIds });
+      set(filterGroup, 'where._id', { $in: userGroupIds });
     }
     groupStore.getGroups(filterGroup);
   }, [isOpen]);
@@ -169,7 +169,7 @@ const ProcessFilterDialog = (props: ProcessFilterDialogProps) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalOverlay />
           <ModalContent
-            minWidth={{ base: "full", md: "800px" }}
+            minWidth={{ base: 'full', md: '800px' }}
             borderRadius={8}
           >
             <ModalHeader
@@ -187,26 +187,22 @@ const ProcessFilterDialog = (props: ProcessFilterDialogProps) => {
             />
             <ModalBody border="1px solid #E2E8F0" padding={6}>
               <VStack>
-                {/* {persistedTab === EDraftTab.PROCESS && (
-                  // <FilterDropdown
-                    // isOpenModal={isOpen}
-                    // name={EProcessesFilterFormName.COLLECTION}
-                    // label="Collections"
-                    // placeholder="Search collections by name"
-                    // storeOptions={getValidArray(collectionStore.collections)}
-                    // filteredOptions={getValidArray(
-                    //   processesFilter?.collections
-                    // )}
-                    // selectedOptions={selectedCollections}
-                    // setSelectedOptions={(options: IOption<string>[]) =>
-                    //   handleSelectedOptions(
-                    //     options,
-                    //     EProcessesFilterFormName.COLLECTION,
-                    //     setSelectedCollections
-                    //   )
-                    // }
-                  // />
-                )} */}
+                <FilterDropdown
+                  isOpenModal={isOpen}
+                  name={EProcessesFilterFormName.COLLECTION}
+                  label="Collections"
+                  placeholder="Search collections by name"
+                  storeOptions={getValidArray(collectionStore.collections)}
+                  filteredOptions={getValidArray(processesFilter?.collections)}
+                  selectedOptions={selectedCollections}
+                  setSelectedOptions={(options: IOption<string>[]) =>
+                    handleSelectedOptions(
+                      options,
+                      EProcessesFilterFormName.COLLECTION,
+                      setSelectedCollections
+                    )
+                  }
+                />
                 <FilterDropdown
                   isOpenModal={isOpen}
                   name={EProcessesFilterFormName.DOCUMENT_TYPE}

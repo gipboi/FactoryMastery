@@ -11,16 +11,18 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  SimpleGrid,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { IIconBuilder } from "interfaces/iconBuilder";
 import { ITheme } from "interfaces/theme";
-// import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { primary } from "themes/globalStyles";
+import { getValidArray } from "utils/common";
 import { useStores } from "../../../../hooks/useStores";
 import DeleteModal from "./DeleteModal";
 
@@ -36,9 +38,10 @@ interface IDocumentTypeForm {
 }
 
 const DetailModal = ({ isOpen, onClose, reloadData }: IDetailModalProps) => {
-  const { documentTypeStore, authStore, organizationStore } = useStores();
+  const { documentTypeStore, authStore, organizationStore, iconBuilderStore } =
+    useStores();
   const { documentTypeDetail } = documentTypeStore;
-  // const { documentTypeIcons } = iconBuilderStore;
+  const { documentTypeIcons } = iconBuilderStore;
   const { userDetail } = authStore;
   const isEdit: boolean = !!documentTypeDetail?.id;
   const method = useForm<IDocumentTypeForm>();
@@ -65,15 +68,15 @@ const DetailModal = ({ isOpen, onClose, reloadData }: IDetailModalProps) => {
   }
 
   async function onSubmit(data: IDocumentTypeForm): Promise<void> {
-    // if (!selectedIcon) {
-    //   toast.error("Please select an icon");
-    //   return;
-    // }
+    if (!selectedIcon) {
+      toast.error("Please select an icon");
+      return;
+    }
     try {
       if (!documentTypeDetail?.id) {
         await documentTypeStore.createNewDocumentType({
           name: data?.name ?? "",
-          iconId: selectedIcon?.id,
+          iconId: selectedIcon?._id,
           organizationId: userDetail?.organizationId ?? "",
           iconBuilder: undefined,
         });
@@ -82,7 +85,7 @@ const DetailModal = ({ isOpen, onClose, reloadData }: IDetailModalProps) => {
           documentTypeDetail.id,
           {
             name: data?.name ?? "",
-            iconId: selectedIcon?.id,
+            iconId: selectedIcon?._id,
             iconBuilder: undefined,
           }
         );
@@ -107,9 +110,9 @@ const DetailModal = ({ isOpen, onClose, reloadData }: IDetailModalProps) => {
     }
   }, [isOpen, isEdit]);
 
-  // useEffect(() => {
-  //   iconBuilderStore.fetchDocumentTypeIconList();
-  // }, []);
+  useEffect(() => {
+    iconBuilderStore.fetchDocumentTypeIconList();
+  }, []);
 
   return (
     <Modal isOpen={isOpen} onClose={handleOnClose} size="2xl">
@@ -156,7 +159,7 @@ const DetailModal = ({ isOpen, onClose, reloadData }: IDetailModalProps) => {
                     }}
                   />
                 </FormControl>
-                {/* <FormControl id="icon">
+                <FormControl id="icon">
                   <FormLabel marginBottom={2} color="gray.700">
                     Icon
                   </FormLabel>
@@ -169,16 +172,20 @@ const DetailModal = ({ isOpen, onClose, reloadData }: IDetailModalProps) => {
                     {getValidArray(documentTypeIcons).map((icon) => {
                       return (
                         <IconBuilder
-                          key={`icon-${icon?.id}`}
+                          key={`icon-${(icon as IIconBuilder)?._id}`}
                           icon={icon}
                           size={40}
-                          onClick={() => setSelectedIcon(icon)}
-                          isActive={selectedIcon?.id === icon?.id}
+                          onClick={() => {
+                            setSelectedIcon(icon as IIconBuilder);
+                          }}
+                          isActive={
+                            selectedIcon?._id === (icon as IIconBuilder)?._id
+                          }
                         />
                       );
-                    })} 
+                    })}
                   </SimpleGrid>
-                </FormControl> */}
+                </FormControl>
               </VStack>
             </ModalBody>
             <ModalFooter>

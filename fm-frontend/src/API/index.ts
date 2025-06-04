@@ -34,14 +34,10 @@ api.interceptors.request.use(function (config: any) {
 
 api.interceptors.response.use(
   function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
     return response
   },
   function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    console.log(error);
-    console.log("error?.message", error?.message)
-    console.log("error?.config.url", error?.config.url)
+    console.error(error);
     if (
       error?.message?.includes('401') ||
       (error?.config?.url === '/users/me' && error?.config?.url !== '/auth/login')

@@ -1,5 +1,5 @@
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 import styles from "./styles.module.scss";
 
 interface IEditorProps {
@@ -37,9 +37,11 @@ export const Editor = ({ value, setValue, ...props }: IEditorProps) => {
     ],
   };
 
+  const QuillComponent = ReactQuill as any;
+
   return (
     <div className={styles.editorContainer}>
-      <ReactQuill
+      <QuillComponent
         theme="snow"
         className={styles.editor}
         value={value}

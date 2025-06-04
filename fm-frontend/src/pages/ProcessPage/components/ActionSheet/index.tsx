@@ -35,6 +35,8 @@ import { draftSortByOptions, EDraftTab } from "../../constants";
 import CreateProcessDraftDialog from "../CreateProcessDraftDialog";
 import ProcessFilterDialog from "../ProcessFilterDialog";
 import styles from "./styles.module.scss";
+import useBreakPoint from "hooks/useBreakPoint";
+import { EBreakPoint } from "constants/theme";
 
 interface IActionSheetProps {
   onCreateProcess?: (request: UpdateBody<IProcess>) => void;
@@ -69,6 +71,7 @@ const ActionSheet = ({
     useState<boolean>(false);
   const { organization } = organizationStore;
   const currentTheme: ITheme = organization?.theme ?? {};
+	const isMobile: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.MD);
 
   const handleChange = useCallback(
     debounce((event: { target: { value: string } }) => {
@@ -144,8 +147,9 @@ const ActionSheet = ({
         <HStack
           justifyContent="space-between"
           width="full"
-          height="32px"
           marginTop={4}
+          flexDirection={isMobile ? 'column' : 'row'}
+          spacing={4}
         >
           <HStack width="full" spacing={4}>
             <HStack spacing={0} className={styles.viewModeGroup}>
@@ -325,7 +329,7 @@ const ActionSheet = ({
                 <Flex height={6} alignItems="center">
                   <AddIcon fontSize="12px" />
                 </Flex>
-                Create draft
+                {!isMobile ? 'Create draft' : ''}
               </Button>
             )}
           </HStack>

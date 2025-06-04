@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
 import {
+  Button,
+  Input as CInput,
   FormLabel,
   HStack,
   Modal,
@@ -9,27 +10,28 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Button,
-  Input as CInput,
 } from "@chakra-ui/react";
+import { getDocumentTypes } from "API/documentType";
 import { useStores } from "hooks/useStores";
 import get from "lodash/get";
 import { observer } from "mobx-react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { primary500 } from "themes/globalStyles";
 import { IFilter, IOption, IOptionWithIcon } from "types/common";
-import { getDocumentTypes } from "API/documentType";
 // import { editCollectionProcess } from "API/collection";
 // import { shareProcessToGroups } from "API/groupProcesses";
 import { updateProcessById, upsertProcessTags } from "API/process";
 import { getTags } from "API/tag";
+import ProcedureIcon from "components/Common/ProcedureIcon";
 import FormDropdownInput from "components/FormInputs/DropdownInput";
 import { AuthRoleNameEnum } from "constants/user";
 import { IDocumentType } from "interfaces/documentType";
 import { ITag } from "interfaces/tag";
 import { ITheme } from "interfaces/theme";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import { getValidArray } from "utils/common";
 import { getRenderProcess } from "../../utils";
 import {
@@ -37,8 +39,6 @@ import {
   validateVersion,
 } from "../SaveDraftDialog/utils";
 import { getDefaultValues } from "./utils";
-import IconBuilder from "components/IconBuilder";
-import ProcedureIcon from "components/Common/ProcedureIcon";
 
 interface IEditProcessModalProps {
   onClose: () => void;
@@ -93,7 +93,7 @@ const EditProcessModal = ({
     const documentTypes = await getDocumentTypes(filter).catch((e) => {
       console.error("Error fetching document types", e);
       return [];
-    });;
+    });
     const documentTypeOptions = documentTypes.map((documentType) => ({
       label: documentType.name ?? "",
       value: Number(documentType.id),

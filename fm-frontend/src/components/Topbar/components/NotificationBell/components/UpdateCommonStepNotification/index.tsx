@@ -51,7 +51,10 @@ const UpdateChangeCommonStepNotification = ({
               {detailNoti}
             </span>
             <span className={cx(styles.textContent)}>
-              {notification?.title ?? ""}
+              {notification?.title?.replace(/\.$/, "") ?? ""}
+            </span>
+            <span className={cx(styles.object, styles.textContent)}>
+              by {getName(notification?.author)}
             </span>
             <span className={styles.textContent}>
               {convertToNotificationActionDescription(
@@ -60,109 +63,8 @@ const UpdateChangeCommonStepNotification = ({
               )}
             </span>
           </span>
-          {/* {isConfirmUpdate ? (
-            <HStack marginTop="8px">
-              <Button
-                borderRadius="6px"
-                lineHeight={"20px"}
-                fontWeight={500}
-                height={"32px"}
-                fontSize={14}
-                disabled={isLoading}
-                colorScheme="teal"
-                padding="10px 12px"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  updateStep();
-                }}
-                backgroundColor={currentTheme?.primaryColor ?? primary500}
-                border={"none"}
-              >
-                Confirm
-              </Button>
-              <Button
-                color="gray.700"
-                height={"32px"}
-                lineHeight={"20px"}
-                fontWeight={500}
-                fontSize={14}
-                disabled={isLoading}
-                border="1px solid #E2E8F0"
-                borderRadius="6px"
-                background="transparent"
-                _hover={{ background: "gray.300" }}
-                _active={{ background: "gray.400" }}
-                marginRight={4}
-                padding="10px 12px"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setIsConfirmUpdate(false);
-                }}
-              >
-                Cancel
-              </Button>
-            </HStack>
-          ) : (
-            <HStack marginTop="8px">
-              <Button
-                borderRadius="6px"
-                lineHeight={"20px"}
-                fontWeight={500}
-                height={"32px"}
-                fontSize={14}
-                colorScheme="teal"
-                padding="10px 12px"
-                onClick={onOpenStepDetail}
-                backgroundColor={currentTheme?.primaryColor ?? primary500}
-                _hover={{
-                  backgroundColor: currentTheme?.primaryColor ?? "primary700",
-                  opacity: currentTheme?.primaryColor ? 0.8 : 1,
-                }}
-                _active={{
-                  background: currentTheme?.primaryColor ?? "primary.700",
-                  opacity: currentTheme?.primaryColor ? 0.8 : 1,
-                }}
-                border={"none"}
-              >
-                Review
-              </Button>
-              <Button
-                color="gray.700"
-                height={"32px"}
-                lineHeight={"20px"}
-                fontWeight={500}
-                fontSize={14}
-                border="1px solid #E2E8F0"
-                borderRadius="6px"
-                background="transparent"
-                _hover={{ background: "gray.300" }}
-                _active={{ background: "gray.400" }}
-                marginRight={4}
-                padding="10px 12px"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setIsConfirmUpdate(true);
-                }}
-              >
-                Update changes
-              </Button>
-            </HStack>
-          )} */}
         </div>
       </HStack>
-
-      {/* {isOpenStepDetail && (
-        <StepDetailModal
-          displayStepIds={[notification?.stepId]}
-          stepId={notification?.stepId}
-          isOpen={isOpenStepDetail}
-          onClose={onCloseStepDetail}
-          handleUpdate={updateStep}
-        />
-      )} */}
     </>
   );
 };

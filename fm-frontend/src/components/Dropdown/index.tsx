@@ -55,12 +55,13 @@ const Dropdown = (props: IDropdownProps) => {
           />
           <MenuList
             zIndex="1001"
+            width="full"
             maxWidth={maxWidth}
             minWidth="auto"
             border="1px solid #E2E8F0"
           >
             {titleDropdown && (
-              <Text fontSize="xs" paddingX={4} paddingY={1} color="gray.400">
+              <Text fontSize="xs" paddingX={4} paddingY={1} color="gray.400" width="full">
                 {titleDropdown}
               </Text>
             )}

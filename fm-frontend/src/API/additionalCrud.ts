@@ -1,10 +1,15 @@
-import { api, handleError } from "API";
-import get from "lodash/get";
-import { IFilter, Where } from "types/common";
-import { AggregationPipeline } from "types/common/aggregation";
+import { api, handleError } from 'API';
+import { AxiosRequestConfig } from 'axios';
+import get from 'lodash/get';
+import { IFilter, Where } from 'types/common';
+import { AggregationPipeline } from 'types/common/aggregation';
 
 type CrudType<T, U> = {
-  get: (route: string, filter?: IFilter<T>) => Promise<U[] | unknown>;
+  get: (
+    route: string,
+    filter?: IFilter<T>,
+    config?: AxiosRequestConfig<any> | undefined
+  ) => Promise<U[] | unknown>;
   post: (route: string, data: unknown) => Promise<unknown>;
   patch: (route: string, data: unknown) => Promise<unknown>;
   put: (route: string, data: unknown) => Promise<unknown>;
@@ -24,19 +29,23 @@ export function createAdditionalCrudService<T, U>(
         const response = await api.post(`/${endpoint}/${route}`, data);
         return response.data.data;
       } catch (error: unknown) {
-        handleError(error as Error, `API/${endpoint}.ts`, "create");
+        handleError(error as Error, `API/${endpoint}.ts`, 'create');
         return {} as U;
       }
     },
-    get: async (route: string, filter?: IFilter<T>): Promise<U[]> => {
+    get: async (
+      route: string,
+      filter?: IFilter<T>,
+      config?: AxiosRequestConfig<any> | undefined
+    ): Promise<U[]> => {
       try {
         const url = filter
           ? `/${endpoint}/${route}?filter=${JSON.stringify(filter)}`
           : `/${endpoint}/${route}`;
-        const response = await api.get(url);
-        return response.data.data;
+        const response = await api.get(url, config);
+        return response?.data?.data ? response.data.data : (response as any);
       } catch (error: unknown) {
-        handleError(error as Error, `API/${endpoint}.ts`, "get");
+        handleError(error as Error, `API/${endpoint}.ts`, 'get');
         return [] as U[];
       }
     },
@@ -45,7 +54,7 @@ export function createAdditionalCrudService<T, U>(
         const response = await api.patch(`/${endpoint}/${route}`, data);
         return response.data.data;
       } catch (error: unknown) {
-        handleError(error as Error, `API/${endpoint}.ts`, "patch");
+        handleError(error as Error, `API/${endpoint}.ts`, 'patch');
         return {} as U;
       }
     },
@@ -54,7 +63,7 @@ export function createAdditionalCrudService<T, U>(
         const response = await api.put(`/${endpoint}/${route}`, data);
         return response.data.data;
       } catch (error: unknown) {
-        handleError(error as Error, `API/${endpoint}.ts`, "put");
+        handleError(error as Error, `API/${endpoint}.ts`, 'put');
         return {} as U;
       }
     },
@@ -63,9 +72,9 @@ export function createAdditionalCrudService<T, U>(
         await api.delete(`/${endpoint}/${route}`);
       } catch (error: unknown) {
         const errorMessage: string =
-          get(error, "response.data.error.message", "") ||
+          get(error, 'response.data.error.message', '') ||
           JSON.stringify(error);
-        handleError(error as Error, `API/${endpoint}.ts`, "delete");
+        handleError(error as Error, `API/${endpoint}.ts`, 'delete');
         throw new Error(errorMessage);
       }
     },
@@ -76,7 +85,7 @@ export function createAdditionalCrudService<T, U>(
         const response = await api.post(`/${endpoint}/aggregate`, { pipeline });
         return response.data.data;
       } catch (error: unknown) {
-        handleError(error as Error, `API/${endpoint}.ts`, "aggregate");
+        handleError(error as Error, `API/${endpoint}.ts`, 'aggregate');
         return [] as U[];
       }
     },
@@ -87,7 +96,7 @@ export function createAdditionalCrudService<T, U>(
         });
         return response.data.data;
       } catch (error: unknown) {
-        handleError(error as Error, `API/${endpoint}.ts`, "count");
+        handleError(error as Error, `API/${endpoint}.ts`, 'count');
         return 0;
       }
     },

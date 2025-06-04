@@ -1,23 +1,24 @@
-import { IFilter, UpdateBody, Where } from "types/common";
-import { AggregationPipeline } from "types/common/aggregation";
-import { api } from "API";
-import { AggregationPaginated } from "interfaces/common";
+import { IFilter, UpdateBody, Where } from 'types/common';
+import { AggregationPipeline } from 'types/common/aggregation';
+import { api } from 'API';
+import { AggregationPaginated } from 'interfaces/common';
 import {
   IGroupProcess,
   IProcess,
   IProcessDuplicate,
   IProcessWithRelations,
-} from "interfaces/process";
-import { createCrudService } from "API/crud";
-import { createAdditionalCrudService } from "API/additionalCrud";
+} from 'interfaces/process';
+import { createCrudService } from 'API/crud';
+import { createAdditionalCrudService } from 'API/additionalCrud';
+import { IProcessRating } from 'interfaces/rating';
 
 const processCrudService = createCrudService<IProcess, IProcessWithRelations>(
-  "processes"
+  'processes'
 );
 const processAdditionalCrudService = createAdditionalCrudService<
   IProcess,
   IProcessWithRelations
->("processes");
+>('processes');
 
 export async function getProcessById(
   processId: string,
@@ -62,7 +63,7 @@ export async function createProcess(
 export async function createGroupProcess(
   groupProcess: IGroupProcess
 ): Promise<IProcess> {
-  const resp = await api.post("/groups-processes", groupProcess);
+  const resp = await api.post('/groups-processes', groupProcess);
   return resp.data?.data;
 }
 
@@ -126,6 +127,19 @@ export async function duplicateProcess(
   ) as Promise<IProcess>;
 }
 
+export async function exportProcessDetail(processId: string): Promise<any> {
+  return processAdditionalCrudService.get(
+    `${processId}/export-pdf`,
+    {},
+    {
+      headers: {
+        Accept: 'application/pdf',
+      },
+      responseType: 'blob',
+    }
+  ) as Promise<any>;
+}
+
 export async function aggregateProcesses(
   pipeline: AggregationPipeline = []
 ): Promise<IProcessWithRelations[]> {
@@ -148,7 +162,33 @@ export async function aggregateProcessesSearch(
 export async function aggregateCountProcesses(
   pipeline: AggregationPipeline = []
 ): Promise<number> {
-  return processAdditionalCrudService.post("aggregate/count", {
+  return processAdditionalCrudService.post('aggregate/count', {
     pipeline,
   }) as Promise<number>;
+}
+
+export async function getProcessRatings(
+  processId: string
+): Promise<IProcessRating[]> {
+  const listProcessRatings =
+    await processAdditionalCrudService.get(`${processId}/ratings`);
+  return listProcessRatings as IProcessRating[];
+}
+
+export async function createProcessRatings(
+  processId: string,
+  processRating: UpdateBody<IProcessRating>
+): Promise<void> {
+  return processAdditionalCrudService.post(
+    `${processId}/ratings`,
+    processRating
+  ) as Promise<void>;
+}
+
+export async function getProcessRatingSummary(
+  processId: string
+): Promise<void> {
+  return processAdditionalCrudService.get(
+    `${processId}/ratings/summary`
+  ) as Promise<void>;
 }

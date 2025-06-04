@@ -6,22 +6,21 @@ import {
   Stack,
   Tooltip,
   chakra,
-} from "@chakra-ui/react";
-import cx from "classnames";
-import Icon, { blockIcon } from "components/Icon";
-import SvgIcon from "components/SvgIcon";
-import { EBreakPoint } from "constants/theme";
-import useBreakPoint from "hooks/useBreakPoint";
-import { IProcessWithRelations } from "interfaces/process";
+} from '@chakra-ui/react';
+import cx from 'classnames';
+import Icon, { blockIcon } from 'components/Icon';
+import SvgIcon from 'components/SvgIcon';
+import { EBreakPoint } from 'constants/theme';
+import useBreakPoint from 'hooks/useBreakPoint';
+import { IProcessWithRelations } from 'interfaces/process';
 // import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
-import { ReactComponent as IconDetail } from "assets/icons/ic_detail.svg";
-import { Fragment } from "react";
-import { useNavigate } from "react-router-dom";
-import { Col, Row } from "reactstrap";
-import routes from "routes";
-import styles from "./styles.module.scss";
-import IconBuilder from "components/IconBuilder";
-import { getRandomColor } from "utils/icon";
+import { ReactComponent as IconDetail } from 'assets/icons/ic_detail.svg';
+import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder';
+import { Fragment } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Col, Row } from 'reactstrap';
+import routes from 'routes';
+import styles from './styles.module.scss';
 
 interface IProcessCardProps {
   procedure: IProcessWithRelations;
@@ -79,10 +78,7 @@ const ProcessCard = (props: IProcessCardProps) => {
           <div className={styles.buttonWrapper}>
             <IconBuilder
               key={`icon-preview-${blockIcon?.id}`}
-              icon={{
-                ...blockIcon,
-                // color: getRandomColor(),
-              }}
+              icon={procedure?.documentType?.iconBuilder ?? blockIcon}
               size={40}
               isActive={true}
             />
@@ -104,7 +100,7 @@ const ProcessCard = (props: IProcessCardProps) => {
                 <Avatar
                   size="sm"
                   name={procedure?.creatorName}
-                  src={procedure?.creatorImage ?? ""}
+                  src={procedure?.creatorImage ?? ''}
                 />
                 <chakra.div
                   className={styles.processName}

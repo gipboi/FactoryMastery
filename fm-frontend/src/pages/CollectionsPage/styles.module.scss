@@ -1,0 +1,130 @@
+@import 'styles/layout';
+@import 'styles/constant';
+
+.topPanel {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  @include bootstrap-respond($large-screen) {
+    width: 400px;
+    flex-direction: row;
+  }
+
+  @include bootstrap-respond($small-screen) {
+    flex-direction: column;
+    width: 100%;
+
+    button {
+      margin-bottom: 5px;
+      width: 100%;
+    }
+  }
+}
+
+.viewModeGroup {
+  @include bootstrap-respond($small-screen) {
+    width: 100%;
+
+    button {
+      margin-bottom: 5px;
+      width: 50%;
+    }
+  }
+}
+
+.utilityModal {
+  @include bootstrap-respond($large-screen) {
+    max-width: 700px;
+    width: 700px;
+  }
+
+  @include bootstrap-respond($small-screen) {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.filterModalContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.createModalContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.btnFilter {
+  background: map-get($custom-colors, 'branding-blue');
+
+  &:hover {
+    background: rgba(map-get($custom-colors, 'branding-blue'), 0.7);
+  }
+}
+
+.btnViewMode {
+  border-color: map-get($custom-colors, 'border-grey') !important;
+  background: #fff;
+  color: map-get($custom-colors, 'default-black');
+
+  &:hover {
+    color: map-get($custom-colors, 'default-black');
+    background: #fff;
+  }
+
+  &:global(.active) {
+    outline: none;
+    color: #fff;
+    background: map-get($custom-colors, 'branding-blue') !important;
+  }
+}
+
+.filterChk {
+  flex: 1 1 300px;
+  height: 40px;
+
+  & :global(.custom-control-input):checked ~ :global(.custom-control-label)::before {
+    color: map-get($custom-colors, 'branding-blue');
+    border-color: map-get($custom-colors, 'branding-blue');
+    background-color: map-get($custom-colors, 'branding-blue');
+  }
+}
+
+.filterRadio {
+  & :global(.custom-control-input):checked ~ :global(.custom-control-label)::before {
+    color: map-get($custom-colors, 'branding-blue');
+    border-color: map-get($custom-colors, 'branding-blue');
+    background-color: map-get($custom-colors, 'branding-blue');
+  }
+}
+
+.btnConfirm {
+  width: 100px;
+  background: map-get($custom-colors, 'branding-blue');
+
+  &:hover {
+    background: rgba(map-get($custom-colors, 'branding-blue'), 0.7);
+  }
+}
+
+.btnClear {
+  width: 100px;
+  color: map-get($custom-colors, 'default-black');
+  background: map-get($custom-colors, 'placeholder-grey');
+
+  &:hover {
+    background: rgba(map-get($custom-colors, 'placeholder-grey'), 0.7);
+  }
+}

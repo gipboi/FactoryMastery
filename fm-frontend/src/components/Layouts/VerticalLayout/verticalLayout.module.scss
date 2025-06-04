@@ -38,3 +38,8 @@
   left: $leftbar-width-mobile;
   width: calc(100vw - #{$leftbar-width-mobile});
 }
+
+.mobile {
+  left: 0;
+  width: 100vw;
+}

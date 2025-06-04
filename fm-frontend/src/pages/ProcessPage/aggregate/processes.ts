@@ -97,7 +97,6 @@ export function getProcessPipeline(
       $regex: `.*${trim(keyword ?? "")}.*`,
       $options: "i",
     },
-    archivedAt: { $exists: false },
     $or: [{ archivedAt: { $exists: false } }, { archivedAt: { $eq: null } }],
   };
 
@@ -109,16 +108,16 @@ export function getProcessPipeline(
   if (collectionIds?.length > 0) {
     filterCollectionPipeline.push({
       $lookup: {
-        from: "collectionsprocesses",
+        from: "collectionprocesses",
         localField: "_id",
         foreignField: "processId",
-        as: "collectionProcesses",
+        as: "collectionsProcesses",
       },
     });
 
     filterCollectionPipeline.push(
       generateMatchObjectIdsQuery(
-        "collectionProcesses",
+        "collectionsProcesses",
         "collectionId",
         getValidArray(collectionIds)
       )

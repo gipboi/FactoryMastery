@@ -32,8 +32,8 @@ export function getCollectionOptionSelect(
 ): IOption<string>[] {
   let collectionOptions: IOption<string>[] = [];
   let collections: string[] = [];
-  getValidArray(collectionList).forEach((collection: IUserWithRelations) => {
-    const collectionName: string = getName(collection);
+  getValidArray(collectionList).forEach((collection: ICollection) => {
+    const collectionName: string = collection?.name ?? '';
     if (!collections.includes(String(collection?.id ?? "")) && collectionName) {
       collections = collections.concat(String(collection?.id));
       collectionOptions = [

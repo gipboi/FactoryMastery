@@ -1,24 +1,28 @@
-import { AuthRoleIdEnum } from "constants/user";
+import { AuthRoleIdEnum } from 'constants/user';
 
 export const roleOptions = [
-  {
-    label: "Organization Admin",
-    value: AuthRoleIdEnum.ORG_ADMIN,
-  },
-  {
-    label: "Admin",
-    value: AuthRoleIdEnum.MANAGER,
-  },
-  {
-    label: "Basic User",
-    value: AuthRoleIdEnum.BASIC_USER,
-  },
+	{
+		label: 'Super Admin',
+		value: AuthRoleIdEnum.SUPER_ADMIN,
+	},
+	{
+		label: 'Organization Admin',
+		value: AuthRoleIdEnum.ORG_ADMIN,
+	},
+	{
+		label: 'Admin',
+		value: AuthRoleIdEnum.MANAGER,
+	},
+	{
+		label: 'Basic User',
+		value: AuthRoleIdEnum.BASIC_USER,
+	},
 ];
 
 export function getRoleName(value: AuthRoleIdEnum): string {
-  const role = roleOptions.find((option) => option.value === value);
-  if (role) {
-    return role.label;
-  }
-  return "Basic User";
+	const role = roleOptions.find((option) => option.value === value);
+	if (role) {
+		return role.label;
+	}
+	return 'Basic User';
 }

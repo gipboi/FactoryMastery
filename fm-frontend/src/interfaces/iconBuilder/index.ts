@@ -9,6 +9,7 @@ export interface IIconBuilder {
   type?: EIconType;
   description?: string;
   isDark?: boolean;
+  isDefaultIcon?: boolean;
 }
 
 export interface IIconBuilderWithRelations extends IIconBuilder {
@@ -41,7 +42,7 @@ export enum EIconDefaultColor {
 }
 
 export enum EIconDefaultId {
-  DOCUMENT_TYPE = 101,
-  BLOCK = 102,
-  STEP = 103,
+  DOCUMENT_TYPE = "101",
+  BLOCK = "102",
+  STEP = "103",
 }

@@ -48,37 +48,8 @@ const UpdateChangeCommonStepNotification = ({
           <span className={cx(styles.textContent)}>
             {notification?.title ?? ""}
           </span>
-          {/* <HStack marginTop="8px">
-            <Button
-              borderRadius="6px"
-              lineHeight={"20px"}
-              fontWeight={500}
-              height={"32px"}
-              fontSize={14}
-              colorScheme="teal"
-              padding="10px 12px"
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                onOpenAffectedProcess();
-              }}
-              backgroundColor={currentTheme?.primaryColor ?? primary500}
-              _hover={{ opacity: 0.8 }}
-              _focus={{ opacity: 1 }}
-              _active={{ opacity: 1 }}
-              border={"none"}
-            >
-              See affected processes
-            </Button>
-          </HStack> */}
         </div>
       </HStack>
-
-      {/* <CommonStepDetailModal
-        notification={notification}
-        isOpen={isOpenAffectedProcess}
-        toggle={onCloseOpenAffectedProcess}
-      /> */}
     </>
   );
 };

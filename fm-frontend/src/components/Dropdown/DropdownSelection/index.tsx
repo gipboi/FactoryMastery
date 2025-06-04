@@ -35,7 +35,7 @@ const DropdownSelection = (props: IDropdownSelectionProps) => {
   return (
     <MenuItem
       padding="8px 16px"
-      width={width ?? { base: "400px", lg: "178px" }}
+      width="full"
       minWidth={minWidth}
       maxWidth={maxWidth}
       onClick={onClick}

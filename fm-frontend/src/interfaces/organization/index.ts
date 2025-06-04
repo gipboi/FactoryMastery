@@ -27,4 +27,6 @@ export interface IOrganization {
   isMarketPlace?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  isStandardUserCanAccessUser?: boolean;
+  lastSignInAt?: Date;
 }

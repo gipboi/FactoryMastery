@@ -7,8 +7,8 @@ import mime from "mime";
 import { Col, Row } from "reactstrap";
 // import { IEcnSuggestionWithRelations } from 'interfaces/ecnSuggestion'
 // import { IEcnSuggestionAttachment } from 'interfaces/ecnSuggestionAttachement'
-import AttachmentTag from "../../../AttachmentTag";
 import styles from "./messageCard.module.scss";
+import AttachmentTag from "../../../AttachmentTag";
 
 dayjs.extend(relativeTime);
 

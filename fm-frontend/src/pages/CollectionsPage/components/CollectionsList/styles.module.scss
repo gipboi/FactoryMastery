@@ -1,0 +1,19 @@
+@import 'styles/constant';
+
+.collectionList {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 50px;
+  position: relative;
+  justify-content: space-between;
+}
+
+.collectionGridList {
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+.selected {
+  background: rgba(map-get($custom-colors, 'branding-blue'), 0.1) !important;
+}

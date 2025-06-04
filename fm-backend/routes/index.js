@@ -18,6 +18,13 @@ import { decisionPointMediaRoute } from "./decisionPoint/decision-point-media.js
 import { groupProcessRoute } from "./groupProcess/index.js";
 import { favoriteRoute } from "./favorite/index.js";
 import { notificationRoute } from "./notification/index.js";
+import { iconRoute } from "./icon/index.js";
+import { adminReportRoute } from "./adminReport/index.js";
+import { collectionRoute } from "./collection/index.js";
+import { groupMessageThreadRoute } from "./groupMessageThread/index.js";
+import { groupMessageThreadUserRoute } from "./groupMessageThreadUser/index.js";
+import { supportMessageThreadRoute } from "./supportMessageThreads/index.js";
+import { collectionProcessRoute } from "./collection/collectionProcess/index.js";
 
 const router = express.Router();
 
@@ -40,5 +47,12 @@ router.use("/decision-point-medias", decisionPointMediaRoute);
 router.use("/group-processes", groupProcessRoute);
 router.use("/favorites", favoriteRoute);
 router.use("/notifications", notificationRoute);
+router.use("/icons", iconRoute);
+router.use("/collections", collectionRoute);
+router.use("/collections-processes", collectionProcessRoute);
+router.use("/admin-reports", adminReportRoute);
+router.use("/group-message-threads", groupMessageThreadRoute);
+router.use("/group-message-thread-users", groupMessageThreadUserRoute);
+router.use("/support-message-threads", supportMessageThreadRoute);
 
 export { router as routes };

@@ -2,12 +2,13 @@ import { CloseIcon } from "@chakra-ui/icons";
 import { Box, Radio, Text } from "@chakra-ui/react";
 import ProcedureIcon from "components/Common/ProcedureIcon";
 import { IDebouncedAsyncMultiSelectProps } from "components/DebouncedAsyncSelect";
-// import MultiValueRemove from "components/Pages/CollectionsPage/MultiValueRemove";
+import MultiValueRemove from "components/MultiValueRemove";
 import SvgIcon from "components/SvgIcon";
 import isEmpty from "lodash/isEmpty";
-// import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import Select, { components } from "react-select";
 import colors from "themes/colors.theme";
+import { primary300 } from "themes/globalStyles";
 import { BaseStyle } from "types/common";
 import styles from "./style.module.scss";
 
@@ -44,8 +45,13 @@ const Option = (props: any) => {
       )}
       <div className={styles.stepWrapper}>
         <components.Option {...props} className={styles.option}>
-          <Radio isChecked={isChecked} marginTop={2} marginRight={4} />
-          {/* {icon ? (
+          <Radio
+            isChecked={isChecked}
+            marginTop={2}
+            colorScheme="primary"
+            marginRight={4}
+          />
+          {icon ? (
             <IconBuilder icon={icon} size={24} isActive />
           ) : (
             <SvgIcon
@@ -53,7 +59,7 @@ const Option = (props: any) => {
               iconName={"steps"}
               style={{ marginLeft: displayProcess ? 30 : 0 }}
             />
-          )} */}
+          )}
           <span className={styles.optionName}>{children}</span>
         </components.Option>
       </div>
@@ -70,11 +76,11 @@ const ValueContainer = (props: any) => {
       <components.ValueContainer {...props}>
         {hasValue && (
           <Box width={6} height={6} alignSelf="center">
-            {/* {icon ? (
+            {icon ? (
               <IconBuilder icon={icon} size={24} isActive />
             ) : (
               <SvgIcon size={17} iconName={"steps"} />
-            )} */}
+            )}
           </Box>
         )}
         <div className={styles.valueChildren}>{children}</div>
@@ -107,7 +113,7 @@ const StepFilterSelect = ({
         components={{
           IndicatorSeparator: null,
           ClearIndicator: () => null,
-          // MultiValueRemove,
+          MultiValueRemove,
           DropdownIndicator: () =>
             rest.value ? (
               <CloseIcon onClick={removeStep} />
@@ -134,7 +140,7 @@ const StepFilterSelect = ({
           option: (base: BaseStyle, props: any) => ({
             ...base,
             color: "gray.700",
-            background: props?.isSelected ? "#DBF8FF" : "white",
+            background: props?.isSelected ? primary300 : "white",
           }),
           multiValue: (base: BaseStyle) => ({
             ...base,

@@ -1,4 +1,4 @@
-import { AddIcon, Search2Icon } from "@chakra-ui/icons";
+import { AddIcon, Search2Icon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -12,25 +12,27 @@ import {
   Stack,
   useDisclosure,
   VStack,
-} from "@chakra-ui/react";
-import { handleError } from "API";
-import CkTable, { IPagination } from "components/CkTable";
-import { DATE_FORMAT } from "constants/common/date";
-import dayjs from "dayjs";
-import { useStores } from "hooks/useStores";
-import { IDocumentType } from "interfaces/documentType";
-import { ITheme } from "interfaces/theme";
-import debounce from "lodash/debounce";
-import { observer } from "mobx-react";
-import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import routes from "routes";
-import { primary } from "themes/globalStyles";
-import { getValidArray } from "utils/common";
-import { getFullName } from "utils/user";
-import { ReactComponent as EditButton } from "../../assets/icons/edit-button.svg";
-import DetailModal from "./components/DetailModal";
-import { getDocumentTypeByAggregation, getHeaderList } from "./utils";
+} from '@chakra-ui/react';
+import { handleError } from 'API';
+import CkTable, { IPagination } from 'components/CkTable';
+import { documentTypeIcon } from 'components/Icon';
+import { DATE_FORMAT } from 'constants/common/date';
+import dayjs from 'dayjs';
+import { useStores } from 'hooks/useStores';
+import { IDocumentType } from 'interfaces/documentType';
+import { ITheme } from 'interfaces/theme';
+import debounce from 'lodash/debounce';
+import { observer } from 'mobx-react';
+import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder';
+import { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import routes from 'routes';
+import { primary } from 'themes/globalStyles';
+import { getValidArray } from 'utils/common';
+import { getFullName } from 'utils/user';
+import { ReactComponent as EditButton } from '../../assets/icons/edit-button.svg';
+import DetailModal from './components/DetailModal';
+import { getDocumentTypeByAggregation, getHeaderList } from './utils';
 
 const DocumentTypePage = () => {
   const { documentTypeStore, spinnerStore, authStore, organizationStore } =
@@ -40,15 +42,15 @@ const DocumentTypePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const pageIndex: number = Number(query.get("page")) || 1;
-  const [keyword, setKeyword] = useState<string>("");
+  const pageIndex: number = Number(query.get('page')) || 1;
+  const [keyword, setKeyword] = useState<string>('');
   const [pageSize, setPageSize] = useState<number>(20);
-  const [sort, setSort] = useState<string>("createdAt");
+  const [sort, setSort] = useState<string>('createdAt');
   const [orderBy, setOrderBy] = useState<number>(-1);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const changeName = useCallback(
     debounce((event: { target: { value: string } }) => {
-      setKeyword(event?.target?.value ?? "");
+      setKeyword(event?.target?.value ?? '');
       gotoPage(0);
     }, 1000),
     []
@@ -57,12 +59,12 @@ const DocumentTypePage = () => {
   const currentTheme: ITheme = organization?.theme ?? {};
 
   function gotoPage(newPage: number) {
-    query.set("page", `${newPage}`);
+    query.set('page', `${newPage}`);
     navigate(`${routes.setting.documentType.value}?${query.toString()}`);
   }
 
   function reloadData(): void {
-    setKeyword("");
+    setKeyword('');
     gotoPage(0);
     fetchData();
   }
@@ -76,7 +78,7 @@ const DocumentTypePage = () => {
       const sortOrder = { [sort]: orderBy };
 
       const pipeline = getDocumentTypeByAggregation(
-        userDetail?.organizationId ?? "",
+        userDetail?.organizationId ?? '',
         pageSize,
         isReset ? 0 : pageSize * (page - 1),
         keyword,
@@ -84,7 +86,7 @@ const DocumentTypePage = () => {
         sortOrder
       );
       const countPipeline = getDocumentTypeByAggregation(
-        userDetail?.organizationId ?? "",
+        userDetail?.organizationId ?? '',
         0,
         0,
         keyword,
@@ -97,8 +99,8 @@ const DocumentTypePage = () => {
     } catch (error: any) {
       handleError(
         error as Error,
-        "components/pages/DocumentTypePage/index.tsx",
-        "fetchData"
+        'components/pages/DocumentTypePage/index.tsx',
+        'fetchData'
       );
     }
   }
@@ -122,26 +124,24 @@ const DocumentTypePage = () => {
   const dataInTable = getValidArray<IDocumentType>(documentTypes).map(
     (documentType) => {
       function handleEdit(): void {
-        documentTypeStore.selectDocumentType(documentType?.id ?? "");
+        documentTypeStore.selectDocumentType(documentType?.id ?? '');
         onOpen();
       }
       const { firstName, lastName } = documentType?.creator ?? {};
       const creatorName = getFullName(firstName, lastName);
       return {
         ...documentType,
-        icon: documentType?.iconId ? (
-          <></>
-        ) : (
-          // <IconBuilder icon={documentType?.iconBuilder} size={40} isActive />
-          // <ProcedureIcon
-          //   borderRadius="50%"
-          //   procedureIcon={documentType?.icon}
-          //   size={40}
-          // />
-          <></>
+        icon: (
+          <Box w={12}>
+            <IconBuilder
+              icon={documentType?.icon ?? documentTypeIcon}
+              size={40}
+              isActive
+            />
+          </Box>
         ),
-        name: documentType?.name ?? "N/A",
-        createdBy: creatorName.trim() || "N/A",
+        name: documentType?.name ?? 'N/A',
+        createdBy: creatorName.trim() || 'N/A',
         createdAt: dayjs(documentType?.createdAt).format(DATE_FORMAT),
         actions: (
           <IconButton
@@ -151,7 +151,7 @@ const DocumentTypePage = () => {
             variant="ghost"
             colorScheme="#F7FAFC"
             aria-label="Call Segun"
-            _hover={{ background: "gray.100" }}
+            _hover={{ background: 'gray.100' }}
             onClick={handleEdit}
             icon={<EditButton />}
           />
@@ -178,7 +178,7 @@ const DocumentTypePage = () => {
     <VStack spacing={6} height="full" padding={{ base: 0, md: 6 }}>
       <HStack spacing={2} width="full">
         <Box
-          display={{ base: "flex", md: "none" }}
+          display={{ base: 'flex', md: 'none' }}
           justifyContent="flex-end"
           width="100%"
         >
@@ -188,17 +188,17 @@ const DocumentTypePage = () => {
             outline="unset"
             border="unset"
             color="white"
-            background={currentTheme?.primaryColor ?? "primary.500"}
+            background={currentTheme?.primaryColor ?? 'primary.500'}
             _hover={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             _active={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             _focus={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             onClick={onOpen}
@@ -212,7 +212,7 @@ const DocumentTypePage = () => {
         </Box>
       </HStack>
       <Stack
-        flexDirection={{ base: "column", md: "row" }}
+        flexDirection={{ base: 'column', md: 'row' }}
         width="full"
         spacing={0}
         justifyContent="space-between"
@@ -226,12 +226,12 @@ const DocumentTypePage = () => {
             type="search"
             placeholder="Search type by name"
             onChange={changeName}
-            width={{ base: "100%", md: "420px" }}
+            width={{ base: '100%', md: '420px' }}
             _focus={{ borderColor: currentTheme?.primaryColor ?? primary }}
           />
         </InputGroup>
         <Box
-          display={{ base: "none", md: "flex" }}
+          display={{ base: 'none', md: 'flex' }}
           justifyContent="flex-end"
           width="100%"
         >
@@ -242,13 +242,13 @@ const DocumentTypePage = () => {
             border="unset"
             color="white"
             gap={{ base: 0, md: 2 }}
-            background={currentTheme?.primaryColor ?? "primary.500"}
+            background={currentTheme?.primaryColor ?? 'primary.500'}
             _hover={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             _active={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             onClick={onOpen}

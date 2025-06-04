@@ -31,7 +31,7 @@ const AttachmentTag = ({ downloadUrl, label, deleteMode = true, onDelete = () =>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default AttachmentTag

@@ -8,12 +8,12 @@ const blockSchema = new Schema(
     position: { type: Number },
     mediaTitle: { type: String },
     isDisableMediaLabel: { type: Boolean },
-
     mediaId: { type: Schema.Types.ObjectId },
     stepId: { type: Schema.Types.ObjectId, require: true },
     processId: { type: Schema.Types.ObjectId, require: true },
     createdAt: { type: Date },
     updatedAt: { type: Date },
+    iconId: { type: Schema.Types.ObjectId },
   },
   {
     timestamps: true,
@@ -35,6 +35,12 @@ blockSchema.virtual("step", {
 blockSchema.virtual("media", {
   ref: "Media",
   localField: "mediaId",
+  foreignField: "_id",
+});
+
+blockSchema.virtual("icon", {
+  ref: "Icon",
+  localField: "iconId",
   foreignField: "_id",
 });
 

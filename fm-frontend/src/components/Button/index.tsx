@@ -5,7 +5,6 @@ import styles from "./styles.module.scss";
 interface IButtonProps extends Omit<ButtonProps, "outline"> {
   targetHover?: boolean;
 
-  // reactstrap feature mimic
   color?: string;
   textColor?: string;
   outline?: boolean;

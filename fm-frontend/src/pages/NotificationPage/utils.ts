@@ -39,6 +39,8 @@ export function getNotificationPipeline(
       { type: NotificationTypeEnum.DELETED_STEP_NOTIFICATION },
       { type: NotificationTypeEnum.UPDATED_PROCESS_NOTIFICATION },
       { type: NotificationTypeEnum.DELETED_PROCESS_NOTIFICATION },
+      { type: NotificationTypeEnum.ARCHIVED_PROCESS_NOTIFICATION },
+      { type: NotificationTypeEnum.UPDATED_THREAD_STATUS },
     ],
   };
 

@@ -1,0 +1,183 @@
+@import 'styles/constant';
+@import 'styles/layout';
+
+$text-color: #323a46;
+
+@keyframes toOpenModal {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.utilityModal {
+  margin-right: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+  animation: toOpenModal 0.7s forwards ease-in-out;
+
+  @include bootstrap-respond($large-screen) {
+    width: 600px;
+  }
+}
+
+@keyframes toOpenModalCenter {
+  from {
+    transform: translateY(10%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.centered {
+  &.utilityModal {
+    animation: toOpenModalCenter 0.3s forwards ease-in-out;
+    margin: auto;
+
+    @include bootstrap-respond($large-screen) {
+      margin-top: -3%;
+    }
+  }
+}
+
+.overviewHeader {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: none;
+
+  @include bootstrap-respond($large-screen) {
+    padding: 25px;
+    padding-bottom: 0;
+  }
+
+  @include bootstrap-respond($small-screen) {
+    padding: 15px;
+    padding-bottom: 0;
+  }
+
+  h5 {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 32px;
+    color: $text-color;
+  }
+
+  button {
+    padding: 0;
+    line-height: 30px;
+    border: none;
+  }
+}
+
+.modalBody {
+  @include bootstrap-respond($large-screen) {
+    padding: 25px;
+    padding-top: 0;
+  }
+
+  @include bootstrap-respond($small-screen) {
+    padding: 15px;
+    padding-top: 0;
+  }
+}
+
+.overviewInfo {
+  display: flex;
+  flex-direction: row;
+  margin: 20px 0;
+  flex-wrap: wrap;
+
+  svg {
+    margin-right: 5px;
+  }
+
+  img {
+    margin-left: 5px;
+  }
+
+  .collectionMedia,
+  .collectionProcess {
+    max-height: 165px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #e0e4ea;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c9ced6;
+    }
+  }
+
+  & > strong {
+    @include bootstrap-respond($large-screen) {
+      width: 30%;
+    }
+
+    @include bootstrap-respond($small-screen) {
+      width: 100%;
+    }
+  }
+
+  a {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    color: $text-color;
+  }
+}
+
+.labelled {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: 10px 0;
+
+  & > svg,
+  & > div {
+    margin-right: 5px;
+  }
+
+  & > a {
+    flex: 1;
+  }
+
+  & > div {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.collectionMedia {
+  display: 'flex';
+  flex-direction: 'row';
+  flex-wrap: 'wrap';
+
+  img {
+    border-radius: 0.3rem;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    width: auto;
+    height: 80px;
+  }
+}
+
+.description > p {
+  & > p {
+    margin-bottom: 0;
+  }
+}

@@ -1,0 +1,97 @@
+@import 'styles/layout';
+@import 'styles/constant';
+
+.collectionListItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
+  height: 90px;
+  width: 100%;
+
+  &:hover {
+    background: rgba(map-get($custom-colors, 'branding-blue'), 0.1) !important;
+  }
+
+  img {
+    margin-left: 10px;
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+  }
+
+  .collectionName {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    color: #00a9eb;
+    cursor: pointer;
+  }
+
+  .collectionDate {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    color: #323a46;
+  }
+}
+
+.collectionGridItem {
+  @include bootstrap-respond($large-screen) {
+    flex-basis: 100%;
+    flex: 1 0 21%;
+  }
+
+  @include bootstrap-respond($small-screen) {
+    flex-basis: 100%;
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    .collectionName {
+      color: #00a9eb;
+    }
+  }
+
+  img {
+    width: 100%;
+    height: 232px;
+    min-height: 232px;
+  }
+
+  :global(.card-body) {
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .collectionTime {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    color: #323a46;
+  }
+}
+
+.iconDetail {
+  color: #4a5568;
+  width: 20px;
+  height: 20px;
+}
+
+.iconButton {
+  background-color: #f7fafc;
+  border: none;
+  box-shadow: none;
+  width: 40px;
+  height: 40px;
+  margin-right: 24px;
+  &:hover {
+    background-color: #edf2f7;
+  }
+}

@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
 import qs from "qs";
 import React, { Fragment, useEffect, useState } from "react";
@@ -38,9 +39,9 @@ const Tabs = (props: ITabsProps) => {
     ...ulProps
   } = props;
   const location = useLocation();
-  // const { messageStore } = useStores();
-  // const { unreadSupportThreadCount = 0, unreadGroupThreadCount = 0 } =
-  //   messageStore;
+  const { messageStore } = useStores();
+  const { unreadSupportThreadCount = 0, unreadGroupThreadCount = 0 } =
+    messageStore;
   const params = new URLSearchParams(location.search);
   const queryString = qs.parse(location.search);
   const navigate = useNavigate();
@@ -70,10 +71,10 @@ const Tabs = (props: ITabsProps) => {
       >
         {Array.isArray(headers) &&
           headers.map((header: ITabHeader, index: number) => {
-            // const unreadCount =
-            //   header.label === "GENERAL"
-            //     ? unreadGroupThreadCount
-            //     : unreadSupportThreadCount;
+            const unreadCount =
+              header.label === "GENERAL"
+                ? unreadGroupThreadCount
+                : unreadSupportThreadCount;
             return (
               <li
                 key={index}
@@ -97,11 +98,11 @@ const Tabs = (props: ITabsProps) => {
                   <div className={cx(styles.tabLabel, "d-md-block")}>
                     {header.label}
                   </div>
-                  {/* {isMessagePage && unreadCount ? (
+                  {isMessagePage && unreadCount ? (
                     <div className={styles.countNotifications}>
                       {Math.max(Number(unreadCount), 0)}
                     </div>
-                  ) : null} */}
+                  ) : null}
                 </div>
               </li>
             );

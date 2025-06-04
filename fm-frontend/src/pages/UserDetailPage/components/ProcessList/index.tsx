@@ -19,7 +19,6 @@ import CkTable, {
 } from "components/CkTable";
 import ProcessSummary from "components/Common/ProcessSummary";
 import { processIcon } from "components/Icon";
-import IconBuilder from "components/IconBuilder";
 import SearchInput from "components/SearchInput";
 import SvgIcon from "components/SvgIcon";
 import { filterUserDetail } from "components/UserDetailPage/utils";
@@ -27,6 +26,7 @@ import { useStores } from "hooks/useStores";
 import { IProcessWithRelations } from "interfaces/process";
 import debounce from "lodash/debounce";
 import { observer } from "mobx-react";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";

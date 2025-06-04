@@ -1,23 +1,23 @@
-import { login } from "API/auth";
-import { getUserInfo } from "API/auth";
-import ERRORS from "config/errors";
-import { AuthenticateParams } from "constants/enums/auth";
-import { AuthRoleNameEnum } from "constants/user";
-import { AuthUserProfile, ILoginRequest } from "interfaces/auth";
-import { IOrganization } from "interfaces/organization";
-import { IUser } from "interfaces/user";
-import { isEmpty, trim } from "lodash";
-import { makeAutoObservable } from "mobx";
-import { getGroupMemberAggregation } from "pages/GroupUserPage/utils";
-import { RootStore } from "stores";
-import { isValidEmail } from "utils/common";
-import { getSubdomain } from "utils/domain";
+import { login } from 'API/auth';
+import { getUserInfo } from 'API/auth';
+import ERRORS from 'config/errors';
+import { SUPER_ADMIN_DOMAIN } from 'constants/admin';
+import { AuthenticateParams } from 'constants/enums/auth';
+import { AuthRoleNameEnum } from 'constants/user';
+import { AuthUserProfile, ILoginRequest } from 'interfaces/auth';
+import { IOrganization } from 'interfaces/organization';
+import { IUser } from 'interfaces/user';
+import { isEmpty, trim } from 'lodash';
+import { makeAutoObservable } from 'mobx';
+import { RootStore } from 'stores';
+import { isValidEmail } from 'utils/common';
+import { getSubdomain } from 'utils/domain';
 
 export default class AuthStore {
   rootStore: RootStore;
   userDetail: AuthUserProfile | null = null;
-  accessToken: string = "";
-  resetPasswordToken?: string = "";
+  accessToken: string = '';
+  resetPasswordToken?: string = '';
   isDisabled: boolean = false;
   authRoles: AuthRoleNameEnum[] = [];
 
@@ -37,6 +37,7 @@ export default class AuthStore {
       return false;
     }
     const isEmail = isValidEmail(trim(email));
+
     if (!isEmail) {
       return false;
     }
@@ -55,11 +56,11 @@ export default class AuthStore {
       }
 
       if (loginResp?.user.isResetPassword) {
-        this.resetPasswordToken = loginResp?.user?.resetPasswordToken ?? "";
+        this.resetPasswordToken = loginResp?.user?.resetPasswordToken ?? '';
         return false;
       }
 
-      this.accessToken = loginResp?.user?.tokens ?? "";
+      this.accessToken = loginResp?.user?.tokens ?? '';
       localStorage.setItem(AuthenticateParams.ACCESS_TOKEN, this.accessToken);
       // const groupMembers = await getLoggedInUserGroupMembers();
 
@@ -69,7 +70,7 @@ export default class AuthStore {
       this.rootStore.userStore.setCurrentUser(loginResp?.user as IUser);
 
       const storageOrg: string =
-        localStorage.getItem(AuthenticateParams.ORG_ID) ?? "";
+        localStorage.getItem(AuthenticateParams.ORG_ID) ?? '';
 
       if (
         loginResp?.user?.organizationId !== currentOrg?.id &&
@@ -79,11 +80,23 @@ export default class AuthStore {
       }
 
       this.userDetail = loginResp?.user;
+
+      this.rootStore.userStore.getUserDetail(
+        loginResp?.user?.id ?? loginResp?.user?._id ?? '',
+        {
+          include: [
+            {
+              relation: 'groupMembers',
+              scope: { include: [{ relation: 'group' }] },
+            },
+          ],
+        }
+      );
       return true;
     } catch (e: any) {
       localStorage.removeItem(AuthenticateParams.ACCESS_TOKEN);
       if (e?.status === 403) {
-        throw e
+        throw e;
       }
       throw new Error(ERRORS.LOGIN_FAILED);
     }
@@ -91,12 +104,19 @@ export default class AuthStore {
 
   public async getMyUser() {
     const accessToken: string =
-      localStorage.getItem(AuthenticateParams.ACCESS_TOKEN) || "";
+      localStorage.getItem(AuthenticateParams.ACCESS_TOKEN) || '';
     if (accessToken) {
       this.accessToken = accessToken;
       try {
         const userInfo = await getUserInfo();
+        const subDomain = getSubdomain();
         if (userInfo) {
+          if (
+            subDomain === SUPER_ADMIN_DOMAIN &&
+            userInfo.authRole !== AuthRoleNameEnum.SUPER_ADMIN
+          ) {
+            throw new Error('Access denied');
+          }
           this.userDetail = userInfo;
           await this.rootStore.groupStore.fetchGroupMemberOfCurrentUser();
           this.rootStore.userStore.setCurrentUserGroupMembers(
@@ -105,7 +125,7 @@ export default class AuthStore {
           this.rootStore.userStore.setCurrentUser(userInfo as IUser);
         }
       } catch (error: any) {
-        alert("Login session expired!");
+        alert('Login session expired!');
         this.logout();
       }
     }
@@ -120,8 +140,8 @@ export default class AuthStore {
     localStorage.removeItem(AuthenticateParams.ACCESS_TOKEN);
     const subdomain = getSubdomain();
     const mainhost = window.location.host
-      .replace(/^(www\.)/, "")
-      .replace(new RegExp(`^(${subdomain}\\.)`), "");
+      .replace(/^(www\.)/, '')
+      .replace(new RegExp(`^(${subdomain}\\.)`), '');
     window.location.href = `${window.location.protocol}//app.${mainhost}`;
     this.resetPasswordToken = undefined;
   }

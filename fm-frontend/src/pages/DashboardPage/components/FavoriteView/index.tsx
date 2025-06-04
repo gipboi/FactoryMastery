@@ -8,31 +8,31 @@ import {
   Text,
   useDisclosure,
   VStack,
-} from "@chakra-ui/react";
-import icon from "assets/icons/collections.svg";
-import { ReactComponent as FavoriteIcon } from "assets/icons/favorite.svg";
-import imgPlaceholder from "assets/images/missing_image.png";
-import ProcessSummary from "components/Common/ProcessSummary";
+} from '@chakra-ui/react';
+import icon from 'assets/icons/collections.svg';
+import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
+import imgPlaceholder from 'assets/images/missing_image.png';
+import ProcessSummary from 'components/Common/ProcessSummary';
 // import CollectionOverview from "components/Pages/CollectionsPage/CollectionOverview";
-import SvgIcon from "components/SvgIcon";
-import { useStores } from "hooks/useStores";
-import { IFavoriteWithRelations } from "interfaces/favorite";
-import { observer } from "mobx-react";
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-// import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder'
-import routes from "routes";
-import { getValidArray } from "utils/common";
-import { ITheme } from "../../../../interfaces/theme";
-import EmptyResult from "../EmptyResult";
-import ModalFavoriteView from "../ModalFavoriteView";
-import styles from "./styles.module.scss";
-import IconBuilder from "components/IconBuilder";
-import { blockIcon } from "components/Icon";
+import { blockIcon } from 'components/Icon';
+import SvgIcon from 'components/SvgIcon';
+import { useStores } from 'hooks/useStores';
+import { IFavoriteWithRelations } from 'interfaces/favorite';
+import { observer } from 'mobx-react';
+import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import routes from 'routes';
+import { getValidArray } from 'utils/common';
+import { ITheme } from '../../../../interfaces/theme';
+import EmptyResult from '../EmptyResult';
+import ModalFavoriteView from '../ModalFavoriteView';
+import styles from './styles.module.scss';
+import CollectionOverview from 'pages/CollectionsPage/components/CollectionOverview';
 
 const FavoriteView = () => {
   const [selectedCollectionId, setSelectedCollectionId] =
-    React.useState<string>("");
+    React.useState<string>('');
   const {
     isOpen: isOpenDashboard,
     onOpen: onOpenDashboard,
@@ -80,20 +80,28 @@ const FavoriteView = () => {
     favoriteStore.fetchFavoriteList({
       include: [
         {
-          relation: "collection",
+          relation: 'collection',
+          scope: {
+            where: {
+              archivedAt: null as any,
+            },
+          },
         },
         {
-          relation: "process",
+          relation: 'process',
           scope: {
             include: [
               {
-                relation: "documentType",
+                relation: 'documentType',
+                scope: {
+                  include: ['icon'],
+                },
               },
             ],
           },
         },
       ],
-      order: ["createdAt DESC"],
+      order: ['createdAt DESC'],
     });
   }, []);
 
@@ -133,12 +141,12 @@ const FavoriteView = () => {
           </HStack>
           <Box onClick={onOpenDashboard}>
             <Link
-              color={currentTheme?.primaryColor ?? "primary.500"}
+              color={currentTheme?.primaryColor ?? 'primary.500'}
               fontSize="16px"
               fontWeight="500"
               lineHeight="24px"
               _hover={{
-                color: currentTheme?.primaryColor ?? "primary.700",
+                color: currentTheme?.primaryColor ?? 'primary.700',
                 opacity: currentTheme?.primaryColor ? 0.8 : 1,
               }}
             >
@@ -161,123 +169,126 @@ const FavoriteView = () => {
         >
           {getValidArray(mostRecentFavorite).map(
             (item: IFavoriteWithRelations, index: number) => {
-              const collectionImage: string = item?.collection?.mainMedia ?? "";
+              const collection = item?.collection;
+              const collectionImage: string = item?.collection?.mainMedia ?? '';
               const collectionUrl: string = collectionImage
-                ? (item.collection?.organizationId ?? "", collectionImage)
+                ? (item.collection?.organizationId ?? '', collectionImage)
                 : imgPlaceholder;
               const isProcess: boolean = !!item?.processId;
               const process = (item?.process as any)?.[0];
-              return (
-                <GridItem
-                  width="stretch"
-                  key={item?.id ?? index}
-                  gap={2}
-                  color="gray.700"
-                  transition="all 0.2s"
-                  paddingX={4}
-                  paddingY={3}
-                  display="flex"
-                  justifyContent="space-between"
-                  _hover={{
-                    background: "gray.50",
-                    boxShadow: "sm",
-                    color: currentTheme?.primaryColor ?? "primary.500",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  <HStack spacing={2} alignItems="flex-start">
-                    {isProcess ? (
-                      <Box width="40px" className={styles.icon}>
-                        <IconBuilder
-                          key={`icon-preview-${blockIcon?.id}`}
-                          icon={blockIcon}
-                          size={40}
-                          isActive={true}
-                        />
-                      </Box>
-                    ) : (
-                      <Box width="40px" alignItems="flex-start">
-                        <Img
-                          src={collectionUrl}
-                          onError={onImgError}
-                          width="40px"
-                          height="40px"
-                          borderRadius="8px"
-                        />
-                      </Box>
-                    )}
-                    <Text
-                      fontSize="16px"
-                      color="inherit"
-                      fontWeight="500"
-                      lineHeight="24px"
-                      marginBottom={0}
-                      cursor="pointer"
-                      maxHeight="48px"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      alignSelf="center"
-                      onClick={() => {
-                        isProcess
-                          ? navigate(
-                              routes.processes.processId.value(
-                                String(item?.processId ?? "")
+              if (!!collection || !!process) {
+                return (
+                  <GridItem
+                    width="stretch"
+                    key={item?.id ?? index}
+                    gap={2}
+                    color="gray.700"
+                    transition="all 0.2s"
+                    paddingX={4}
+                    paddingY={3}
+                    display="flex"
+                    justifyContent="space-between"
+                    _hover={{
+                      background: 'gray.50',
+                      boxShadow: 'sm',
+                      color: currentTheme?.primaryColor ?? 'primary.500',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <HStack spacing={2} alignItems="flex-start">
+                      {isProcess ? (
+                        <Box width="40px" className={styles.icon}>
+                          <IconBuilder
+                            key={`icon-preview-${blockIcon?.id}`}
+                            icon={process?.documentType?.icon ?? blockIcon}
+                            size={40}
+                            isActive={true}
+                          />
+                        </Box>
+                      ) : (
+                        <Box width="40px" alignItems="flex-start">
+                          <Img
+                            src={collectionUrl}
+                            onError={onImgError}
+                            width="40px"
+                            height="40px"
+                            borderRadius="8px"
+                          />
+                        </Box>
+                      )}
+                      <Text
+                        fontSize="16px"
+                        color="inherit"
+                        fontWeight="500"
+                        lineHeight="24px"
+                        marginBottom={0}
+                        cursor="pointer"
+                        maxHeight="48px"
+                        overflow="hidden"
+                        textOverflow="ellipsis"
+                        alignSelf="center"
+                        onClick={() => {
+                          isProcess
+                            ? navigate(
+                                routes.processes.processId.value(
+                                  String(item?.processId ?? '')
+                                )
                               )
-                            )
-                          : navigate(
-                              routes.collections.collectionId.value(
-                                String(item?.collectionId ?? "")
-                              )
-                            );
-                      }}
+                            : navigate(
+                                routes.collections.collectionId.value(
+                                  String(item?.collectionId ?? '')
+                                )
+                              );
+                        }}
+                      >
+                        {isProcess
+                          ? process?.name ?? ''
+                          : item?.collection?.name ?? ''}
+                      </Text>
+                    </HStack>
+                    <Box
+                      width="32px"
+                      height="32px"
+                      display={{ base: 'none', md: 'block' }}
                     >
-                      {isProcess
-                        ? process?.name ?? ""
-                        : item?.collection?.name ?? ""}
-                    </Text>
-                  </HStack>
-                  <Box
-                    width="32px"
-                    height="32px"
-                    display={{ base: "none", md: "block" }}
-                  >
-                    <IconButton
-                      backgroundColor="#ffffff"
-                      aria-label="Quick View"
-                      isRound
-                      size="sm"
-                      border="none"
-                      onClick={() =>
-                        isProcess
-                          ? handleOpenProcessDetail(item?.processId ?? "")
-                          : handleOpenCollectionDetail(item?.collectionId ?? "")
-                      }
-                      icon={<SvgIcon size={16} iconName="ic_detail" />}
-                      _hover={{ backgroundColor: "#EDF2F7" }}
-                    />
-                  </Box>
-                  <Box
-                    width="24px"
-                    height="24px"
-                    display={{ base: "block", md: "none" }}
-                  >
-                    <IconButton
-                      backgroundColor="#ffffff"
-                      aria-label="Quick View"
-                      isRound
-                      border="none"
-                      size="xs"
-                      onClick={() =>
-                        isProcess
-                          ? handleOpenProcessDetail(item?.processId ?? "")
-                          : handleOpenCollectionDetail(item?.collectionId ?? "")
-                      }
-                      icon={<SvgIcon size={20} iconName="ic_detail"></SvgIcon>}
-                      _hover={{ backgroundColor: "#EDF2F7" }}
-                    />
-                  </Box>
-                </GridItem>
-              );
+                      <IconButton
+                        backgroundColor="#ffffff"
+                        aria-label="Quick View"
+                        isRound
+                        size="sm"
+                        border="none"
+                        onClick={() =>
+                          isProcess
+                            ? handleOpenProcessDetail(item?.processId ?? '')
+                            : handleOpenCollectionDetail(item?.collectionId ?? '')
+                        }
+                        icon={<SvgIcon size={16} iconName="ic_detail" />}
+                        _hover={{ backgroundColor: '#EDF2F7' }}
+                      />
+                    </Box>
+                    <Box
+                      width="24px"
+                      height="24px"
+                      display={{ base: 'block', md: 'none' }}
+                    >
+                      <IconButton
+                        backgroundColor="#ffffff"
+                        aria-label="Quick View"
+                        isRound
+                        border="none"
+                        size="xs"
+                        onClick={() =>
+                          isProcess
+                            ? handleOpenProcessDetail(item?.processId ?? '')
+                            : handleOpenCollectionDetail(item?.collectionId ?? '')
+                        }
+                        icon={<SvgIcon size={20} iconName="ic_detail"></SvgIcon>}
+                        _hover={{ backgroundColor: '#EDF2F7' }}
+                      />
+                    </Box>
+                  </GridItem>
+                );
+              }
             }
           )}
         </VStack>
@@ -293,7 +304,7 @@ const FavoriteView = () => {
         handleOpenCollectionDetail={handleOpenCollectionDetail}
       />
 
-      {/* <CollectionOverview
+      <CollectionOverview
         collectionId={selectedCollectionId}
         toggle={
           isOpenCollectionDetail
@@ -302,7 +313,7 @@ const FavoriteView = () => {
         }
         isOpen={isOpenCollectionDetail}
         isCentered
-      /> */}
+      />
     </VStack>
   );
 };

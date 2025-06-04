@@ -1,21 +1,26 @@
-import React from 'react'
-import cx from 'classnames'
-import { EIconDefaultIconName, EIconShape, EIconType, IIconBuilder } from 'interfaces/iconBuilder'
-import { primary500 } from 'themes/globalStyles'
+import cx from "classnames";
+import {
+  EIconDefaultIconName,
+  EIconShape,
+  EIconType,
+  IIconBuilder,
+} from "interfaces/iconBuilder";
+import React from "react";
+import { primary500 } from "themes/globalStyles";
 
 interface IconProps extends React.HTMLProps<HTMLSpanElement> {
-  group: 'unicon' | 'dripicon' | 'muiicon' | 'fontawesome' | 'lineawesome'
-  icon: string
-  className?: string
+  group: "unicon" | "dripicon" | "muiicon" | "fontawesome" | "lineawesome";
+  icon: string;
+  className?: string;
 }
 
 const ICON_GROUP_PREFIX = {
-  unicon: 'uil',
-  dripicon: 'dripicons',
-  muiicon: 'mdi',
-  fontawesome: 'fas fa',
-  lineawesome: 'las la'
-}
+  unicon: "uil",
+  dripicon: "dripicons",
+  muiicon: "mdi",
+  fontawesome: "fas fa",
+  lineawesome: "las la",
+};
 
 export const blockIcon: IIconBuilder = {
   id: "",
@@ -50,9 +55,20 @@ export const stepIcon: IIconBuilder = {
   isDark: false,
 };
 
-const Icon = ({ group, icon, className, ...props }: IconProps) => {
-  const iconClass = `${ICON_GROUP_PREFIX[group]}-${icon}`
-  return <i className={cx(iconClass, className)} {...props} />
-}
+export const documentTypeIcon: IIconBuilder = {
+  id: "",
+  _id: "",
+  shape: EIconShape.SQUARE,
+  color: " #02A8B5",
+  iconName: EIconDefaultIconName.DOCUMENT_TYPE,
+  type: EIconType.DOCUMENT_TYPE,
+  description: "Default icon for document type",
+  isDark: false,
+};
 
-export default Icon
+const Icon = ({ group, icon, className, ...props }: IconProps) => {
+  const iconClass = `${ICON_GROUP_PREFIX[group]}-${icon}`;
+  return <i className={cx(iconClass, className)} {...props} />;
+};
+
+export default Icon;

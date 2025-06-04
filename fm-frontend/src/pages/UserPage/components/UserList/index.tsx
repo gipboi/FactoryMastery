@@ -463,7 +463,7 @@ const UserList = ({
                   <ActionButton
                     label="Assign"
                     rightIcon={
-                      <AccountCancelOutlineIcon width={16} height={16} />
+                      <GroupIcon width={16} height={16} />
                     }
                     disabled={!selectedUsers?.some((item) => item)}
                     onClick={() => {

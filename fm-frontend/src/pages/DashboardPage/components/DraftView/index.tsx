@@ -10,15 +10,16 @@ import {
 } from "@chakra-ui/react";
 import { ReactComponent as ProcessIcon } from "assets/icons/process.svg";
 import ProcessSummary from "components/Common/ProcessSummary";
+import { processIcon } from "components/Icon";
 import SvgIcon from "components/SvgIcon";
 import { AuthRoleNameEnum } from "constants/user";
 import { useStores } from "hooks/useStores";
 import { IProcessWithRelations } from "interfaces/process";
 import isEmpty from "lodash/isEmpty";
 import { observer } from "mobx-react";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import { getProcessPipeline } from "pages/ProcessPage/aggregate";
 import { queryParser } from "pages/ProcessPage/aggregate/queryParser";
-// import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import routes from "routes";
@@ -27,8 +28,6 @@ import { ITheme } from "../../../../interfaces/theme";
 import EmptyResult from "../EmptyResult";
 import ModalDraftView from "../ModalDraftView";
 import styles from "./styles.module.scss";
-import { processIcon } from "components/Icon";
-import IconBuilder from "components/IconBuilder";
 
 const DraftView = () => {
   const {
@@ -85,7 +84,7 @@ const DraftView = () => {
           userDetail.authRole,
           false,
           "",
-          userDetail.authRole === AuthRoleNameEnum.BASIC_USER,
+          userDetail.authRole === AuthRoleNameEnum.BASIC_USER
         );
         await processStore.getProcessByAggregate(dataPipeline, queryParser);
       }
@@ -96,7 +95,6 @@ const DraftView = () => {
 
   useEffect(() => {
     if (!isEmpty(userDetail)) {
-      console.log("Fetching drafts for organization:", organization?.id);
       fetchDrafts(organization?.id);
       groupStore.getGroups({ where: { organizationId: organization?.id } });
     }
@@ -188,11 +186,7 @@ const DraftView = () => {
                 >
                   <HStack spacing={2} alignItems="flex-start">
                     <Box width="40px" className={styles.icon}>
-                      <IconBuilder
-                        icon={processIcon}
-                        size={40}
-                        isActive
-                      />
+                      <IconBuilder icon={processIcon} size={40} isActive />
                     </Box>
                     <Text
                       fontSize="16px"

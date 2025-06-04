@@ -23,15 +23,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import colors from "themes/colors.theme";
 import { primary } from "themes/globalStyles";
-// import { createAudit } from 'API/audit'
-// import { uploadMultipleFiles } from 'API/cms'
-// import { createEcnSuggestion, createMultipleEcnSuggestionAttachment } from 'API/ecnSuggestion'
-import AttachmentTag from "components/AttachmentTag";
+import { uploadMultipleFiles } from "API/cms";
+import AttachmentSection from "components/AttachmentSection";
 import SvgIcon from "components/SvgIcon";
 import { AuthRoleNameEnum } from "constants/user";
 import { IProcessWithRelations } from "interfaces/process";
 import { IStepWithRelations } from "interfaces/step";
 import { ITheme } from "interfaces/theme";
+import { checkValidArray } from "utils/common";
 import MessageContent from "../MessageView/components/Content";
 import StepDetail from "../StepDetail";
 import styles from "./styles.module.scss";
@@ -43,33 +42,27 @@ interface INewSupportMessageModalProps {
   onClose: () => void;
 }
 
-export interface Attachment {
-  name: string;
-  url: string;
-}
 
 const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
   const { isOpen, selectedStep, process, onClose } = props;
-  const {
-    userStore,
-    authStore,
-    notificationStore,
-    organizationStore,
-  } = useStores();
+  const { userStore, authStore, notificationStore, organizationStore } =
+    useStores();
   // const { ecnSuggestionsForAdmin = [], ecnSuggestionsForBasicUser = [] } =
   //   ecnSuggestionStore;
   const { userDetail } = authStore;
   const isBasicUser = userDetail?.authRole === AuthRoleNameEnum.BASIC_USER;
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [processing, setProcessing] = useState<boolean>(false);
-  const [messageContent, setMessageContent] = useState("");
+  const [messageContent, setMessageContent] = useState('');
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const fileInputRef = useRef<any>(null);
   const isDisableSend =
     (isEmpty(attachments) && !messageContent) || processing || !selectedStep;
-  // const collections = Array.isArray(process?.collections)
-  //   ? process?.collections
-  //   : [];
+  const collections = Array.isArray(process?.collections)
+    ? process?.collections
+    : [];
   const stepId = selectedStep?.id ?? "";
   const { organization } = organizationStore;
   const currentTheme: ITheme = organization?.theme ?? {};
@@ -82,39 +75,36 @@ const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
   }, [stepId]);
 
   useEffect(() => {
-    setMessageContent("");
+    setMessageContent('');
     setAttachments([]);
   }, [isOpen]);
 
-  async function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
-    if (event.currentTarget.files) {
-      setProcessing(true);
-      const arrayOfFiles = Array.from(event.currentTarget.files);
-      // const uploadingFiles = await uploadMultipleFiles(
-      //   organizationStore.organization?.id ?? 0,
-      //   "other",
-      //   arrayOfFiles
-      // );
-
-      setAttachments([
-        ...attachments,
-        // ...uploadingFiles.map((url: string, idx: number) => ({
-        //   url,
-        //   name: arrayOfFiles[idx].name,
-        // })),
-      ]);
+  async function handleUpload(evt: React.ChangeEvent<HTMLInputElement>) {
+    if (evt.currentTarget.files) {
+      const arrayOfFiles = Array.from(evt.currentTarget.files);
+      setAttachments((prev) => [...prev, ...arrayOfFiles]);
     }
-    setProcessing(false);
   }
 
   async function onSubmit() {
     if (!stepId || !userStore?.currentUser?.id) {
-      toast.error("Step data or user is not available");
+      toast.error('Step data or user is not available');
       return;
     }
 
     try {
       setProcessing(true);
+
+      let uploadedUrls: string[] = [];
+
+      if (checkValidArray(attachments)) {
+        uploadedUrls = await uploadMultipleFiles(
+          organizationStore.organization?.id ?? "",
+          "other",
+          attachments
+        );
+      }
+
       // const createdEcn = await createEcnSuggestion({
       //   stepId,
       //   userId: userStore.currentUser.id,
@@ -144,12 +134,12 @@ const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
 
       // ecnSuggestionStore.fetchEcnSuggestions(stepId, !isBasicUser);
       // notificationStore.aggregateCountNotifications();
-      setMessageContent("");
+      setMessageContent('');
       setAttachments([]);
-      toast.success("Create new note successfully");
+      toast.success('Create new note successfully');
     } catch (error: any) {
       const errorMessage = error.response?.data.error.message;
-      toast.error(errorMessage ?? "Fail to create note");
+      toast.error(errorMessage ?? 'Fail to create note');
     } finally {
       setProcessing(false);
     }
@@ -173,12 +163,12 @@ const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
           border="unset"
           background="white"
           top="15px"
-          _focus={{ borderColor: "unset" }}
-          _active={{ background: "white", borderColor: "unset" }}
+          _focus={{ borderColor: 'unset' }}
+          _active={{ background: 'white', borderColor: 'unset' }}
         />
         <ModalBody paddingTop="24px" paddingBottom="27px">
           <StepDetail
-            // collections={collections}
+            collections={collections}
             process={process}
             step={selectedStep}
           />
@@ -195,7 +185,7 @@ const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
                     borderLeft="none"
                     borderRight="none"
                     _focus={{
-                      background: "white",
+                      background: 'white',
                       borderBottom: `2px solid ${
                         currentTheme?.primaryColor ?? primary
                       }`,
@@ -279,7 +269,7 @@ const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
             type="file"
             ref={fileInputRef}
             onChange={handleUpload}
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             multiple
           />
           <Input
@@ -296,8 +286,8 @@ const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
             value={messageContent}
             padding="8px 16px"
             marginRight="24px"
-            _focus={{ borderColor: "white" }}
-            _hover={{ borderColor: "white" }}
+            _focus={{ borderColor: 'white' }}
+            _hover={{ borderColor: 'white' }}
           />
           <Button
             variant="outline"
@@ -307,13 +297,13 @@ const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
             fontSize="16px"
             lineHeight="24px"
             disabled={isDisableSend}
-            background={currentTheme?.primaryColor ?? "primary.500"}
+            background={currentTheme?.primaryColor ?? 'primary.500'}
             _hover={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             _active={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             onClick={onSubmit}
@@ -322,18 +312,14 @@ const LeaveCommentModal = (props: INewSupportMessageModalProps) => {
           </Button>
         </ModalFooter>
         <div className={styles.attachmentTag}>
-          {attachments.map((attach, idx) => (
-            <AttachmentTag
-              label={attach.name}
-              deleteMode
-              onDelete={() => {
-                const temp = [...attachments];
-                temp.splice(idx, 1);
-                setAttachments([...temp]);
-              }}
-              key={idx}
+          {checkValidArray(attachments) && (
+            <AttachmentSection
+              attachments={attachments}
+              setAttachments={setAttachments}
+              fileInputRef={fileInputRef}
+              isLoading={isLoading}
             />
-          ))}
+          )}
         </div>
       </ModalContent>
     </Modal>

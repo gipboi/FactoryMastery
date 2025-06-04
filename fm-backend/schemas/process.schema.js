@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { ProcessStatusEnum } from "../constants/enums/process-status.enum";
+import mongoose from 'mongoose';
+import { ProcessStatusEnum } from '../constants/enums/process-status.enum';
 const Schema = mongoose.Schema;
 
 const processSchema = new Schema(
@@ -10,7 +10,7 @@ const processSchema = new Schema(
     startDate: { type: Date },
     endDate: { type: Date },
     image: { type: String },
-    totalTime: { type: String, default: "00:00:00" },
+    totalTime: { type: String, default: '00:00:00' },
     status: {
       type: String,
       enum: ProcessStatusEnum,
@@ -27,7 +27,6 @@ const processSchema = new Schema(
     version: { type: String },
     releaseNote: { type: String },
     editorNote: { type: String },
-
     publishedById: { type: Schema.Types.ObjectId },
     rejectedById: { type: Schema.Types.ObjectId },
     documentTypeId: { type: Schema.Types.ObjectId },
@@ -43,93 +42,103 @@ const processSchema = new Schema(
   }
 );
 
-processSchema.virtual("organization", {
-  ref: "Organization", //The Model to use
-  localField: "organizationId", //Find in Model, where localField
-  foreignField: "_id", // is equal to foreignField
+processSchema.virtual('organization', {
+  ref: 'Organization', //The Model to use
+  localField: 'organizationId', //Find in Model, where localField
+  foreignField: '_id', // is equal to foreignField
 });
 
-processSchema.virtual("creator", {
-  ref: "User",
-  localField: "createdBy",
-  foreignField: "_id",
+processSchema.virtual('creator', {
+  ref: 'User',
+  localField: 'createdBy',
+  foreignField: '_id',
+  justOne: true,
 });
 
-processSchema.virtual("publishedBy", {
-  ref: "User",
-  localField: "publishedById",
-  foreignField: "_id",
+processSchema.virtual('publishedBy', {
+  ref: 'User',
+  localField: 'publishedById',
+  foreignField: '_id',
 });
 
-processSchema.virtual("rejectedBy", {
-  ref: "User",
-  localField: "rejectedById",
-  foreignField: "_id",
+processSchema.virtual('rejectedBy', {
+  ref: 'User',
+  localField: 'rejectedById',
+  foreignField: '_id',
 });
 
-processSchema.virtual("group", {
-  ref: "Group",
-  localField: "primaryGroupId",
-  foreignField: "_id",
+processSchema.virtual('group', {
+  ref: 'Group',
+  localField: 'primaryGroupId',
+  foreignField: '_id',
 });
 
-processSchema.virtual("documentType", {
-  ref: "DocumentType",
-  localField: "documentTypeId",
-  foreignField: "_id",
+processSchema.virtual('documentType', {
+  ref: 'DocumentType',
+  localField: 'documentTypeId',
+  foreignField: '_id',
+  justOne: true,
 });
 
-processSchema.virtual("steps", {
-  ref: "Step",
-  localField: "_id",
-  foreignField: "processId",
+processSchema.virtual('steps', {
+  ref: 'Step',
+  localField: '_id',
+  foreignField: 'processId',
   strictPopulate: false,
   sort: { position: 1 },
 });
 
-processSchema.virtual("userProcesses", {
-  ref: "UserProcess",
-  localField: "_id",
-  foreignField: "processId",
+processSchema.virtual('userProcesses', {
+  ref: 'UserProcess',
+  localField: '_id',
+  foreignField: 'processId',
   strictPopulate: false,
 });
 
-processSchema.virtual("groupProcesses", {
-  ref: "GroupProcess",
-  localField: "_id",
-  foreignField: "processId",
+processSchema.virtual('groupProcesses', {
+  ref: 'GroupProcess',
+  localField: '_id',
+  foreignField: 'processId',
   strictPopulate: false,
 });
 
-processSchema.virtual("groups", {
-  ref: "GroupProcess",
-  localField: "_id",
-  foreignField: "processId",
+processSchema.virtual('groups', {
+  ref: 'GroupProcess',
+  localField: '_id',
+  foreignField: 'processId',
   strictPopulate: false,
 });
 
-processSchema.virtual("tags", {
-  ref: "ProcessTag",
-  localField: "_id",
-  foreignField: "processId",
+processSchema.virtual('tags', {
+  ref: 'ProcessTag',
+  localField: '_id',
+  foreignField: 'processId',
   strictPopulate: false,
 });
 
-// processSchema.virtual("collection", {
-//   ref: "Collection",
-//   localField: "collectionId",
-//   foreignField: "_id",
-// });
+processSchema.virtual('collection', {
+  ref: 'Collection',
+  localField: 'collectionId',
+  foreignField: '_id',
+});
+
+processSchema.virtual('collectionProcesses', {
+  ref: 'CollectionProcess',
+  localField: '_id',
+  foreignField: 'processId',
+  strictPopulate: false,
+});
+
 
 // Set Object and Json property to true. Default is set to false
-processSchema.set("toObject", { virtuals: true });
-processSchema.set("toJSON", { virtuals: true });
+processSchema.set('toObject', { virtuals: true });
+processSchema.set('toJSON', { virtuals: true });
 
-processSchema.pre("validate", function (next) {
+processSchema.pre('validate', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-const Process = mongoose.model("Process", processSchema);
+const Process = mongoose.model('Process', processSchema);
 
 export default Process;

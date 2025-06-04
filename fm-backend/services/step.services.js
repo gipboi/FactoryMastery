@@ -366,7 +366,6 @@ export class StepService {
   }
 
   async upsertMediaToStep(stepId, media) {
-    console.log("given media", media);
     const foundMedia = await Media.findOne({
       stepId,
       ...omit(getValidObject(media), [

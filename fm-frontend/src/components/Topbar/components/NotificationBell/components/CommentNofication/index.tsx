@@ -1,14 +1,15 @@
-import { HStack } from "@chakra-ui/react";
-import cx from "classnames";
-import { useStores } from "hooks/useStores";
-import { useNavigate } from "react-router-dom";
-import { seenNotification } from "API/notification";
-import Image from "components/Image";
-import { INotificationWithRelations } from "interfaces/notification";
-import routes from "routes";
-import { convertToNotificationActionDescription } from "utils/notification";
-import styles from "../../styles.module.scss";
-import { NotificationTypeEnum } from "config/constant/enums/notification";
+import { HStack } from '@chakra-ui/react';
+import cx from 'classnames';
+import { useStores } from 'hooks/useStores';
+import { useNavigate } from 'react-router-dom';
+import { seenNotification } from 'API/notification';
+import Image from 'components/Image';
+import { INotificationWithRelations } from 'interfaces/notification';
+import routes from 'routes';
+import { convertToNotificationActionDescription } from 'utils/notification';
+import styles from '../../styles.module.scss';
+import { NotificationTypeEnum } from 'config/constant/enums/notification';
+import { getName } from 'utils/user';
 
 const CommentNotification = ({
   notification,
@@ -29,7 +30,7 @@ const CommentNotification = ({
     if (notification.stepId) {
       stepStore.selectedStep = notification.step;
     }
-    seenNotification(notification?.id ?? "");
+    seenNotification(notification?.id ?? '');
   }
 
   return (
@@ -41,22 +42,34 @@ const CommentNotification = ({
       />
       <div>
         <span className={cx(styles.object, styles.textContent)}>
-          {notification?.author?.firstName} {notification?.author?.lastName}{" "}
+          {getName(notification?.author)}
         </span>
         <span className={styles.textContent}>
           {convertToNotificationActionDescription(
             notification?.type ?? NotificationTypeEnum.COMMENT_STEP_NOTIFICATION
           )}
         </span>
-        <span
-          className={cx(styles.object, styles.textContent)}
-          onClick={(event) => {
-            event.stopPropagation();
-            navigateToStepDetail(notification);
-          }}
-        >
-          Process #{notification?.process?.name}
-        </span>
+        {notification?.process?.name ? (
+          <span
+            className={cx(styles.object, styles.textContent)}
+            onClick={(event) => {
+              event.stopPropagation();
+              navigateToStepDetail(notification);
+            }}
+          >
+            Process #{notification?.process?.name}
+          </span>
+        ) : (
+          <span
+            className={cx(styles.object, styles.textContent)}
+            onClick={(event) => {
+              event.stopPropagation();
+              navigateToStepDetail(notification);
+            }}
+          >
+            Step #{notification?.step?.name}
+          </span>
+        )}
       </div>
     </HStack>
   );

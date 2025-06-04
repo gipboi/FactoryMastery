@@ -4,16 +4,15 @@ import { useState } from "react";
 // import { getEcnSuggestions } from 'API/ecnSuggestion'
 // import { createEcnSuggestion, createEcnSuggestionAttachment } from 'API/ecnSuggestion'
 import ProcedureIcon from "components/Common/ProcedureIcon";
+import { stepIcon } from "components/Icon";
 import ModalDialog, { ModalDialogProps } from "components/ModalDialog";
-import SvgIcon from "components/SvgIcon";
 import Tabs, { ITabContent, ITabHeader } from "components/Tabs";
 import { AuthRoleNameEnum } from "constants/user";
 import { IEcnSuggestionWithRelations } from "interfaces/ecnSuggestion";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import MessageContent from "../MessageView/components/Content";
 import styles from "./messageView.module.scss";
 import { Attachement } from "./types";
-import IconBuilder from "components/IconBuilder";
-import { stepIcon } from "components/Icon";
 
 interface MessageViewProps
   extends Omit<ModalDialogProps, "title" | "size" | "headerClassName"> {

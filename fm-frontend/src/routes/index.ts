@@ -60,6 +60,13 @@ const routes = {
       value: (userId: string) => `/users/${userId}`,
     },
   },
+  admins: {
+    value: "/admins",
+    userId: {
+      value: (userId: string) => `/admins/${userId}`,
+    },
+  },
+
   groups: {
     value: "/groups",
     groupId: {
@@ -109,6 +116,12 @@ const routes = {
   },
   message: {
     value: "/message",
+  },
+  organizations: {
+    value: "/organizations",
+    organizationId: {
+      value: (orgId: string) => `/organizations/${orgId}`,
+    },
   },
 };
 

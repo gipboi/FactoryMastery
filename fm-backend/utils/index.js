@@ -86,6 +86,11 @@ function buildPopulateOptions(includes) {
         }
       }
 
+      // Check if there's a where clause
+      if (include.scope && include.scope.where) {
+        populateObject.match = include.scope.where;
+      }
+
       populateOptions.push(populateObject);
     }
   });

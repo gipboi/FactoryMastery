@@ -21,7 +21,7 @@ export function getMediaImage(mediaId: number, imageName: string): string {
 
 export function getS3FileUrl(
   fileType: S3FileTypeEnum,
-  organizationId: number,
+  organizationId: string,
   imageName: string
 ): string {
   const imageUrl: string = `${config.assetsUrl}/organizations/${organizationId}/${fileType}s/${imageName}`;

@@ -23,6 +23,7 @@ const notificationSchema = new Schema(
     processWorkflowId: { type: Schema.Types.ObjectId },
     processId: { type: Schema.Types.ObjectId },
     stepId: { type: Schema.Types.ObjectId },
+    messageThreadId: { type: Schema.Types.ObjectId },
     organizationId: { type: Schema.Types.ObjectId, require: true },
     createdBy: { type: Schema.Types.ObjectId },
     createdAt: { type: Date },
@@ -79,6 +80,13 @@ notificationSchema.virtual("step", {
   ref: "Step",
   localField: "stepId",
   foreignField: "_id",
+});
+
+notificationSchema.virtual("supportMessageThread", {
+  ref: "SupportMessageThread",
+  localField: "messageThreadId",
+  foreignField: "_id",
+  justOne: true,
 });
 
 // Set Object and Json property to true. Default is set to false

@@ -1,0 +1,241 @@
+html {
+  scroll-behavior: smooth;
+}
+
+.landingPage {
+  font-family: "Roboto", sans-serif;
+  color: #333;
+
+  // Header styles
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  // Hero section styles
+  .heroSection {
+    position: relative;
+    overflow: hidden;
+
+    .heroTitle {
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .heroImage {
+      position: relative;
+
+      .dashboardImage {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  // CTA button styles
+  .ctaButton {
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  // Features icons section
+  .featuresIcons {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    .iconGrid {
+      justify-content: center;
+
+      .featureIcon {
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  // Simplify section styles
+  .simplifySection {
+    .featureCards {
+      .featureCard {
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: translateY(-5px);
+        }
+
+        .featureIconBox {
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: rgba(66, 153, 225, 0.2);
+          }
+        }
+      }
+    }
+  }
+
+  // Mobile section styles
+  .mobileSection {
+    .mobileContent {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .mobileImageContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .mobileImage {
+        max-height: 600px;
+        max-width: 100%;
+        height: auto;
+      }
+    }
+
+    .devicesImage {
+      max-width: 50%;
+      height: auto;
+      margin-top: 2rem;
+    }
+  }
+
+  // Workflow section styles
+  .workflowSection {
+    .workflowContent {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .workflowImageContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .workflowImage {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  // Unlock section styles
+  .unlockSection {
+    .improvementBox,
+    .statsBox {
+      height: 100%;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  // Testimonials section styles
+  .testimonialsSection {
+    .testimonial {
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
+
+  // Pricing section styles
+  .pricingSection {
+    .pricingCard {
+      height: 100%;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  // Roadmap section styles
+  .roadmapSection {
+    .roadmapContent {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .roadmapImage {
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  // CTA section styles
+  .ctaSection {
+    background: linear-gradient(to right, #f7fafc, #ebf8ff);
+  }
+
+  // Footer styles
+  .footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Media queries for responsive design
+@media (max-width: 768px) {
+  .landingPage {
+    .heroSection {
+      text-align: center;
+
+      .heroImage {
+        margin-top: 2rem;
+      }
+    }
+
+    .featuresIcons {
+      .iconGrid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .simplifySection {
+      .featureCards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .footer {
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .landingPage {
+    .featuresIcons {
+      .iconGrid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ctaSection {
+      text-align: center;
+    }
+  }
+}

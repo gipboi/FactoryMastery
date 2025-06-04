@@ -1,274 +1,550 @@
-@startuml FactoryMastery Class Diagram  
+@startuml FactoryMastery Class Diagram
 
-' Set visibility and style for classes  
-skinparam classAttributeIconSize 0  
-skinparam classFontColor black  
-skinparam classBackgroundColor #F9F9F9  
-skinparam classBorderColor #999999  
+' Set theme
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
 
-class User {  
-    - id: String  
-    - email: String  
-    - username: String  
-    - encryptedPassword: String  
-    - firstName: String  
-    - lastName: String  
-    - fullName: String  
-    - mobilePhone: String  
-    - workPhone: String  
-    - address1: String  
-    - address2: String  
-    - city: String  
-    - state: String  
-    - zip: String  
-    - image: String  
-    - authRoleId: int  
-    - tokens: String  
-    - admin: boolean  
-    - owner: boolean  
-    - superAdmin: boolean  
-    - manager: boolean  
-    - disabled: boolean  
-    - isResetPassword: boolean  
-    - resetPasswordToken: String  
-    - resetPasswordSentAt: DateTime  
-    - signInCount: int  
-    - currentSignInAt: DateTime  
-    - lastSignInAt: DateTime  
-    - currentSignInIp: String  
-    - lastSignInIp: String  
-    - organizationId: String  
-    - employeeId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' User class
+class User {
+  -id: ObjectId
+  -email: String
+  -username: String
+  -encryptedPassword: String
+  -firstName: String
+  -lastName: String
+  -fullName: String
+  -image: String
+  -authRole: String
+  -tokens: String
+  -disabled: Boolean
+  -isResetPassword: Boolean
+  -isMessageFullAccess: Boolean
+  -isReportTool: Boolean
+  -resetPasswordToken: String
+  -resetPasswordSentAt: DateTime
+  -signInCount: int
+  -currentSignInAt: DateTime
+  -lastSignInAt: DateTime
+  -organizationId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class AuthRol {  
-    - id: String  
-    - created_at: Date  
-    - updated_at: Date  
-    - name: String  
-}  
+' Organization class
+class Organization {
+  -id: ObjectId
+  -name: String
+  -license: String
+  -trialExpirationDate: DateTime
+  -status: int
+  -subdomain: String
+  -role: String
+  -publicProcessUrl: String
+  -image: String
+  -logo: String
+  -dashboardBannerText: String
+  -horizontalLogo: String
+  -welcomeMessageContent: String
+  -welcomeMessageText: String
+  -welcomeMessageImage: String
+  -isLightSideBar: Boolean
+  -sidebarIconColor: int
+  -isThemeSetting: Boolean
+  -isModularProcess: Boolean
+  -isReportTool: Boolean
+  -isCollectionFeature: Boolean
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class UserSession {  
-    - id: String  
-    - userId: String  
-    - date: DateTime  
-    - count: int  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' Group class
+class Group {
+  -id: ObjectId
+  -name: String
+  -description: String
+  -isCompanyGroup: Boolean
+  -archived: Boolean
+  -deleted: Boolean
+  -organizationId: ObjectId
+  -collectionId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Organization {  
-    - id: String  
-    - name: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-    - phone: String  
-    - license: String  
-    - trialExpirationDate: DateTime  
-    - status: int  
-    - subdomain: String  
-    - role: String  
-    - publicProcessUrl: String  
-    - image: String  
-    - logo: String  
-    - dashboardBannerText: String  
-    - horizontalLogo: String  
-    - welcomeMessageContent: String  
-    - welcomeMessageText: String  
-    - welcomeMessageImage: String  
-    - isLightSideBar: boolean  
-    - sidebarIconColor: int  
-    - isThemeSetting: boolean  
-    - isModularProcess: boolean  
-    - isReportTool: boolean  
-    - isCollectionFeature: boolean  
-    - isMarketPlace: boolean  
-}  
+' GroupMember class
+class GroupMember {
+  -id: ObjectId
+  -permission: String
+  -groupId: ObjectId
+  -userId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Group {  
-    - id: String  
-    - name: String  
-    - organizationId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-    - description: String  
-    - isCompanyGroup: boolean  
-    - archived: boolean  
-    - deleted: boolean  
-}  
+' GroupMessage class
+class GroupMessage {
+  -id: ObjectId
+  -content: String
+  -attachments: Attachment[]
+  -groupThreadId: ObjectId
+  -userId: ObjectId
+  -receiverId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class GroupMember {  
-    - id: String  
-    - groupId: String  
-    - userId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' Attachment class
+class Attachment {
+  -url: String
+  -name: String
+  -type: String
+}
 
-class GroupMemberPermission {  
-    - id: String  
-    - name: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' GroupMessageThread class
+class GroupMessageThread {
+  -id: ObjectId
+  -name: String
+  -isPrivate: Boolean
+  -organizationId: ObjectId
+  -lastMessageAt: DateTime
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class GroupsProcess {  
-    - groupId: String  
-    - processId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' GroupMessageThreadGroup class
+class GroupMessageThreadGroup {
+  -id: ObjectId
+  -groupId: ObjectId
+  -groupThreadId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Process {  
-    - id: String  
-    - name: String  
-    - description: String  
-    - owner: String  
-    - startDate: DateTime
-        - endDate: DateTime  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' GroupMessageThreadUserSeen class
+class GroupMessageThreadUserSeen {
+  -id: ObjectId
+  -userId: ObjectId
+  -groupThreadId: ObjectId
+  -lastSeenAt: DateTime
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Step {  
-    - id: String  
-    - processId: String  
-    - name: String  
-    - description: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' SupportMessage class
+class SupportMessage {
+  -id: ObjectId
+  -content: String
+  -attachments: Attachment[]
+  -supportThreadId: ObjectId
+  -userId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Media {  
-    - id: String  
-    - stepId: String  
-    - filePath: String  
-    - mediaType: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' SupportMessageThreadStatusHistory class
+class SupportMessageThreadStatusHistory {
+  -id: ObjectId
+  -status: int
+  -threadId: ObjectId
+  -userId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Block {  
-    - id: String  
-    - stepId: String  
-    - name: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' SupportMessageThread class
+class SupportMessageThread {
+  -id: ObjectId
+  -subject: String
+  -status: int
+  -lastMessageAt: DateTime
+  -stepId: ObjectId
+  -processId: ObjectId
+  -userId: ObjectId
+  -claimedBy: ObjectId
+  -organizationId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class DecisionPoint {  
-    - id: String  
-    - blockId: String  
-    - name: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' SupportMessageThreadUserSeen class
+class SupportMessageThreadUserSeen {
+  -id: ObjectId
+  -lastSeenAt: DateTime
+  -supportThreadId: ObjectId
+  -userId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class DecisionPointStep {  
-    - decisionPointId: String  
-    - stepId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' GroupProcess class
+class GroupProcess {
+  -id: ObjectId
+  -groupId: ObjectId
+  -processId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class DecisionPointMedia {  
-    - decisionPointId: String  
-    - mediaId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' UserProcess class
+class UserProcess {
+  -id: ObjectId
+  -userId: ObjectId
+  -processId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Comment {  
-    - id: String  
-    - processId: String  
-    - collectionId: String  
-    - userId: String  
-    - content: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' Process class
+class Process {
+  -id: ObjectId
+  -name: String
+  -description: String
+  -startDate: DateTime
+  -endDate: DateTime
+  -createdBy: ObjectId
+  -image: String
+  -totalTime: String
+  -organizationId: ObjectId
+  -collectionId: ObjectId
+  -status: String
+  -reason: String
+  -primaryGroupId: ObjectId
+  -documentTypeId: ObjectId
+  -publishedDate: DateTime
+  -rejectedDate: DateTime
+  -rejectedById: ObjectId
+  -publishedById: ObjectId
+  -procedureType: String
+  -procedureIcon: String
+  -procedureIconColor: String
+  -isPublished: Boolean
+  -version: String
+  -releaseNote: String
+  -editorNote: String
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Favorite {  
-    - id: String  
-    - userId: String  
-    - processId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' Collection class
+class Collection {
+  -id: ObjectId
+  -name: String
+  -description: String
+  -mainMedia: String
+  -overview: String
+  -public: Boolean
+  -isVisible: Boolean
+  -archivedAt: DateTime
+  -publishedDate: DateTime
+  -organizationId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Collection {  
-    - id: String  
-    - organizationId: String  
-    - name: String  
-    - archived: boolean  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' CollectionGroup class
+class CollectionGroup {
+  -id: ObjectId
+  -position: int
+  -collectionId: ObjectId
+  -groupId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class CollectionGroup {  
-    - id: String  
-    - collectionId: String  
-    - groupId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' CollectionProcess class
+class CollectionProcess {
+  -id: ObjectId
+  -position: int
+  -collectionId: ObjectId
+  -processId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class ProcessTag {  
-    - processId: String  
-    - tagId: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' UserCollection class
+class UserCollection {
+  -id: ObjectId
+  -userId: ObjectId
+  -collectionId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class Tag {  
-    - id: String  
-    - name: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' DocumentType class
+class DocumentType {
+  -id: ObjectId
+  -name: String
+  -description: String
+  -organizationId: ObjectId
+  -createdBy: ObjectId
+  -iconId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class DocumentType {  
-    - id: String  
-    - name: String  
-    - createdAt: DateTime  
-    - updatedAt: DateTime  
-}  
+' Tag class
+class Tag {
+  -id: ObjectId
+  -name: String
+  -organizationId: ObjectId
+  -createdBy: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-class CollectionsProcess {  
-    - collectionId: String
-    - processId: String
-    - createdAt: DateTime
-    - updatedAt: DateTime
-    - position: int
-}  
+' ProcessTag class
+class ProcessTag {
+  -processId: ObjectId
+  -tagId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-' Relationships  
-Group "1" ||--o{ GroupMember : has  
-Group "1" ||--o{ GroupsProcess : contains  
-Process "1" ||--o{ GroupsProcess : is part of  
-Process "1" ||--o{ Step : contains  
-Process "1" ||--o{ CollectionsProcess : is part of  
-Process "1" ||--o{ ProcessTag : tagged with  
-Process "1" ||--o{ Comment : has  
-Process "1" ||--o{ Favorite : is favorited by  
-Collection "1" ||--o{ CollectionsProcess : contains  
-Collection "1" ||--o{ Process : includes  
-Collection "1" ||--o{ Comment : has  
-Collection "1" ||--o{ CollectionGroup : is part of  
-Step "1" ||--o{ Media : has  
-Step "1" ||--o{ Block : consists of  
-Block "1" ||--o{ DecisionPoint : leads to  
-DecisionPoint "1" ||--o{ DecisionPointStep : consists of  
-DecisionPoint "1" ||--o{ DecisionPointMedia : includes  
-Media "1" ||--o{ Block : used in  
-Tag "1" ||--o{ ProcessTag : categorizes  
-DocumentType "1" ||--o{ Process : defines  
-GroupMemberPermission "1" ||--o{ GroupMember : assigns  
+' ProcessRating class
+class ProcessRating {
+  -review: String
+  -rating: int
+  -userId: ObjectId
+  -processId: ObjectId
+  -createdBy: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
 
-Organization "1" ||--o{ Collection : owns  
-Organization "1" ||--o{ DocumentType : includes  
-Organization "1" ||--o{ Tag : uses  
+' Step class
+class Step {
+  -id: ObjectId
+  -name: String
+  -time: String
+  -position: int
+  -archived: Boolean
+  -processId: ObjectId
+  -iconId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' Block class
+class Block {
+  -id: ObjectId
+  -type: String
+  -content: String
+  -position: int
+  -mediaTitle: String
+  -isDisableMediaLabel: Boolean
+  -stepId: ObjectId
+  -processId: ObjectId
+  -mediaId: ObjectId
+  -iconId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' BlockMedia class
+class BlockMedia {
+  -id: ObjectId
+  -blockId: ObjectId
+  -mediaId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' DecisionPoint class
+class DecisionPoint {
+  -id: ObjectId
+  -title: String
+  -position: int
+  -blockId: ObjectId
+  -createdBy: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' DecisionPointStep class
+class DecisionPointStep {
+  -id: ObjectId
+  -stepId: ObjectId
+  -decisionPointId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' DecisionPointMedia class
+class DecisionPointMedia {
+  -id: ObjectId
+  -decisionPointId: ObjectId
+  -mediaId: ObjectId
+  -mediaTitle: String
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' Media class
+class Media {
+  -id: ObjectId
+  -name: String
+  -image: String
+  -document: String
+  -position: int
+  -originalImage: String
+  -url: String
+  -videoThumbnailUrl: String
+  -mediaType: String
+  -createdBy: ObjectId
+  -stepId: ObjectId
+  -originalFile: String
+  -organizationId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' Favorite class
+class Favorite {
+  -id: ObjectId
+  -userId: ObjectId
+  -processId: ObjectId
+  -collectionId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' AuditTrail class
+class AuditTrail {
+  -id: ObjectId
+  -request: String
+  -response: String
+  -route: String
+  -status: String
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' Notification class
+class Notification {
+  -id: ObjectId
+  -title: String
+  -reason: String
+  -type: String
+  -deletedName: String
+  -subType: String
+  -rejectionReason: String
+  -description: String
+  -comment: String
+  -isSeen: Boolean
+  -reviewerId: ObjectId
+  -userId: ObjectId
+  -authorId: ObjectId
+  -processWorkflowId: ObjectId
+  -processId: ObjectId
+  -stepId: ObjectId
+  -messageThreadId: ObjectId
+  -createdBy: ObjectId
+  -organizationId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' Icon class
+class Icon {
+  -id: ObjectId
+  -shape: String
+  -iconName: String
+  -color: String
+  -type: String
+  -description: String
+  -isDark: Boolean
+  -isDefaultIcon: Boolean
+  -organizationId: ObjectId
+  -createdAt: DateTime
+  -updatedAt: DateTime
+}
+
+' Define relationships with names
+Process "1" *-- "0..*" GroupProcess : assigned to groups
+Process "1" *-- "0..*" UserProcess : assigned to users
+Process "1" *-- "0..*" Step : contains
+Process "1" *-- "0..*" CollectionProcess : belongs to collections
+Process "1" *-- "0..*" ProcessTag : tagged with
+Process "1" *-- "0..*" Favorite : favorited by users
+Process "1" *-- "0..*" Block : contains blocks
+Process "1" *-- "0..*" Notification : generates notifications
+Process "1" *-- "0..*" ProcessRating : rated by users
+
+Collection "1" *-- "0..*" CollectionProcess : contains processes
+Collection "0..*" --* "1" Process : belongs to
+Collection "1" *-- "0..*" CollectionGroup : assigned to groups
+Collection "1" *-- "0..*" Favorite : favorited by users
+Collection "1" *-- "0..*" UserCollection : customized by users
+
+Step "1" *-- "0..*" Media : contains media
+Step "1" *-- "0..*" Block : contains blocks
+Step "1" *-- "0..*" DecisionPointStep : decision points
+Step "1" *-- "0..*" Notification : generates notifications
+
+Block "1" *-- "0..*" DecisionPoint : contains decision points
+Block "1" *-- "0..*" BlockMedia : associated with media
+
+DecisionPoint "1" *-- "0..*" DecisionPointStep : leads to steps
+DecisionPoint "1" *-- "0..*" DecisionPointMedia : contains media
+
+Media "1" *-- "0..*" Block : used in blocks
+Media "1" *-- "0..*" BlockMedia : block associations
+Media "1" *-- "0..*" DecisionPointMedia : decision point associations
+
+Tag "1" *-- "0..*" ProcessTag : applied to processes
+
+DocumentType "1" *-- "0..*" Process : categorizes processes
+
+Organization "1" *-- "0..*" Collection : owns collections
+Organization "1" *-- "0..*" DocumentType : defines document types
+Organization "1" *-- "0..*" Tag : owns tags
+Organization "1" *-- "0..*" Group : contains groups
+Organization "1" *-- "0..*" Media : owns media
+Organization "1" *-- "0..*" Process : owns processes
+Organization "1" *-- "0..*" Notification : generates notifications
+Organization "1" *-- "0..*" Icon : defines icons
+Organization "1" *-- "0..*" User : employs users
+
+User "1" *-- "0..*" Process : creates processes
+User "1" *-- "0..*" GroupMember : member of groups
+User "1" *-- "0..*" Favorite : favorites items
+User "1" *-- "0..*" UserProcess : assigned processes
+User "1" *-- "0..*" DecisionPoint : creates decision points
+User "1" *-- "0..*" DocumentType : creates document types
+User "1" *-- "0..*" Media : uploads media
+User "1" *-- "0..*" Notification : receives notifications
+User "1" *-- "0..*" GroupMessageThreadUserSeen : sees group messages
+User "1" *-- "0..*" ProcessRating : rates processes
+User "1" *-- "0..*" UserCollection : customizes collections
+User "1" *-- "0..*" GroupMessage : sends group messages
+User "1" *-- "0..*" SupportMessage : sends support messages
+User "1" *-- "0..*" SupportMessageThreadStatusHistory : updates support thread status
+User "1" *-- "0..*" SupportMessageThreadUserSeen : sees support messages
+User "1" *-- "0..*" Tag : creates tags
+
+GroupMessage "1" *-- "0..*" Attachment : contains attachments
+SupportMessage "1" *-- "0..*" Attachment : contains attachments
+
+Group "1" *-- "0..*" GroupMember : has members
+Group "1" *-- "0..*" GroupProcess : assigned processes
+Group "1" *-- "0..*" GroupMessageThreadGroup : participates in threads
+Group "1" *-- "0..*" CollectionGroup : assigned collections
+Group "0..*" --* "1" Organization : belongs to
+
+GroupMessageThread "1" *-- "0..*" GroupMessageThreadGroup : includes groups
+GroupMessageThread "1" *-- "0..*" GroupMessageThreadUserSeen : user activity
+GroupMessageThread "1" *-- "0..*" GroupMessage : contains messages
+GroupMessageThread "0..*" --* "1" Organization : belongs to
+
+SupportMessageThread "1" *-- "0..*" SupportMessage : contains messages
+SupportMessageThread "1" *-- "0..*" SupportMessageThreadStatusHistory : status history
+SupportMessageThread "1" *-- "0..*" SupportMessageThreadUserSeen : user activity
+SupportMessageThread "1" --* "0..*" Notification : generates notifications
+SupportMessageThread "0..*" --* "1" Organization : belongs to
+SupportMessageThread "0..*" --* "1" User : created by
+
+Icon "0..1" --* "0..*" Block : decorates blocks
+Icon "0..1" --* "0..*" Step : decorates steps
+Icon "0..1" --* "0..*" DocumentType : represents document types
 
 @enduml

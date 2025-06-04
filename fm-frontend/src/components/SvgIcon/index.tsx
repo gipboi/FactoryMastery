@@ -20,7 +20,7 @@ const SvgIcon = ({
 }: SvgIconProps) => {
   const iconSize: number = size ? size : DEFAULT_SIZE;
   const icon = require(`assets/icons/${
-    iconName.replaceAll(".svg", "") || "default"
+    iconName?.replaceAll(".svg", "") || "default"
   }.svg`);
 
   return (
@@ -30,7 +30,7 @@ const SvgIcon = ({
       width={width ?? iconSize}
       height={height ?? iconSize}
       preProcessor={(code) => {
-        if (color) return code.replaceAll(/fill=".*?"/g, `fill="${color}"`);
+        if (color) return code?.replaceAll(/fill=".*?"/g, `fill="${color}"`);
         return code;
       }}
       {...props}

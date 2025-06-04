@@ -1,5 +1,6 @@
 import { ProcessType } from "config/constant/enums/process";
 import { AuthRoleIdEnum } from "constants/user";
+import { ICollection } from "interfaces/collection";
 import { IAsyncSelectOption } from "interfaces/common";
 import { IDocumentType } from "interfaces/documentType";
 import { IGroupDetail, IGroupMember } from "interfaces/groups";
@@ -9,6 +10,7 @@ import { ITag } from "interfaces/tag";
 import { IUser, IUserProcess } from "interfaces/user";
 
 export interface IProcess {
+  _id?: string;
   id: string;
   name?: string;
   parentWorkflowId?: string;
@@ -49,6 +51,8 @@ export interface IProcess {
   isPublished?: boolean;
   publishedById?: string;
   procedureIcon?: { type: ProcessType; color: string };
+  procedureIconType?: ProcessType;
+  procedureIconColor?: string;
   releaseNote?: string;
   editorNote?: string;
   originalProcessId?: string;
@@ -59,8 +63,8 @@ export interface IProcess {
 
 export interface IProcessWithRelations extends IProcess {
   steps?: IStepWithRelations[];
-  // collections: ICollection[]
-  // collection?: ICollection
+  collections: ICollection[];
+  collection?: ICollection;
   documentType?: IDocumentType;
   groups?: IGroupDetail[];
   tags?: ITag[];

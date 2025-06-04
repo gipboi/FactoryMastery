@@ -1,0 +1,14 @@
+.body {
+  .formInput {
+    padding: 0;
+
+    .defaultLabel {
+      color: #2d3748;
+      font-size: medium;
+    }
+
+    input {
+      background-color: transparent !important;
+    }
+  }
+}

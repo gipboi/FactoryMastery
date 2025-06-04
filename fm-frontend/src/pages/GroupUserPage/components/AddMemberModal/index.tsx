@@ -38,6 +38,8 @@ import { getUserOptionSelect } from "pages/GroupPage/components/GroupFilterDialo
 import { useEffect, useState } from "react";
 import { GroupMemberPermissionEnum } from "constants/enums/group";
 import { observer } from "mobx-react";
+import useBreakPoint from "hooks/useBreakPoint";
+import { EBreakPoint } from "constants/theme";
 
 interface IDetailModalProps {
   isOpen: boolean;
@@ -67,6 +69,7 @@ const AddMemberModal = ({ isOpen, onClose, reloadData }: IDetailModalProps) => {
   const listUsers = getValidArray(userStore?.users)?.filter(
     (user) => !currentMemberIds?.includes(user?._id ?? user?.id)
   );
+  const isMobile: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.MD);
   const {
     handleSubmit,
     register,
@@ -143,7 +146,7 @@ const AddMemberModal = ({ isOpen, onClose, reloadData }: IDetailModalProps) => {
       <FormProvider {...method}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalOverlay />
-          <ModalContent minWidth={"600px"}>
+          <ModalContent minWidth={!isMobile ? "600px" : "auto"}>
             <ModalHeader
               fontSize="lg"
               fontWeight={500}

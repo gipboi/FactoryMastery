@@ -1,3 +1,5 @@
+import { SUPER_ADMIN_DOMAIN } from "constants/admin";
+
 export const getSubdomain = () => {
   const hostname = window.location.hostname;
 
@@ -19,4 +21,9 @@ export const getSubdomain = () => {
   }
 
   return ''; // No subdomain
+}
+
+export const checkIsSuperAdminPage = () => {
+  const subdomain: string = getSubdomain();
+  return subdomain === SUPER_ADMIN_DOMAIN;
 }

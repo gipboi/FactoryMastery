@@ -4,6 +4,7 @@ import React from "react";
 import Select, { Props, components as SelectComponents } from "react-select";
 import { IOption, IOptionWithIcon } from "types/common";
 // import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder'
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import styles from "./dropdownInput.module.scss";
 
 export interface IDropdownInputProps<T> extends Omit<Props, "options"> {
@@ -49,7 +50,9 @@ const DropdownInput = <T,>(props: IDropdownInputProps<T>) => {
       return (
         <SelectComponents.Option {...optionProps}>
           <HStack spacing={2} width="full">
-            {/* {hasIcon && <IconBuilder icon={optionProps?.data?.icon} isActive size={32} />} */}
+            {hasIcon && (
+              <IconBuilder icon={optionProps?.data?.icon} isActive size={32} />
+            )}
             <Text>{optionProps?.data?.label ?? ""}</Text>
           </HStack>
         </SelectComponents.Option>

@@ -71,6 +71,18 @@ function isBasicUser(req, res, next) {
   }
 }
 
+
+function isSuperAdmin(req, res, next) {
+  const { authRole } = req?.auth;
+  if (
+    authRole === AuthRoleEnum.SUPER_ADMIN
+  ) {
+    return next();
+  } else {
+    next(createError(403, "Access Denied"));
+  }
+}
+
 // POST
 async function login(req, res, next) {
   const authService = new AuthService();
@@ -104,6 +116,7 @@ export default {
   isManager,
   isAdmin,
   isBasicUser,
+  isSuperAdmin,
   login,
   forgotPassword,
   resetPassword,

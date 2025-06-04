@@ -31,6 +31,5 @@ export async function uploadMultipleFiles(
     onUploadProgress: onUploadProgress ?? (() => {}),
   });
 
-  // full download url
   return response.data?.data?.urls;
 }

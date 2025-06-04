@@ -8,7 +8,7 @@ import { IEditEditUserRequest } from "interfaces/user";
 import { observer } from "mobx-react";
 import CustomButton from "pages/UserPage/components/CustomButton";
 import GroupPermissionInput from "pages/UserPage/components/GroupPermissionInput";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Modal, ModalBody, ModalFooter } from "reactstrap";
@@ -56,9 +56,6 @@ const EditAccountModal = (props: IEditAccountModalProps) => {
     reValidateMode: "onBlur",
   });
   const formId = "MyAccount";
-  const authRoleId =
-    useWatch({ control: methods.control, name: "authRole" }) ||
-    AuthRoleIdEnum.BASIC_USER;
   const isBasicUser =
     authStore?.userDetail?.authRole === AuthRoleNameEnum.BASIC_USER;
 

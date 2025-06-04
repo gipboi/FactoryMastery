@@ -64,6 +64,13 @@ export default class UserStore {
     this.isManageMode = isManageMode;
   }
 
+  setUserDetail(userDetail: Partial<IUserWithRelations>): void {
+    this.userDetail = {
+      ...this.userDetail,
+      ...userDetail,
+    }
+  }
+
   public setDefaultUserListFilter(
     organizationId: string,
     pageIndex: number,
@@ -144,6 +151,10 @@ export default class UserStore {
         }
       );
       this.userDetailProcesses = listMappedProcesses;
+    }
+
+    if (userDetail?.groupMembers?.length) {
+      this.currentUserGroupMembers = userDetail?.groupMembers;
     }
 
     if (isSelected) {

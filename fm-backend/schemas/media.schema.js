@@ -13,7 +13,6 @@ const mediaSchema = new Schema(
     videoThumbnailUrl: { type: String },
     originalFile: { type: String },
     mediaType: { type: String, enum: MediaTypeEnum },
-
     createdBy: { type: Schema.Types.ObjectId },
     stepId: { type: Schema.Types.ObjectId, require: true },
     organizationId: { type: Schema.Types.ObjectId, require: true },

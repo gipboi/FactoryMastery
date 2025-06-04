@@ -33,6 +33,8 @@ const userSchema = new Schema(
     manager: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     isResetPassword: Boolean,
+    isMessageFullAccess: Boolean,
+    isReportTool: Boolean,
     resetPasswordToken: String,
     resetPasswordSentAt: { type: Date },
     signInCount: { type: Number, default: 0 },
@@ -65,6 +67,13 @@ userSchema.virtual("userProcesses", {
   ref: "UserProcess", //The Model to use
   localField: "_id", //Find in Model, where localField
   foreignField: "userId", // is equal to foreignField
+});
+
+userSchema.virtual("userCollections", {
+  ref: "UserCollection", //The Model to use
+  localField: "_id", //Find in Model, where localField
+  foreignField: "userId", // is equal to foreignField
+  strictPopulate: true,
 });
 
 // Set Object and Json property to true. Default is set to false

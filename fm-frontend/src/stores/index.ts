@@ -1,12 +1,16 @@
 import AuthStore from "./authStore";
+import CollectionStore from "./collectionStore";
 import CommonLibraryStore from "./commonLibraryStore";
 import DocumentTypeStore from "./documentTypeStore";
 import FavoriteStore from "./favoriteStore";
 import GeneralStore from "./generalStore";
 import GroupStore from "./groupStore";
+import IconBuilderStore from "./iconBuilderStore";
+import MessageStore from "./messageStore";
 import NotificationStore from "./notificationStore";
 import OrganizationStore from "./organizationStore";
 import ProcessStore from "./processStore";
+import ReportStore from "./reportStore";
 import SpinnerStore from "./spinnerStore";
 import StepStore from "./stepStore";
 import TagStore from "./tagStore";
@@ -26,7 +30,10 @@ export class RootStore {
   commonLibraryStore: CommonLibraryStore;
   stepStore: StepStore;
   favoriteStore: FavoriteStore;
-  // messageStore: MessageStore;
+  reportStore: ReportStore;
+  collectionStore: CollectionStore;
+  iconBuilderStore: IconBuilderStore;
+  messageStore: MessageStore;
 
   constructor() {
     this.generalStore = new GeneralStore(this);
@@ -42,7 +49,10 @@ export class RootStore {
     this.commonLibraryStore = new CommonLibraryStore(this);
     this.stepStore = new StepStore(this);
     this.favoriteStore = new FavoriteStore(this);
-    // this.messageStore = new MessageStore(this);
+    this.reportStore = new ReportStore(this);
+    this.collectionStore = new CollectionStore(this);
+    this.iconBuilderStore = new IconBuilderStore(this);
+    this.messageStore = new MessageStore(this);
   }
 }
 

@@ -22,13 +22,22 @@ To set up your project locally, follow these steps:
 This project uses environment variables to configure certain settings. These variables are defined in the `.env` file and are used to set default values for the application.
 
 ## Testing account
-* **Testing Accounts**: For testing purposes, three default accounts are provided, each representing a different role. The credentials are:
-	+ **Organization Admin**:
-		- Username/Email: `test.oa@yopmail.com`
-		- Password: `Fm@12345`
-	+ **Manager**:
-		- Username/Email: `test.manager@yopmail.com`
-		- Password: `Fm@12345`
-	+ **Basic User**:
-		- Username/Email: `test.bu@yopmail.com`
-		- Password: `Fm@12345`
+* **Organization Testing Accounts**: For testing purposes, three default accounts are provided, each representing a different role within the "Summer" organization. The credentials are:
+	- **Organization Admin**:
+		+ Access: http://summer.localhost:3000/
+		+ Username/Email: `test.oa@yopmail.com`
+		+ Password: `Fm@12345`
+	- **Manager**:
+		+ Access: http://summer.localhost:3000/
+		+ Username/Email: `test.manager@yopmail.com`
+		+ Password: `Fm@12345`
+	- **Basic User**:
+		+ Access: http://summer.localhost:3000/
+		+ Username/Email: `test.bu@yopmail.com`
+		+ Password: `Fm@12345`
+
+* **Admin Testing Accounts**: For testing purposes, one default account is provided for the admin page. The credentials are:
+	- **Admin Page**:
+		+ Access: http://admin.localhost:3000/
+		+ Username/Email: `fm.sa@yopmail.com`
+		+ Password: `Fm@12345`

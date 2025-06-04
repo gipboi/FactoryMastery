@@ -72,4 +72,31 @@ router.patch(
   processController.restoreProcess
 );
 
+router.get(
+  "/:processId/ratings",
+  authController.authenticate,
+  processController.getProcessRating
+);
+
+
+router.post(
+  "/:processId/ratings",
+  authController.authenticate,
+  processController.createProcessRating
+);
+
+
+router.get(
+  "/:processId/ratings/summary",
+  authController.authenticate,
+  processController.getProcessRatingSummary
+);
+
+router.get(
+  "/:processId/export-pdf",
+  authController.authenticate,
+  processController.getPdf
+);
+
+
 export { router as processRoute };

@@ -5,6 +5,7 @@ const ERRORS = {
   LOGIN_FAILED: 'Authentication failed',
   USERNAME_REQUIRED: 'Your email is required',
   USERNAME_WRONG: 'Your email may not be correct',
+  INVALID_EMAIL: 'Your email is not valid',
   PASSWORD_WRONG: 'Your password may not be correct',
   PASSWORD_REQUIRED: 'Your password is required',
 

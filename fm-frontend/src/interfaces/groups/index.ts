@@ -1,5 +1,6 @@
 import { GroupMemberPermissionEnum } from "constants/enums/group";
 import { AuthRoleNameEnum } from "constants/user";
+import { ICollectionProcess, ICollectionsGroup } from "interfaces/collection";
 import { IUser } from "interfaces/user";
 import { IOption } from "types/common";
 
@@ -17,11 +18,14 @@ export interface IGroup {
 
   numberOfMembers?: number;
   numberOfCollections?: number;
+  groupMembers?: IGroupMember[];
 }
 
 export interface IGroupDetail extends IGroup {
   members: IGroupMember[];
   numberOfMembers?: number;
+  collectionProcesses?: ICollectionProcess[];
+  collectionGroups?: ICollectionsGroup[];
 }
 
 export interface IGroupMember {

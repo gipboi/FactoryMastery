@@ -30,6 +30,7 @@ favoriteSchema.virtual("collection", {
   ref: "Collection",
   localField: "collectionId",
   foreignField: "_id",
+  justOne: true,
 });
 
 // Set Object and Json property to true. Default is set to false

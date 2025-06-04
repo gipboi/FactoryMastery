@@ -11,63 +11,72 @@ import {
   Text,
   useDisclosure,
   VStack,
-} from "@chakra-ui/react";
-import { uploadFile } from "API/cms";
-import { updateUserById, updateUserPermissionById } from "API/user";
-import Avatar from "components/Avatar";
-import FormInput from "components/Chakra/FormInput";
-// import GeneralMessageModal from "components/GeneralMessageModal";
-import { ReactComponent as IconTrashRed } from "assets/icons/trash-red.svg";
-import DeleteDialog from "components/DeleteDialog";
-import SvgIcon from "components/SvgIcon";
-import { GroupMemberPermissionEnum } from "constants/enums/group";
-import { AuthRoleIdEnum, AuthRoleNameEnum } from "constants/user";
-import { useStores } from "hooks/useStores";
-import { ITheme } from "interfaces/theme";
+  Stack,
+  Flex,
+  Wrap,
+  WrapItem,
+} from '@chakra-ui/react';
+import { uploadFile } from 'API/cms';
+import { updateUserById, updateUserPermissionById } from 'API/user';
+import Avatar from 'components/Avatar';
+import FormInput from 'components/Chakra/FormInput';
+import { ReactComponent as IconTrashRed } from 'assets/icons/trash-red.svg';
+import DeleteDialog from 'components/DeleteDialog';
+import SvgIcon from 'components/SvgIcon';
+import { GroupMemberPermissionEnum } from 'constants/enums/group';
+import { AuthRoleIdEnum, AuthRoleNameEnum } from 'constants/user';
+import { useStores } from 'hooks/useStores';
+import { ITheme } from 'interfaces/theme';
 import {
   ICreateEditUserRequest,
   IUserDetailForm,
   IUserWithRelations,
-} from "interfaces/user";
-import { startCase } from "lodash";
-import get from "lodash/get";
-import { observer } from "mobx-react";
-import { filter } from "pages/UserDetailPage/constants";
-import CustomButton from "pages/UserPage/components/CustomButton";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import routes from "routes";
-import { getValidArray } from "utils/common";
+} from 'interfaces/user';
+import { startCase } from 'lodash';
+import get from 'lodash/get';
+import { observer } from 'mobx-react';
+import { filter } from 'pages/UserDetailPage/constants';
+import CustomButton from 'pages/UserPage/components/CustomButton';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import routes from 'routes';
+import { getValidArray } from 'utils/common';
 import {
   checkDuplicateUserInOrganization,
   getFirstAndLastName,
-} from "utils/user";
-import ResetPasswordModal from "./components/ResetPasswordModal";
-import { primary500 } from "themes/globalStyles";
-import { filterUserDetail } from "components/UserDetailPage/utils";
-import { IFilter } from "types/common";
+} from 'utils/user';
+import ResetPasswordModal from './components/ResetPasswordModal';
+import { primary500 } from 'themes/globalStyles';
+import { filterUserDetail } from 'components/UserDetailPage/utils';
+import { IFilter } from 'types/common';
+import NewGeneralMessageModal from 'pages/InboxPage/GeneralInbox/components/NewGeneralModal';
+import ERRORS from 'config/errors';
+import useBreakPoint from 'hooks/useBreakPoint';
+import { EBreakPoint } from 'constants/theme';
 
 const initialFormValues: IUserDetailForm = {
-  fullName: "",
-  username: "",
-  email: "",
-  password: "",
+  fullName: '',
+  username: '',
+  email: '',
+  password: '',
   userType: String(AuthRoleNameEnum.MANAGER),
   groupPermissions: [],
 };
 
 const UserDetailPageEdit = () => {
   const params = useParams();
-  const userId = String(get(params, "userId", "") ?? "");
+  const userId = String(get(params, 'userId', '') ?? '');
   const { userStore, groupStore, authStore, organizationStore } = useStores();
   const { organization } = organizationStore;
+  const isBasicUser =
+    authStore.userDetail?.authRole === AuthRoleNameEnum.BASIC_USER;
+  const isMobile: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.MD);
+
   const currentTheme: ITheme = organization?.theme ?? {};
   const { userDetail, currentUser } = userStore;
-  const isBasicUser: boolean =
-    authStore?.userDetail?.authRole === AuthRoleNameEnum.BASIC_USER;
-  const currentUserRole: string = currentUser?.authRole ?? "";
+  const currentUserRole: string = currentUser?.authRole ?? '';
   const { groups } = groupStore;
   const groupOptions = Array.isArray(groups)
     ? groups.map((group) => ({
@@ -77,8 +86,8 @@ const UserDetailPageEdit = () => {
       }))
     : [];
   const methods = useForm<IUserDetailForm>({
-    reValidateMode: "onChange",
-    mode: "onChange",
+    reValidateMode: 'onChange',
+    mode: 'onChange',
     defaultValues: userDetail?.id ? userDetail : initialFormValues,
   });
   const {
@@ -88,9 +97,9 @@ const UserDetailPageEdit = () => {
   } = methods;
   const navigate = useNavigate();
 
-  const userType = useWatch({ control, name: "userType" });
-  const usernameWatcher = useWatch({ control, name: "username" });
-  const emailWatcher = useWatch({ control, name: "email" });
+  const userType = useWatch({ control, name: 'userType' });
+  const usernameWatcher = useWatch({ control, name: 'username' });
+  const emailWatcher = useWatch({ control, name: 'email' });
 
   const fileInputRef = useRef<any>(null);
   const [selectedFile, setSelectedFile] = useState<any>();
@@ -126,18 +135,18 @@ const UserDetailPageEdit = () => {
       userDetail?.authRole === AuthRoleIdEnum.BASIC_USER) ||
     isEditMyself;
   const imageUrl = userDetail?.image
-    ? (userDetail?.organizationId ?? "", userDetail.image)
-    : "";
+    ? (userDetail?.organizationId ?? '', userDetail.image)
+    : '';
   async function validateUsernameAndEmail(
     value: string,
-    fieldName: "email" | "username"
+    fieldName: 'email' | 'username'
   ) {
     if (!value || value === userDetail?.[fieldName]) {
       return;
     }
     const haveDuplicate = await checkDuplicateUserInOrganization(
       value,
-      userDetail?.organizationId ?? "",
+      userDetail?.organizationId ?? '',
       fieldName,
       true
     );
@@ -158,24 +167,24 @@ const UserDetailPageEdit = () => {
     setSelectedFile(event.target.files[0]);
     try {
       const url = await uploadFile(
-        userDetail?.organizationId ?? "",
-        "image",
+        userDetail?.organizationId ?? '',
+        'image',
         event.target.files[0]
       );
-      await updateUserById(userDetail?.id ?? "", {
+      await updateUserById(userDetail?.id ?? '', {
         image: url,
       });
     } catch (error: any) {
-      toast.error("Something wrong when upload picture");
+      toast.error('Something wrong when upload picture');
     }
   }
 
   useEffect(() => {
     if (usernameWatcher) {
-      validateUsernameAndEmail(usernameWatcher, "username");
+      validateUsernameAndEmail(usernameWatcher, 'username');
     }
     if (emailWatcher) {
-      validateUsernameAndEmail(emailWatcher, "email");
+      validateUsernameAndEmail(emailWatcher, 'email');
     }
   }, [usernameWatcher, emailWatcher]);
 
@@ -208,7 +217,7 @@ const UserDetailPageEdit = () => {
   useEffect(() => {
     if (userId) {
       userStore.getUserDetail(
-        userId ?? "",
+        userId ?? '',
         filterUserDetail as IFilter<IUserWithRelations>
       );
     }
@@ -239,12 +248,12 @@ const UserDetailPageEdit = () => {
       };
       await updateUserById(userId, updatedUserData);
       await userStore.getUserDetail(userId ?? 0, filter);
-      toast.success("Update user successfully!");
+      toast.success('Update user successfully!');
       userStore.setManageModeInUserDetail(false);
     } catch (error: any) {
       toast.error(
         error?.response?.data.error.message ??
-          "Failed to update user. Please try again or contact support."
+          'Failed to update user. Please try again or contact support.'
       );
     } finally {
       setIsLoading(false);
@@ -252,26 +261,30 @@ const UserDetailPageEdit = () => {
   }
 
   async function handleSubmitPermission(): Promise<void> {
-    setIsPermissionFormLoading(true);
-    await updateUserPermissionById(userId, {
-      isReportTool,
-      isMessageFullAccess,
-    });
-    toast.success("Update permission successfully!");
-    setIsPermissionFormDirty(false);
-    setIsPermissionFormLoading(false);
-    userStore.setManageModeInUserDetail(false);
+    try {
+      setIsPermissionFormLoading(true);
+      await userStore.updateUser(userId, { isMessageFullAccess, isReportTool });
+      userStore.setUserDetail({ isMessageFullAccess, isReportTool });
+      toast.success('Update permission successfully!');
+    } catch (error) {
+      console.error(error);
+      toast.error('Update permission failed!');
+    } finally {
+      setIsPermissionFormDirty(false);
+      setIsPermissionFormLoading(false);
+      userStore.setManageModeInUserDetail(false);
+    }
   }
 
   async function deleteUser(): Promise<void> {
     try {
       await updateUserById(userId, { disabled: true }); //*INFO: disable user instead of delete
-      toast.success("Delete user successfully!");
+      toast.success('Delete user successfully!');
       navigate(routes.users.value);
     } catch (error: any) {
       toast.error(
         error?.response?.data.error.message ??
-          "Failed to delete user. Please try again or contact support."
+          'Failed to delete user. Please try again or contact support.'
       );
     }
   }
@@ -280,62 +293,120 @@ const UserDetailPageEdit = () => {
     try {
       await updateUserById(userId, { disabled: !userDetail?.disabled });
       toast.success(
-        `${!userDetail?.disabled ? "Disable" : "Enable"}  user successfully!`
+        `${!userDetail?.disabled ? 'Disable' : 'Enable'}  user successfully!`
       );
       userStore.setManageModeInUserDetail(false);
     } catch (error: any) {
       toast.error(
         error?.response?.data.error.message ??
           `Failed to ${
-            !userDetail?.disabled ? "disable" : "enable"
+            !userDetail?.disabled ? 'disable' : 'enable'
           } user. Please try again or contact support.`
       );
     }
   }
 
+  const PermissionField = ({ label, isChecked, onChange, isDisabled }: { 
+    label: string; 
+    isChecked: boolean; 
+    onChange: (checked: boolean) => void;
+    isDisabled: boolean;
+  }) => (
+    <Stack 
+      direction={{ base: 'column', md: 'row' }} 
+      alignItems={{ base: 'flex-start', md: 'flex-start' }}
+      spacing={{ base: 2, md: 4 }}
+      width="full"
+    >
+      <Text
+        width={{ base: 'full', md: '168px' }}
+        color="gray.700"
+        fontSize="14px"
+        fontWeight="600"
+        lineHeight="20px"
+        flexShrink={0}
+      >
+        {label}
+      </Text>
+      <HStack>
+        <Switch
+          margin={0}
+          isChecked={isChecked}
+          colorScheme="primary"
+          isDisabled={isDisabled}
+          onChange={(event) => onChange(event?.target?.checked)}
+          size={{ base: "sm", md: "md" }}
+        />
+        <Text
+          color="gray.700"
+          fontSize="16px"
+          fontWeight="400"
+          lineHeight="24px"
+        >
+          {isChecked ? 'On' : 'Off'}
+        </Text>
+      </HStack>
+    </Stack>
+  );
+
   return (
-    <VStack width="full" height="full" spacing="6">
+    <VStack 
+      width="full" 
+      height="full" 
+      spacing={{ base: 4, md: 6 }}
+      px={{ base: 4, md: 0 }}
+      py={{ base: 4, md: 0 }}
+    >
       {!isHideSendMessage && (
-        <HStack justifyContent="flex-end" width="full">
+        <Flex 
+          justifyContent="flex-end" 
+          width="full"
+          flexWrap="wrap"
+          gap={{ base: 2, md: 3 }}
+        >
+          {organization?.isReportTool && (
+            <CustomButton
+              content="Send message"
+              fontSize={{ base: "14px", md: "16px" }}
+              className="outline"
+              color="gray.700"
+              fontWeight="500"
+              height={{ base: "36px", md: "40px" }}
+              leftIcon={<SvgIcon iconName="outline-message" size={16} />}
+              margin={0}
+              onClick={openMessageModal}
+              background="white"
+              px={{ base: 3, md: 4 }}
+            />
+          )}
           <CustomButton
-            content="Send message"
-            fontSize="16px"
+            content={userDetail?.disabled ? 'Enable' : 'Disable'}
+            fontSize={{ base: "14px", md: "16px" }}
             className="outline"
             color="gray.700"
             fontWeight="500"
-            height="40px"
-            leftIcon={<SvgIcon iconName="outline-message" size={16} />}
-            margin={0}
-            onClick={openMessageModal}
-            background="white"
-            disabled
-          />
-          <CustomButton
-            content={userDetail?.disabled ? "Enable" : "Disable"}
-            fontSize="16px"
-            className="outline"
-            color="gray.700"
-            fontWeight="500"
-            height="40px"
+            height={{ base: "36px", md: "40px" }}
             leftIcon={<SvgIcon iconName="account-cancel" size={16} />}
             margin={0}
             onClick={handleDisableEnableUsers}
             background="white"
             disabled={isEditMyself}
+            px={{ base: 3, md: 4 }}
           />
           <CustomButton
             content="Delete"
-            fontSize="16px"
+            fontSize={{ base: "14px", md: "16px" }}
             className="outline"
             color="red.500"
             borderColor="red.500"
             fontWeight="500"
-            height="40px"
+            height={{ base: "36px", md: "40px" }}
             leftIcon={<IconTrashRed />}
             margin={0}
             onClick={onOpenDelete}
             background="white"
             disabled={isEditMyself}
+            px={{ base: 3, md: 4 }}
           />
           <DeleteDialog
             title="Delete user"
@@ -345,10 +416,18 @@ const UserDetailPageEdit = () => {
             onDelete={deleteUser}
             onCancel={onCloseDelete}
           />
-        </HStack>
+        </Flex>
       )}
-      <HStack spacing={6} width="full" alignItems="flex-start">
-        <VStack width="full" margin-top="16px" spacing={6}>
+      
+      <Stack 
+        direction={{ base: 'column', lg: 'row' }} 
+        spacing={{ base: 4, md: 6 }} 
+        width="full" 
+        alignItems={{ base: 'stretch', lg: 'flex-start' }}
+      >
+        {/* Main Content */}
+        <VStack width="full" spacing={{ base: 4, md: 6 }} flex={1}>
+          {/* Detail Form Section */}
           <FormProvider {...methods}>
             <chakra.form onSubmit={methods.handleSubmit(onSubmit)} width="full">
               <VStack
@@ -357,18 +436,19 @@ const UserDetailPageEdit = () => {
                 borderRadius="8px"
                 alignItems="flex-start"
                 alignSelf="flex-start"
-                padding={4}
-                spacing={4}
+                padding={{ base: 3, md: 4 }}
+                spacing={{ base: 3, md: 4 }}
               >
-                <HStack
-                  spacing={4}
+                <Stack
+                  direction={{ base: 'column', sm: 'row' }}
+                  spacing={{ base: 2, sm: 4 }}
                   minWidth="max-content"
                   justifyContent="space-between"
                   width="100%"
-                  alignItems="center"
+                  alignItems={{ base: 'flex-start', sm: 'center' }}
                 >
                   <Text
-                    fontSize="18px"
+                    fontSize={{ base: "16px", md: "18px" }}
                     color="gray.800"
                     fontWeight="600"
                     lineHeight="28px"
@@ -380,24 +460,32 @@ const UserDetailPageEdit = () => {
                   <CustomButton
                     size="sm"
                     content="Save"
-                    fontSize="14px"
-                    background={currentTheme?.primaryColor ?? "primary.700"}
+                    fontSize={{ base: "12px", md: "14px" }}
+                    background={currentTheme?.primaryColor ?? 'primary.700'}
                     color="#ffffff"
                     type="submit"
                     isLoading={isLoading}
                     isDisabled={!isDirty}
                     leftIcon={<SvgIcon iconName="ic-save" size={14} />}
+                    height={{ base: "32px", md: "auto" }}
+                    px={{ base: 3, md: 4 }}
                     _hover={{
                       opacity: !isDirty ? 0.6 : 1,
-                      background: currentTheme?.primaryColor ?? "primary.700",
+                      background: currentTheme?.primaryColor ?? 'primary.700',
                     }}
                     _active={{
-                      background: currentTheme?.primaryColor ?? "primary.700",
+                      background: currentTheme?.primaryColor ?? 'primary.700',
                     }}
                     onClick={() => {}}
-                  ></CustomButton>
-                </HStack>
-                <SimpleGrid columns={2} columnGap={4} rowGap={6} width="full">
+                  />
+                </Stack>
+                
+                <SimpleGrid 
+                  columns={{ base: 1, md: 2 }} 
+                  columnGap={4} 
+                  rowGap={{ base: 4, md: 6 }} 
+                  width="full"
+                >
                   <FormInput
                     name="username"
                     label="User Name"
@@ -412,6 +500,11 @@ const UserDetailPageEdit = () => {
                     name="email"
                     label="Email Address"
                     autoComplete="off"
+                    hideErrorMessage={false}
+                    pattern={{
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: 'Please enter a valid email address',
+                    }}
                   />
                   <Box>
                     <FormLabel
@@ -420,13 +513,14 @@ const UserDetailPageEdit = () => {
                       marginBottom={0}
                       marginInlineEnd={0}
                       minWidth="200px"
+                      fontSize={{ base: "14px", md: "16px" }}
                     >
                       Password
                     </FormLabel>
                     <Text
                       color={currentTheme?.primaryColor ?? primary500}
                       fontWeight="600"
-                      fontSize="16px"
+                      fontSize={{ base: "14px", md: "16px" }}
                       lineHeight="24px"
                       marginBottom={0}
                       marginTop={4}
@@ -437,6 +531,7 @@ const UserDetailPageEdit = () => {
                     </Text>
                   </Box>
                 </SimpleGrid>
+                
                 <FormInput name="userType" label="User type">
                   <Controller
                     name="userType"
@@ -448,8 +543,9 @@ const UserDetailPageEdit = () => {
                         {...field}
                         value={String(field.value)}
                       >
-                        <HStack
-                          spacing={14}
+                        <Stack
+                          direction={{ base: 'column', sm: 'row' }}
+                          spacing={{ base: 2, sm: 14 }}
                           alignItems="flex-start"
                           color="gray.700"
                         >
@@ -458,23 +554,32 @@ const UserDetailPageEdit = () => {
                             <Radio
                               colorScheme="primary"
                               value={AuthRoleNameEnum.ORG_ADMIN}
+                              size={{ base: "sm", md: "md" }}
                             >
-                              {AuthRoleNameEnum.ORG_ADMIN}
+                              <Text fontSize={{ base: "14px", md: "16px" }}>
+                                {AuthRoleNameEnum.ORG_ADMIN}
+                              </Text>
                             </Radio>
                           )}
                           <Radio
                             colorScheme="primary"
                             value={AuthRoleNameEnum.MANAGER}
+                            size={{ base: "sm", md: "md" }}
                           >
-                            {AuthRoleNameEnum.MANAGER}
+                            <Text fontSize={{ base: "14px", md: "16px" }}>
+                              {AuthRoleNameEnum.MANAGER}
+                            </Text>
                           </Radio>
                           <Radio
                             colorScheme="primary"
                             value={AuthRoleNameEnum.BASIC_USER}
+                            size={{ base: "sm", md: "md" }}
                           >
-                            {AuthRoleNameEnum.BASIC_USER}
+                            <Text fontSize={{ base: "14px", md: "16px" }}>
+                              {AuthRoleNameEnum.BASIC_USER}
+                            </Text>
                           </Radio>
-                        </HStack>
+                        </Stack>
                       </RadioGroup>
                     )}
                   />
@@ -482,121 +587,92 @@ const UserDetailPageEdit = () => {
               </VStack>
             </chakra.form>
           </FormProvider>
+
+          {/* Permission Section */}
           <VStack
             width="full"
             background="white"
             borderRadius="8px"
             alignItems="flex-start"
-            padding={4}
-            spacing={4}
+            padding={{ base: 3, md: 4 }}
+            spacing={{ base: 3, md: 4 }}
           >
-            <HStack
-              spacing={4}
+            <Stack
+              direction={{ base: 'column', sm: 'row' }}
+              spacing={{ base: 2, sm: 4 }}
               minWidth="max-content"
               justifyContent="space-between"
               width="100%"
+              alignItems={{ base: 'flex-start', sm: 'center' }}
             >
-              <HStack spacing={2} alignItems="center" alignSelf="flex-start">
-                <Text
-                  fontSize="18px"
-                  color="gray.800"
-                  fontWeight="600"
-                  lineHeight="28px"
-                  marginBottom={0}
-                >
-                  Permission
-                </Text>
-              </HStack>
+              <Text
+                fontSize={{ base: "16px", md: "18px" }}
+                color="gray.800"
+                fontWeight="600"
+                lineHeight="28px"
+                marginBottom={0}
+              >
+                Permission
+              </Text>
+              
               <CustomButton
                 size="sm"
                 content="Save"
-                fontSize="14px"
-                background={currentTheme?.primaryColor ?? "primary.700"}
+                fontSize={{ base: "12px", md: "14px" }}
+                background={currentTheme?.primaryColor ?? 'primary.700'}
                 color="white"
                 isLoading={isPermissionFormLoading}
                 isDisabled={!isPermissionFormDirty}
                 leftIcon={<SvgIcon iconName="ic-save" size={14} />}
+                height={{ base: "32px", md: "auto" }}
+                px={{ base: 3, md: 4 }}
                 _hover={{
                   opacity: !isPermissionFormDirty ? 0.6 : 1,
-                  background: currentTheme?.primaryColor ?? "primary.700",
+                  background: currentTheme?.primaryColor ?? 'primary.700',
                 }}
                 _active={{
-                  background: currentTheme?.primaryColor ?? "primary.700",
+                  background: currentTheme?.primaryColor ?? 'primary.700',
                 }}
                 onClick={handleSubmitPermission}
-              ></CustomButton>
-            </HStack>
-            <HStack alignItems="flex-start">
-              <Text
-                width="168px"
-                color="gray.700"
-                fontSize="14px"
-                fontWeight="600"
-                lineHeight="20px"
-              >
-                Report tool
-              </Text>
-              <HStack>
-                <Switch
-                  margin={0}
-                  isChecked={isReportTool}
-                  onChange={(event) => {
-                    setIsReportTool(event?.target?.checked);
-                    setIsPermissionFormDirty(true);
-                  }}
-                />
-                <Text
-                  color="gray.700"
-                  fontSize="16px"
-                  fontWeight="400"
-                  lineHeight="24px"
-                >
-                  {isReportTool ? "On" : "Off"}
-                </Text>
-              </HStack>
-            </HStack>
-            <HStack alignItems="flex-start">
-              <Text
-                width="168px"
-                color="gray.700"
-                fontSize="14px"
-                fontWeight="600"
-                lineHeight="20px"
-              >
-                Message full access
-              </Text>
-              <HStack>
-                <Switch
-                  margin={0}
-                  isChecked={isMessageFullAccess}
-                  onChange={(event) => {
-                    setIsMessageFullAccess(event?.target?.checked);
-                    setIsPermissionFormDirty(true);
-                  }}
-                />
-                <Text
-                  color="gray.700"
-                  fontSize="16px"
-                  fontWeight="400"
-                  lineHeight="24px"
-                >
-                  {isMessageFullAccess ? "On" : "Off"}
-                </Text>
-              </HStack>
-            </HStack>
+              />
+            </Stack>
+            
+            <VStack alignItems="flex-start" spacing={{ base: 3, md: 4 }} width="full">
+              <PermissionField 
+                label="Report tool" 
+                isChecked={isReportTool}
+                onChange={(checked) => {
+                  setIsReportTool(checked);
+                  setIsPermissionFormDirty(true);
+                }}
+                isDisabled={isBasicUser}
+              />
+              <PermissionField 
+                label="Message full access" 
+                isChecked={isMessageFullAccess}
+                onChange={(checked) => {
+                  setIsMessageFullAccess(checked);
+                  setIsPermissionFormDirty(true);
+                }}
+                isDisabled={isBasicUser}
+              />
+            </VStack>
           </VStack>
         </VStack>
+
+        {/* Profile Picture Section */}
         <VStack
-          backgroundColor=" #FFFFFF"
-          margin-top="16px"
+          backgroundColor="#FFFFFF"
           borderRadius="8px"
-          padding={4}
-          spacing={4}
-          minWidth="313px"
+          padding={{ base: 3, md: 4 }}
+          spacing={{ base: 3, md: 4 }}
+          minWidth={{ base: 'full', lg: '313px' }}
+          maxWidth={{ base: 'full', lg: '313px' }}
+          alignSelf={{ base: 'stretch', lg: 'flex-start' }}
         >
           <Text
             alignSelf="flex-start"
-            fontSize="18px"
+            fontSize={{ base: "16px", md: "18px" }}
             color="gray.800"
             fontWeight="600"
             lineHeight="28px"
@@ -604,31 +680,35 @@ const UserDetailPageEdit = () => {
           >
             Profile Picture
           </Text>
-          <Avatar
-            isLarge
-            src={
-              selectedFile ? URL.createObjectURL(selectedFile) : imageUrl ?? ""
-            }
-            name={userDetail?.fullName ?? ""}
-          />
+          <Box alignSelf={{ base: 'center', lg: 'center' }}>
+            <Avatar
+              isLarge
+              src={
+                selectedFile ? URL.createObjectURL(selectedFile) : imageUrl ?? ''
+              }
+              name={userDetail?.fullName ?? ''}
+            />
+          </Box>
           <input
             type="file"
             ref={fileInputRef}
             onChange={onSelectFile}
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
           />
           <CustomButton
             content="Change image"
             width="full"
-            fontSize="16px"
+            fontSize={{ base: "14px", md: "16px" }}
             background="#ffffff"
             border="1px solid #E2E8F0"
             color="gray.700"
             leftIcon={<SvgIcon iconName="ic-upload" size={16} />}
             onClick={() => fileInputRef?.current?.click()}
-          ></CustomButton>
+            height={{ base: "40px", md: "auto" }}
+          />
         </VStack>
-      </HStack>
+      </Stack>
+      
       <ResetPasswordModal
         isOpen={isOpenResetPasswordModal}
         toggle={
@@ -637,11 +717,11 @@ const UserDetailPageEdit = () => {
             : openResetPasswordModal
         }
       />
-      {/* <GeneralMessageModal
+      <NewGeneralMessageModal
         isOpen={isOpenMessageModal}
-        toggle={isOpenMessageModal ? closeMessageModal : openMessageModal}
+        onClose={closeMessageModal}
         recipient={userDetail as IUserWithRelations}
-      /> */}
+      />
     </VStack>
   );
 };

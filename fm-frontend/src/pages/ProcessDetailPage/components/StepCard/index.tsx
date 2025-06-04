@@ -3,6 +3,9 @@ import { Box, Center, HStack, Stack, Text, VStack } from "@chakra-ui/react";
 // import { uploadFile } from "API/cms";
 // import { createMedia, updateMediaById } from "API/media";
 // import { updateTextContentById } from "API/textContent";
+import { updateBlockById } from "API/block";
+import { uploadFile } from "API/cms";
+import { createMedia, updateMediaById } from "API/media";
 import cx from "classnames";
 import Icon from "components/Icon";
 import MediaManager, {
@@ -12,16 +15,17 @@ import MediaManager, {
 import ProcessMediaTab from "components/ProcessMediaTab";
 import SvgIcon from "components/SvgIcon";
 import { useStores } from "hooks/useStores";
+import { IBlockWithRelations } from "interfaces/block";
 import { IMedia } from "interfaces/media";
 import { IStepWithRelations } from "interfaces/step";
-import { IBlockWithRelations } from "interfaces/block";
 import { ITheme } from "interfaces/theme";
 import { observer } from "mobx-react";
 import { getRenderProcess } from "pages/ProcessDetailPage/utils/process";
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { Card, CardBody, CardText, Collapse, Row } from "reactstrap";
+import { CardText, Collapse, Row } from "reactstrap";
 import { primary500 } from "themes/globalStyles";
+import { UpdateBody } from "types/common";
 import { checkValidArray, getValidArray } from "utils/common";
 import BlockTextEditor from "./components/BlockTextEditor";
 import EmbedLinkModal from "./components/BlockTextEditor/components/EmbedLinkModal";
@@ -31,10 +35,6 @@ import MediaView from "./components/MediaView";
 import TaskCard from "./components/TaskCard";
 import styles from "./stepCard.module.scss";
 import { OutlineButton, UploadButton } from "./stepCard.styles";
-import { uploadFile } from "API/cms";
-import { UpdateBody } from "types/common";
-import { createMedia, updateMediaById } from "API/media";
-import { updateBlockById } from "API/block";
 
 interface IStepCardProps {
   lastStep: boolean;
@@ -65,7 +65,7 @@ const StepCard = ({
   alwayExpand,
   isCommonStepFromStepId,
 }: IStepCardProps) => {
-  const { processStore, organizationStore } = useStores();
+  const { processStore, organizationStore, iconBuilderStore } = useStores();
   const [isEditing, setIsEditing] = useState(false);
   const [showEditStep, setShowEditStep] = useState(false);
   const [showAddTextBlock, setShowAddTextBlock] = useState<boolean>(false);
@@ -95,7 +95,7 @@ const StepCard = ({
   useEffect(() => {
     setBlocks(step?.blocks ?? []);
     if (step?.icon) {
-      // iconBuilderStore.setSelectedIcon(step.icon);
+      iconBuilderStore.setSelectedIcon(step.icon);
     }
 
     if (alwayExpand) {
@@ -343,7 +343,7 @@ const StepCard = ({
                     setBlocks(items);
                     items.forEach(
                       (block: IBlockWithRelations, index: number) => {
-                        updateBlockById(block?._id ?? block?.id ?? '', {
+                        updateBlockById(block?._id ?? block?.id ?? "", {
                           position: index + 1,
                         });
                       }

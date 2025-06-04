@@ -1,9 +1,9 @@
+import { uploadMultipleFiles } from "API/cms";
 import { useStores } from "hooks/useStores";
 import { useRef, useState } from "react";
 import { MdAttachFile as AttachFileIcon } from "react-icons/md";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button, Col, Row } from "reactstrap";
-// import { uploadMultipleFiles } from 'API/cms'
 import { Attachement } from "../../../../types";
 import AttachmentTag from "../AttachmentTag";
 import styles from "./messageFooter.module.scss";
@@ -30,18 +30,18 @@ const MessageFooter = ({ onSend = () => {}, stepId }: MessageFooterProps) => {
     if (evt.currentTarget.files) {
       setProcessing(true);
       const arrayOfFiles = Array.from(evt.currentTarget.files);
-      // const uploadings = await uploadMultipleFiles(
-      //   organizationStore.organization?.id ?? 0,
-      //   "other",
-      //   arrayOfFiles
-      // );
+      const uploadings = await uploadMultipleFiles(
+        organizationStore.organization?.id ?? "",
+        "other",
+        arrayOfFiles
+      );
 
       setAttachements([
         ...attachements,
-        // ...uploadings.map((url: string, idx: number) => ({
-        //   url,
-        //   name: arrayOfFiles[idx].name,
-        // })),
+        ...uploadings.map((url: string, idx: number) => ({
+          url,
+          name: arrayOfFiles[idx].name,
+        })),
       ]);
     }
     setProcessing(false);

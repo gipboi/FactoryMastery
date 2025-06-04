@@ -1,15 +1,15 @@
 import { Box, Collapse, HStack, Text } from "@chakra-ui/react";
+import { blockIcon } from "components/Icon";
 import SvgIcon from "components/SvgIcon";
 import { IProcessWithRelations } from "interfaces/process";
+import { IStepWithRelations } from "interfaces/step";
+import IconBuilder from "pages/IconBuilderPage/components/IconBuilder";
 import { SetStateAction, useState } from "react";
 import colors from "themes/colors.theme";
 import { IOption } from "types/common";
-import { primary100, textColorBlack } from "../../constants";
-import IconBuilder from "components/IconBuilder";
-import { blockIcon } from "components/Icon";
-import { IStepWithRelations } from "interfaces/step";
 import { getValidArray } from "utils/common";
 import { stepToOptions } from "../../adapter";
+import { primary100, textColorBlack } from "../../constants";
 import StepItem from "../StepItem";
 
 interface IExternalStepItemProps {
@@ -41,11 +41,7 @@ const ExternalStepItem = (props: IExternalStepItemProps) => {
         onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}
       >
         <HStack display="flex" alignItems="center">
-          <IconBuilder
-            icon={blockIcon}
-            size={40}
-            isActive
-          />
+          <IconBuilder icon={blockIcon} size={40} isActive />
           <Text
             color={textColorBlack}
             fontSize="sm"

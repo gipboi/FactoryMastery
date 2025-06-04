@@ -143,9 +143,10 @@ export class UserService {
         subject: "Invitation",
         htmlString: getInvitationTemplate({
           name: createdUser?.fullName,
-          password: createdUser?.encryptedPassword,
+          password: userData?.password ?? '',
           orgName: organization?.name,
           subdomain: organization?.subdomain,
+          authRole: createdUser?.authRole
         }),
       });
 
@@ -247,9 +248,7 @@ export class UserService {
     try {
       const query = req?.query || {};
 
-      console.log("query?.where", query?.where);
       const count = await User.countDocuments(query?.where || {});
-      console.log("count", count);
 
       successHandler(res, count, "Count Users Successfully");
     } catch (error) {

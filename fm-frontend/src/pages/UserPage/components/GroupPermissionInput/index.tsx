@@ -5,7 +5,7 @@ import { GroupMemberPermissionEnum } from "constants/enums/group";
 import { useStores } from "hooks/useStores";
 import { observer } from "mobx-react";
 import { useController, useWatch } from "react-hook-form";
-import { MdPeople as PeopleIcon } from "react-icons/md";
+import { BsPeople as PeopleIcon } from "react-icons/bs";
 import Select from "react-select";
 import { Col, Row } from "reactstrap";
 import { IOption } from "types/common";
@@ -86,7 +86,7 @@ const GroupPermissionInput = (props: any) => {
                 <div className={styles.itemWrapper} key={group?.value}>
                   <div className={styles.nameWrapper}>
                     <div className={styles.iconWrapper}>
-                      <PeopleIcon />
+                      <PeopleIcon size={24} color="black" />
                     </div>{" "}
                     <span>{group?.label}</span>
                   </div>

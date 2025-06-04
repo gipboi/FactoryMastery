@@ -19,14 +19,14 @@ export function auditTrailLog(req, res, next) {
     const request = JSON.stringify(body);
     const response = JSON.stringify(responseData);
 
-    AuditTrail.create({
-      method,
-      route: url,
-      status,
-      request,
-      response,
-    }).catch((error) => {
-      console.error("AuditTrail logging error:", error);
-    });
+    // AuditTrail.create({
+    //   method,
+    //   route: url,
+    //   status,
+    //   request,
+    //   response,
+    // }).catch((error) => {
+    //   console.error("AuditTrail logging error:", error);
+    // });
   });
 }

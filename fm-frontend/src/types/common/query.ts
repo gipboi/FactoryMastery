@@ -42,6 +42,9 @@ export declare type PredicateComparison<PT> = {
   $regex?: string | RegExp
   $options?: string
   $in?: PT[]
+  $neq?: PT[] 
+  $exists?: boolean
+  $eq?: PT
 }
 /**
  * Value types for `{propertyName: value}`

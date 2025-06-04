@@ -8,7 +8,8 @@ import { getValidArray } from "utils/common";
 
 class OrganizationStore {
   rootStore: RootStore;
-  organization: IOrganization | null = null
+  organization: IOrganization | null = null;
+  allOrganizations: IOrganization[] = [];
 
   isLoading?: boolean | undefined = undefined;
 
@@ -44,6 +45,20 @@ class OrganizationStore {
     }
     this.organization = organizations?.[0];
     return this.organization;
+  }
+
+  async getAllOrganization() {
+    const filter: IFilter<IOrganization> = {
+      where: {}
+    };
+
+    const organizations: IOrganization[] = await getOrganizationData(filter);
+
+    if (!organizations || getValidArray(organizations).length === 0) {
+      throw new Error(ERRORS.ORG_NOT_FOUND);
+    }
+    this.allOrganizations = organizations;
+    return this.allOrganizations;
   }
 }
 

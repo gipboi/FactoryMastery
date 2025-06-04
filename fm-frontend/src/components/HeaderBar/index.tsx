@@ -1,13 +1,12 @@
-import { Button, HStack } from "@chakra-ui/react";
-import { GroupMemberPermissionEnum } from "constants/enums/group";
-import { AuthRoleNameEnum } from "constants/user";
-import { useStores } from "hooks/useStores";
-import { ITheme } from "interfaces/theme";
-import { get } from "lodash";
-import { observer } from "mobx-react";
-import { ReactNode } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getValidArray } from "utils/common";
+import { Button, HStack } from '@chakra-ui/react';
+import { GroupMemberPermissionEnum } from 'constants/enums/group';
+import { AuthRoleNameEnum } from 'constants/user';
+import { useStores } from 'hooks/useStores';
+import { ITheme } from 'interfaces/theme';
+import { observer } from 'mobx-react';
+import { ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getValidArray } from 'utils/common';
 
 interface IHeaderBarProps {
   title: string | ReactNode;
@@ -15,16 +14,16 @@ interface IHeaderBarProps {
   isManageMode?: boolean;
   hasManageMode?: boolean;
   controlBy?:
-    | "processDetail"
-    | "searchPage"
-    | "collectionPage"
-    | "collectionDetailPage"
-    | "archivePage"
-    | "processList"
-    | "groupPage"
-    | "groupMemberList"
-    | "userPage"
-    | "userDetailPage";
+    | 'processDetail'
+    | 'searchPage'
+    | 'collectionPage'
+    | 'collectionDetailPage'
+    | 'archivePage'
+    | 'processList'
+    | 'groupPage'
+    | 'groupMemberList'
+    | 'userPage'
+    | 'userDetailPage';
 }
 
 const HeaderBar = (props: IHeaderBarProps) => {
@@ -42,11 +41,12 @@ const HeaderBar = (props: IHeaderBarProps) => {
     authStore,
     groupStore,
     // commonLibraryStore,
-    // collectionStore
+    collectionStore,
   } = useStores();
   const location = useLocation();
-  const navigate = useNavigate();
   const { currentUserGroupMembers, currentUser, userDetail } = userStore;
+  const { userDetail: userAuthDetail } = authStore;
+  const { isManagePermission } = collectionStore;
   const currentTheme: ITheme = {};
   const isBasicUser =
     authStore?.userDetail?.authRole === AuthRoleNameEnum.BASIC_USER;
@@ -65,36 +65,35 @@ const HeaderBar = (props: IHeaderBarProps) => {
   let showManageButton = false;
   let isManageModeDefault = isManageMode;
 
-  if (!setIsManageMode && controlBy === "processDetail") {
+  if (!setIsManageMode && controlBy === 'processDetail') {
     isManageModeDefault = processStore?.isManageModeInDetail;
     showManageButton = processStore?.canUserEditInProcessDetail;
   }
-  if (!setIsManageMode && controlBy === "processList") {
+  if (!setIsManageMode && controlBy === 'processList') {
     isManageModeDefault = processStore?.isManageModeInProcessList;
     showManageButton = processStore?.canUserEditInProcessList;
   }
-  if (!setIsManageMode && controlBy === "searchPage") {
+  if (!setIsManageMode && controlBy === 'searchPage') {
     // isManageModeDefault = searchStore?.isManageMode;
     // showManageButton = userCanManage;
   }
-  if (!setIsManageMode && controlBy === "collectionPage") {
-    // isManageModeDefault = collectionStore?.isManageMode;
-    // showManageButton = userCanManage;
+  if (!setIsManageMode && controlBy === 'collectionPage') {
+    const canEditUserDetail: boolean = isOrgAdmin || userAuthDetail?.authRole === AuthRoleNameEnum.MANAGER;
+    isManageModeDefault = collectionStore?.isManageMode;
+    showManageButton = canEditUserDetail;
   }
-  if (!setIsManageMode && controlBy === "collectionDetailPage") {
-    // isManageModeDefault = collectionStore?.isManageMode;
-    // if (isEditor) {
-    //   showManageButton = isManagePermission;
-    // } else {
-    //   showManageButton = userCanManage;
-    // }
+  if (!setIsManageMode && controlBy === 'collectionDetailPage') {
+    const canEditUserDetail: boolean = isOrgAdmin || userAuthDetail?.authRole === AuthRoleNameEnum.MANAGER;
+
+    isManageModeDefault = collectionStore?.isManageMode;
+    showManageButton = canEditUserDetail;
   }
-  if (!setIsManageMode && controlBy === "archivePage") {
+  if (!setIsManageMode && controlBy === 'archivePage') {
     // isManageModeDefault = processStore?.isManageModeInArchive;
     // showManageButton = userCanManage;
   }
-  if (!setIsManageMode && controlBy === "groupMemberList") {
-        const groupId: string = location.pathname.split("/").pop() ?? "";
+  if (!setIsManageMode && controlBy === 'groupMemberList') {
+    const groupId: string = location.pathname.split('/').pop() ?? '';
     const userHasEditorRole: boolean =
       getValidArray(groupStore.groupMembers).some(
         (groupMember) =>
@@ -105,15 +104,15 @@ const HeaderBar = (props: IHeaderBarProps) => {
     isManageModeDefault = groupStore?.isManageModeInMemberList;
     showManageButton = userCanManage && userHasEditorRole;
   }
-  if (!setIsManageMode && controlBy === "groupPage") {
+  if (!setIsManageMode && controlBy === 'groupPage') {
     isManageModeDefault = groupStore?.isManageMode;
     showManageButton = userCanManage;
   }
-  if (!setIsManageMode && controlBy === "userPage") {
+  if (!setIsManageMode && controlBy === 'userPage') {
     isManageModeDefault = userStore?.isManageMode;
     showManageButton = !isBasicUser;
   }
-  if (!setIsManageMode && controlBy === "userDetailPage") {
+  if (!setIsManageMode && controlBy === 'userDetailPage') {
     // *INFO: ORG_ADMIN can edit user detail, but not basic user
     // MANAGER can edit BU and himself
     // BU can edit himself
@@ -138,40 +137,42 @@ const HeaderBar = (props: IHeaderBarProps) => {
               background="primary.500"
               color="white"
               _hover={{
-                background: currentTheme?.primaryColor ?? "primary.700",
+                background: currentTheme?.primaryColor ?? 'primary.700',
                 opacity: currentTheme?.primaryColor ? 0.8 : 1,
               }}
               onClick={() => {
-                if (controlBy === "processDetail") {
+                if (controlBy === 'processDetail') {
                   processStore?.setManageModeInDetail(
                     !processStore?.isManageModeInDetail
                   );
-                } else if (controlBy === "processList") {
+                } else if (controlBy === 'processList') {
                   processStore?.setManageModeInList(
                     !processStore?.isManageModeInProcessList
                   );
-                } else if (controlBy === "searchPage") {
+                } else if (controlBy === 'searchPage') {
                   // searchStore?.setManageMode(!searchStore?.isManageMode);
-                } else if (controlBy === "collectionPage") {
-                  // collectionStore?.setManageMode(!collectionStore?.isManageMode);
-                } else if (controlBy === "collectionDetailPage") {
-                  // collectionStore?.setManageMode(
-                  //   !collectionStore?.isManageMode,
-                  //   true
-                  // );
-                } else if (controlBy === "archivePage") {
+                } else if (controlBy === 'collectionPage') {
+                  collectionStore?.setManageMode(
+                    !collectionStore?.isManageMode
+                  );
+                } else if (controlBy === 'collectionDetailPage') {
+                  collectionStore?.setManageMode(
+                    !collectionStore?.isManageMode,
+                    true
+                  );
+                } else if (controlBy === 'archivePage') {
                   // processStore?.setManageModeInArchive(
                   //   !processStore?.isManageModeInArchive
                   // );
-                } else if (controlBy === "groupMemberList") {
+                } else if (controlBy === 'groupMemberList') {
                   groupStore?.setManageModeInMemberList(
                     !groupStore?.isManageModeInMemberList
                   );
-                } else if (controlBy === "groupPage") {
+                } else if (controlBy === 'groupPage') {
                   groupStore?.setManageMode(!groupStore?.isManageMode);
-                } else if (controlBy === "userPage") {
+                } else if (controlBy === 'userPage') {
                   userStore?.setManageMode(!userStore?.isManageMode);
-                } else if (controlBy === "userDetailPage") {
+                } else if (controlBy === 'userDetailPage') {
                   userStore?.setManageModeInUserDetail(
                     !userStore?.isManageModeInUserDetail
                   );
@@ -180,7 +181,7 @@ const HeaderBar = (props: IHeaderBarProps) => {
                 }
               }}
             >
-              {isManageModeDefault ? "Done" : "Manage"}
+              {isManageModeDefault ? 'Done' : 'Manage'}
             </Button>
           </HStack>
         )}

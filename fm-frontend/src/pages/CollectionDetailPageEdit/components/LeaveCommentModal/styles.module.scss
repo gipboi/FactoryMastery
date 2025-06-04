@@ -1,0 +1,18 @@
+.commentDisplay {
+  background-color: #edf2f7;
+  min-height: 201px;
+  overflow: auto;
+  max-height: 400px;
+}
+
+.attachmentTag {
+  padding-left: 40px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  & > div {
+    margin: 10px 30px 10px 0;
+  }
+}

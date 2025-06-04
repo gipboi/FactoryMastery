@@ -10,25 +10,30 @@ import {
   Stack,
   Text,
   Textarea,
-} from "@chakra-ui/react";
-import { useStores } from "hooks/useStores";
-import isEmpty from "lodash/isEmpty";
-import { observer } from "mobx-react";
-import React, { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { primary } from "themes/globalStyles";
-import { IOption } from "types/common";
+} from '@chakra-ui/react';
+import { useStores } from 'hooks/useStores';
+import isEmpty from 'lodash/isEmpty';
+import { observer } from 'mobx-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import { primary } from 'themes/globalStyles';
+import { IOption } from 'types/common';
 // import { createAudit } from 'API/audit'
 // import { createSupportMessageThreads } from 'API/messages/support-message'
-import AttachmentTag from "components/AttachmentTag";
-import SvgIcon from "components/SvgIcon";
-import { IProcessWithRelations } from "interfaces/process";
-import { ITheme } from "interfaces/theme";
-import { getValidArray } from "utils/common";
-import StepFilterSelect from "./components/StepFilterSelect";
-import styles from "./styles.module.scss";
-
+import { createSupportMessageThreads } from 'API/messages/support-message';
+import AttachmentSection from 'components/AttachmentSection';
+import SvgIcon from 'components/SvgIcon';
+import { IProcessWithRelations } from 'interfaces/process';
+import { ITheme } from 'interfaces/theme';
+import { checkValidArray } from 'utils/common';
+import { handleUploadMultiple } from 'utils/upload';
+import StepDetail from '../StepDetail';
+import StepFilterSelect from './components/StepFilterSelect';
+import { ISupportMessageThread } from 'interfaces/message';
+import { useNavigate } from 'react-router-dom';
+import routes from 'routes';
+import { EInboxTab } from 'pages/SupportInboxPage/constants';
 interface INewSupportMessageModalProps {
   isOpen: boolean;
   process: IProcessWithRelations;
@@ -44,24 +49,26 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
     openThread = () => {},
     onClose,
   } = props;
-  const { userStore, authStore, organizationStore } = useStores();
+  const { userStore, authStore, organizationStore, messageStore } = useStores();
+  const navigate = useNavigate();
   const methods = useForm();
   const { control, setValue } = methods;
   const [attachments, setAttachments] = useState<File[]>([]);
   const [processing, setProcessing] = useState<boolean>(false);
-  const [messageContent, setMessageContent] = useState("");
+  const [messageContent, setMessageContent] = useState('');
   const stepOptions = (props.process?.steps || []).map((step) => ({
-    label: step?.name ?? "",
+    label: step?.name ?? '',
     value: step?.id,
     icon: step?.icon,
   }));
   const { organization } = organizationStore;
   const currentTheme: ITheme = organization?.theme ?? {};
 
-  const [selectedStep, setSelectedStep] = useState<IOption<number> | null>(
+  const [selectedStep, setSelectedStep] = useState<IOption<string> | null>(
     null
   );
   const fileInputRef = useRef<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const isDisableSend = (isEmpty(attachments) && !messageContent) || processing;
 
@@ -69,83 +76,75 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
 
   useEffect(() => {
     setSelectedStep(null);
-    setMessageContent("");
+    setMessageContent('');
     setAttachments([]);
   }, [isOpen]);
 
+  async function handleUpload(evt: React.ChangeEvent<HTMLInputElement>) {
+    if (evt.currentTarget.files) {
+      const targetFiles = Array.from(evt.currentTarget.files);
+      setAttachments([...attachments, ...targetFiles]);
+    }
+  }
   async function onSubmit() {
     try {
       setProcessing(true);
       // const {
-      //   userDetail: { organizationId, id: currentUserId },
+      //   userDetail: { organizationId , id: currentUserId },
       // } = authStore;
-      // const attachmentData = await handleUploadMultiple(
-      //   attachments,
-      //   userStore.currentUser.organizationId
-      // );
-      // const data = {
-      //   organizationId: organizationId,
-      //   userId: currentUserId,
-      //   ownerId: currentUserId,
-      //   content: messageContent,
-      //   attachments: attachmentData,
-      // };
-      // if (selectedStep) {
-      //   await createSupportMessageThreads({
-      //     ...data,
-      //     stepId: selectedStep?.value,
-      //   });
-      // } else {
-      //   await createSupportMessageThreads({ ...data, processId: process?.id });
-      // }
-      // await createAudit({
-      //   action: EAuditAction.COMMENT,
-      //   auditableId: process?.id,
-      //   auditableType: EAuditableType.STANDARD_OPERATING_PROCEDURE,
-      // });
-      refetchThreadList();
+      const { organizationId, id: currentUserId } = authStore.userDetail ?? {};
+      const attachmentData = await handleUploadMultiple(
+        attachments,
+        userStore.currentUser?.organizationId ?? ''
+      );
+      const data = {
+        organizationId: organizationId ?? '',
+        userId: currentUserId ?? '',
+        ownerId: currentUserId,
+        content: messageContent,
+        attachments: attachmentData,
+      };
+      let createdThread: ISupportMessageThread;
+      if (selectedStep) {
+        createdThread = await createSupportMessageThreads({
+          ...data,
+          stepId: selectedStep?.value ?? '',
+        });
+      } else {
+        createdThread = await createSupportMessageThreads({
+          ...data,
+          processId: process?.id,
+        });
+      }
+      messageStore.setCurrentSupportThreadId(createdThread?.id);
       onClose();
-      toast.success("Create new comment successfully");
+      toast.success('Create new comment successfully');
     } catch (error: any) {
       const errorMessage = error.response?.data.error.message;
-      toast.error(errorMessage ?? "Fail to create new comment");
+      toast.error(errorMessage ?? 'Fail to create new comment');
     } finally {
       setProcessing(false);
+      messageStore.setIsClaimedByMe(false);
+      messageStore.setIsClaimedByOthers(false);
+      messageStore.setIsUnclaimed(false);
+      messageStore.setIsResolved(false);
+      navigate(`${routes.messages.value}?tab=${EInboxTab.SUPPORT}`);
     }
   }
 
   async function handleSelectFile(evt: React.ChangeEvent<HTMLInputElement>) {
     if (evt.currentTarget.files) {
       setProcessing(true);
-      const arrayOfFiles = Array.from(evt.currentTarget.files);
-      setAttachments([...attachments, arrayOfFiles[0]]);
+      const targetFiles = Array.from(evt.currentTarget.files);
+      setAttachments([...attachments, ...targetFiles]);
     }
     setProcessing(false);
   }
 
   function handleRemoveSelectedStep() {
     setSelectedStep(null);
-    setValue("step", null);
+    setValue('step', null);
   }
-
-  const renderFileList = () => {
-    return (
-      <ul className={styles.fileDisplayList}>
-        {getValidArray(attachments).map((attachment, index) => (
-          <AttachmentTag
-            label={attachment.name}
-            deleteMode
-            onDelete={() => {
-              const temp = [...attachments];
-              temp.splice(index, 1);
-              setAttachments([...temp]);
-            }}
-            key={index}
-          />
-        ))}
-      </ul>
-    );
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="2xl">
@@ -158,18 +157,18 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
           color="gray.800"
           borderBottom="1px solid #E2E8F0"
         >
-          Leave Comment
+          Leave a Thread
         </ModalHeader>
         <ModalCloseButton
           boxShadow="unset"
           border="unset"
           background="#fff"
-          _focus={{ borderColor: "unset" }}
-          _active={{ background: "#fff", borderColor: "unset" }}
+          _focus={{ borderColor: 'unset' }}
+          _active={{ background: '#fff', borderColor: 'unset' }}
         />
         <ModalBody paddingTop="24px" paddingBottom="27px">
           <form>
-            {/* <StepDetail collections={process?.collections} process={process} /> */}
+            <StepDetail collections={process?.collections} process={process} />
             <Stack>
               <StepFilterSelect
                 name="step"
@@ -234,10 +233,11 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
             <Textarea
               placeholder="Enter your comment"
               onChange={(event) =>
-                setMessageContent(event?.target?.value ?? "")
+                setMessageContent(event?.target?.value ?? '')
               }
               _focus={{ borderColor: currentTheme?.primaryColor ?? primary }}
             />
+
             <Button
               leftIcon={
                 <SvgIcon size={13} iconName="ic_baseline-attach-file" />
@@ -250,9 +250,9 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
               fontWeight={500}
               fontSize="16px"
               lineHeight="24px"
-              marginTop="24px"
-              _hover={{ background: "whiteAlpha.700" }}
-              _active={{ background: "whiteAlpha.700" }}
+              margin="24px 0 "
+              _hover={{ background: 'whiteAlpha.700' }}
+              _active={{ background: 'whiteAlpha.700' }}
               onClick={() => {
                 if (!processing) {
                   fileInputRef.current.value = null;
@@ -265,12 +265,20 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
                 type="file"
                 ref={fileInputRef}
                 onChange={handleSelectFile}
-                style={{ display: "none" }}
+                style={{ display: 'none' }}
                 multiple
               />
             </Button>
+
+            {checkValidArray(attachments) && (
+              <AttachmentSection
+                attachments={attachments}
+                setAttachments={setAttachments}
+                fileInputRef={fileInputRef}
+                isLoading={isLoading}
+              />
+            )}
           </form>
-          {!!attachments?.length && renderFileList()}
         </ModalBody>
 
         <ModalFooter borderTop="1px solid #E2E8F0">
@@ -283,8 +291,8 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
             fontWeight={500}
             fontSize="16px"
             lineHeight="24px"
-            _hover={{ background: "whiteAlpha.700" }}
-            _active={{ background: "whiteAlpha.700" }}
+            _hover={{ background: 'whiteAlpha.700' }}
+            _active={{ background: 'whiteAlpha.700' }}
             onClick={onClose}
             marginRight="16px"
             isLoading={processing}
@@ -298,17 +306,17 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
             fontWeight={500}
             fontSize="16px"
             lineHeight="24px"
-            background={currentTheme?.primaryColor ?? "primary.500"}
+            background={currentTheme?.primaryColor ?? 'primary.500'}
             _hover={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             _active={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             _focus={{
-              background: currentTheme?.primaryColor ?? "primary.700",
+              background: currentTheme?.primaryColor ?? 'primary.700',
               opacity: currentTheme?.primaryColor ? 0.8 : 1,
             }}
             onClick={onSubmit}

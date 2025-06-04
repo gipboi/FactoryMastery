@@ -25,9 +25,12 @@ const organizationSchema = new Schema(
     isModularProcess: { type: Boolean, default: false },
     isReportTool: { type: Boolean, default: false },
     isCollectionFeature: { type: Boolean, default: false },
+    isStandardUserCanAccessUser: { type: Boolean, default: false },
     isMarketPlace: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now() },
     updatedAt: { type: Date, default: Date.now() },
+    startDate: { type: Date, default: Date.now() },
+    endDate: { type: Date, default: Date.now() },
   },
   {
     timestamps: true,

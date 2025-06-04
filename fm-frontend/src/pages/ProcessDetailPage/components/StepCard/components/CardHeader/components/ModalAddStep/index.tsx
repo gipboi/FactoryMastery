@@ -1,4 +1,3 @@
-import { Search2Icon } from "@chakra-ui/icons";
 import {
   Divider,
   HStack,
@@ -11,22 +10,24 @@ import {
   ModalOverlay,
   VStack,
 } from "@chakra-ui/react";
+import { createStep } from "API/step";
+import ChakraFormRadioGroup from "components/ChakraFormRadioGroup";
+import FormInput from "components/FormInput";
 import { StepNotify, StepPosition } from "constants/processStep";
 import { useStores } from "hooks/useStores";
-import { EIconDefaultId } from "interfaces/iconBuilder";
+import { EIconType } from "interfaces/iconBuilder";
 import { ICreateStepForm, IStep } from "interfaces/step";
 import { ITheme } from "interfaces/theme";
 import { observer } from "mobx-react";
 import { getRenderProcess } from "pages/ProcessDetailPage/utils/process";
+import CustomButton from "pages/UserPage/components/CustomButton";
 import { useEffect, useState } from "react";
+import { FormProvider, useForm, UseFormReturn } from "react-hook-form";
 import { toast } from "react-toastify";
 import { UpdateBody } from "types/common";
-import { FormProvider, useForm, UseFormReturn } from "react-hook-form";
-import FormInput from "components/FormInput";
-import CustomButton from "pages/UserPage/components/CustomButton";
-import ChakraFormRadioGroup from "components/ChakraFormRadioGroup";
 import { allStepPositionOptions } from "./constant";
-import { createStep } from "API/step";
+import useBreakPoint from "hooks/useBreakPoint";
+import { EBreakPoint } from "constants/theme";
 
 interface IModalAddStepProps {
   isOpen: boolean;
@@ -41,8 +42,9 @@ const ModalAddStep = ({
   handleShowAutosave,
   onClose,
 }: IModalAddStepProps) => {
-  const { processStore, organizationStore } = useStores();
+  const { processStore, organizationStore, iconBuilderStore } = useStores();
   const { organization } = organizationStore;
+  const { defaultIcons } = iconBuilderStore;
   const currentSteps = processStore?.process?.steps ?? [];
   const currentStepIds = currentSteps.map((step) => step.id);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -52,12 +54,12 @@ const ModalAddStep = ({
     processId: procedureId,
     stepPosition: String(allStepPositionOptions[0]?.value),
   };
+	const isMobile: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.MD);
 
   const methods: UseFormReturn<ICreateStepForm> = useForm<ICreateStepForm>({
     defaultValues: defaultStepForm,
   });
   const { handleSubmit, reset } = methods;
-
   async function onSubmit(data: ICreateStepForm) {
     setIsLoading(true);
     try {
@@ -68,7 +70,7 @@ const ModalAddStep = ({
           Number(data?.stepPosition) || StepPosition.AppendToTheEndOfList,
         selectedPosition: 1,
         archived: false,
-        iconId: EIconDefaultId.STEP,
+        iconId: defaultIcons.find((icon) => icon.type === EIconType.STEP)?._id,
       };
       await createStep(body);
       toast.success(StepNotify.SUCCESS);
@@ -90,7 +92,7 @@ const ModalAddStep = ({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalOverlay />
-          <ModalContent minWidth={"800px"}>
+          <ModalContent minWidth={!isMobile ? '800px' : 'auto'}>
             <ModalHeader
               fontSize="lg"
               fontWeight={500}

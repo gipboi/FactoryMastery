@@ -29,9 +29,6 @@ export interface ICkPaginationProps {
 }
 
 const CkPagination = (props: ICkPaginationProps) => {
-  // const { organizationStore } = useStores()
-  // const { organization } = organizationStore
-  // const currentTheme: ITheme = organization?.theme ?? {}
   const currentTheme: ITheme = {};
   const {
     pagination,

@@ -1,16 +1,16 @@
-import createError from "http-errors";
-import { omit } from "lodash";
-import mongoose from "mongoose";
-import Group from "../schemas/group.schema.js";
-import GroupMember from "../schemas/groupMember.schema.js";
-import GroupProcess from "../schemas/groupProcess.schema.js";
+import createError from 'http-errors';
+import { omit } from 'lodash';
+import mongoose from 'mongoose';
+import Group from '../schemas/group.schema.js';
+import GroupMember from '../schemas/groupMember.schema.js';
+import GroupProcess from '../schemas/groupProcess.schema.js';
 import {
   buildPopulateOptions,
   getValidArray,
   handleError,
   successHandler,
   toCaseInsensitive,
-} from "../utils/index.js";
+} from '../utils/index.js';
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -20,7 +20,7 @@ export class GroupService {
   async get(req, res, next) {
     try {
       let filter = req?.query?.filter || {};
-      if (typeof filter === "string") {
+      if (typeof filter === 'string') {
         filter = JSON.parse(filter);
       }
 
@@ -41,9 +41,9 @@ export class GroupService {
 
       const data = await dataPromise.populate(populateOptions);
 
-      successHandler(res, data, "Get Groups Successfully");
+      successHandler(res, data, 'Get Groups Successfully');
     } catch (error) {
-      handleError(next, error, "services/group.services.js", "get");
+      handleError(next, error, 'services/group.services.js', 'get');
     }
   }
 
@@ -53,9 +53,9 @@ export class GroupService {
 
       const data = await Group.aggregate(pipeline);
 
-      successHandler(res, data, "Get Group Successfully");
+      successHandler(res, data, 'Get Group Successfully');
     } catch (error) {
-      handleError(next, error, "services/group.services.js", "create");
+      handleError(next, error, 'services/group.services.js', 'create');
     }
   }
 
@@ -66,9 +66,9 @@ export class GroupService {
 
       const createdGroup = await Group.create(groupData);
 
-      successHandler(res, createdGroup, "Create Group Successfully");
+      successHandler(res, createdGroup, 'Create Group Successfully');
     } catch (error) {
-      handleError(next, error, "services/group.services.js", "create");
+      handleError(next, error, 'services/group.services.js', 'create');
     }
   }
 
@@ -80,9 +80,9 @@ export class GroupService {
         _id: groupId,
       });
 
-      successHandler(res, group, "Update Group Successfully");
+      successHandler(res, group, 'Update Group Successfully');
     } catch (error) {
-      handleError(next, error, "services/group.services.js", "findById");
+      handleError(next, error, 'services/group.services.js', 'findById');
     }
   }
 
@@ -96,7 +96,7 @@ export class GroupService {
       });
 
       if (!currentGroup) {
-        throw createError(404, "Group not found");
+        throw createError(404, 'Group not found');
       }
 
       if (groupData?.name && groupData?.name !== currentGroup.name) {
@@ -116,23 +116,28 @@ export class GroupService {
           ...updatedGroup,
           ...groupData,
         },
-        "Update Group Successfully"
+        'Update Group Successfully'
       );
     } catch (error) {
-      handleError(next, error, "services/group.services.js", "updateById");
+      handleError(next, error, 'services/group.services.js', 'updateById');
     }
   }
 
   async deleteById(req, res, next) {
     try {
       const { groupId } = req.params;
-      await Group.deleteOne({
-        _id: groupId,
-      });
+      await Promise.all([
+        Group.deleteOne({
+          _id: groupId,
+        }),
+        GroupMember.deleteMany({
+          groupId,
+        })
+      ]);
 
-      successHandler(res, {}, "Delete Group Successfully");
+      successHandler(res, {}, 'Delete Group Successfully');
     } catch (error) {
-      handleError(next, error, "services/group.services.js", "deleteById");
+      handleError(next, error, 'services/group.services.js', 'deleteById');
     }
   }
 
@@ -156,10 +161,10 @@ export class GroupService {
     const duplicateGroupData = (sourceData) => {
       return sourceData?.map((data) => {
         const filteredData = omit(data, [
-          "_id",
-          "id",
-          "createdAt",
-          "updatedAt",
+          '_id',
+          'id',
+          'createdAt',
+          'updatedAt',
         ]);
         return {
           ...filteredData,
@@ -201,7 +206,7 @@ export class GroupService {
         ]);
       }
 
-      successHandler(res, newGroup, "Create Group Successfully");
+      successHandler(res, newGroup, 'Create Group Successfully');
     } catch (error) {
       await Promise.all([
         Group.findByIdAndDelete(newGroup.id),
@@ -209,17 +214,17 @@ export class GroupService {
         // CollectionGroup.deleteMany({ groupId: newGroup.id }),
       ]);
 
-      handleError(next, error, "services/group.services.js", "create");
+      handleError(next, error, 'services/group.services.js', 'create');
     }
   }
 
   async validateGroup(data) {
     if (!data?.organizationId) {
-      throw createError(400, "Organization Id is required");
+      throw createError(400, 'Organization Id is required');
     }
 
     if (!data?.name) {
-      throw createError(400, "Group name is required");
+      throw createError(400, 'Group name is required');
     }
 
     // await this.validateExistGroup(data?.name);
@@ -234,35 +239,35 @@ export class GroupService {
       const pipeline = [
         {
           $lookup: {
-            from: "users",
-            localField: "userId",
-            foreignField: "_id",
-            as: "user",
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
           },
         },
         {
           $unwind: {
-            path: "$user",
+            path: '$user',
             preserveNullAndEmptyArrays: true,
           },
         },
         {
           $match: {
             groupId: new ObjectId(groupId),
-            "user.isInactive": { $ne: true },
+            'user.isInactive': { $ne: true },
           },
         },
         {
           $group: {
-            _id: "$userId",
+            _id: '$userId',
           },
         },
         {
-          $count: "id",
+          $count: 'id',
         },
         {
           $project: {
-            numberOfMembers: "$id",
+            numberOfMembers: '$id',
           },
         },
       ];
@@ -275,9 +280,9 @@ export class GroupService {
       }
       count = result?.[0]?.numberOfMembers ?? 0;
 
-      successHandler(res, count, "Count members Successfully");
+      successHandler(res, count, 'Count members Successfully');
     } catch (error) {
-      handleError(next, error, "services/group.services.js", "countMember");
+      handleError(next, error, 'services/group.services.js', 'countMember');
     }
   }
 
@@ -287,7 +292,7 @@ export class GroupService {
     });
 
     if (foundGroup) {
-      throw createError(403, "Group name already exist");
+      throw createError(403, 'Group name already exist');
     }
   }
 }

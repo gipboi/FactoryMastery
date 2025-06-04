@@ -1,8 +1,6 @@
 /* eslint-disable max-lines */
 import { Box, Button, chakra, Checkbox, HStack } from "@chakra-ui/react";
-// import { archiveProcessById } from "API/process";
 import { ReactComponent as IconArchive } from "assets/icons/archive.svg";
-import ModalConfirm from "components/ModalConfirm";
 import { EBreakPoint } from "constants/theme";
 import useBreakPoint from "hooks/useBreakPoint";
 import { useStores } from "hooks/useStores";
@@ -20,8 +18,6 @@ import styles from "./styles.module.scss";
 import { getValidArray } from "utils/common";
 import DeleteDialog from "components/DeleteDialog";
 import { AuthRoleNameEnum } from "constants/user";
-import { IGroupMember } from "interfaces/groups";
-import { GroupMemberPermissionEnum } from "constants/enums/group";
 import { checkUserCanEditProcess } from "pages/ProcessPage/utils";
 import { archiveProcessById } from "API/process";
 interface IProcessList {

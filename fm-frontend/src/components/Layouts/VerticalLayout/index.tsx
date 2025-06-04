@@ -5,6 +5,8 @@ import { observer } from "mobx-react";
 import { Container } from "reactstrap";
 import styles from "./verticalLayout.module.scss";
 import { SidebarType } from "constants/enums";
+import useBreakPoint from "hooks/useBreakPoint";
+import { EBreakPoint } from "constants/theme";
 
 // code splitting and lazy loading
 // https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52
@@ -28,6 +30,7 @@ const VerticalLayout = (props: IVerticalLayoutProps) => {
   );
   const ref = useRef<HTMLDivElement>(null);
   const isCondensed = sidebarType === SidebarType.CONDENSED;
+  const isMobile: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.MD)
 
   function updateDimensions() {
     //* activate the condensed sidebar if smaller devices like ipad or tablet
@@ -102,6 +105,7 @@ const VerticalLayout = (props: IVerticalLayoutProps) => {
             <div
               className={cx(styles.contentWrapper, {
                 [styles.contentWrapperMobile]: !showSidebarMobile,
+                [styles.mobile]: isMobile,
               })}
             >
               <Suspense fallback={loading()}>{children}</Suspense>
