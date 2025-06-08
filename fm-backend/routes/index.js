@@ -28,6 +28,10 @@ import { collectionProcessRoute } from "./collection/collectionProcess/index.js"
 
 const router = express.Router();
 
+router.get("/", (req, res) => {
+  res.status(200).send("OK");
+});
+
 router.use("/auth", authRoute);
 router.use("/admin", adminRoute);
 router.use("/organizations", organizationRoute);
