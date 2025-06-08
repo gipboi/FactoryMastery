@@ -1,26 +1,22 @@
 import express from "express";
-import supportMessageThreadController from "../../controllers/supportMessageThread.controller.js";
 import authController from "../../controllers/auth.controller.js";
+import supportMessageThreadController from "../../controllers/supportMessageThread.controller.js";
 
 const router = express.Router();
 
 router
   .route("/")
   .get(authController.authenticate, supportMessageThreadController.get);
-router
-  .route("/")
-  .post(
-    authController.authenticate,
-    authController.isAdmin,
-    supportMessageThreadController.create
-  );
-router
-  .route("/aggregate")
-  .post(
-    authController.authenticate,
-    // authController.isAdmin,
-    supportMessageThreadController.getByAggregation
-  );
+router.route("/").post(
+  authController.authenticate,
+  // authController.isAdmin,
+  supportMessageThreadController.create
+);
+router.route("/aggregate").post(
+  authController.authenticate,
+  // authController.isAdmin,
+  supportMessageThreadController.getByAggregation
+);
 
 router.get(
   "/:supportMessageThreadId",
@@ -66,6 +62,5 @@ router.get(
   authController.authenticate,
   supportMessageThreadController.getStatusHistory
 );
-
 
 export { router as supportMessageThreadRoute };
