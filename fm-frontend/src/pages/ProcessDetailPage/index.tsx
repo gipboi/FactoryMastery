@@ -276,6 +276,13 @@ const ProcessDetailPage = () => {
 	}, [processId]);
 
 	useEffect(() => {
+		// *INFO: Incase not get list groupMember before access Process Detail Page
+		if (groupMembers?.length === 0) {
+			groupStore.fetchGroupMemberOfCurrentUser();
+		}
+	}, [groupMembers?.length]);
+
+	useEffect(() => {
 		if (!!selectedStepId) {
 			processStore.setExpandingSteps([selectedStepId]);
 		}
