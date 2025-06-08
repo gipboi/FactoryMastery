@@ -1,8 +1,14 @@
 {
+  "name": "fm-backend",
+  "version": "1.0.0",
+  "description": "Backend API server",
+  "main": "dist/index.js",
+  "license": "MIT",
   "scripts": {
-    "start": "npx cross-env NODE_OPTIONS=--max-old-space-size=4096 tsc && node dist/index.js",
+    "start": "npx cross-env NODE_OPTIONS=--max-old-space-size=1024 tsc && node dist/index.js",
+    "build": "npx cross-env NODE_OPTIONS=--max-old-space-size=1024 tsc && npx copy-files-from-to",
     "dev": "yarn prestart && nodemon --config nodemon.json",
-    "prestart": "rimraf ./dist && copy-files-from-to"
+    "prestart": "rimraf ./dist && npx copy-files-from-to"
   },
   "copyFiles": [
     {
@@ -22,6 +28,7 @@
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
@@ -37,10 +44,20 @@
     "streamifier": "^0.1.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/http-errors": "^2.0.4",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/lodash": "^4.17.13",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.14.0",
+    "@types/nodemailer": "^6.4.15",
     "copy-files-from-to": "^3.11.0",
     "nodemon": "^3.1.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
