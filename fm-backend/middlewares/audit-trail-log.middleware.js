@@ -1,4 +1,4 @@
-import AuditTrail from "../schemas/auditTrail.schema";
+import AuditTrail from "../schemas/auditTrail.schema.js";
 
 export function auditTrailLog(req, res, next) {
   const { method, url, body } = req;
