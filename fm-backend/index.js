@@ -5,6 +5,7 @@ import { connect } from "./config/database.js";
 import { auditTrailLog } from "./middlewares/audit-trail-log.middleware.js";
 import { filterExceptionMiddleware } from "./middlewares/filter-exception.middleware.js";
 import { v2 as cloudinary } from "cloudinary";
+require('dotenv').config();
 
 const app = express();
 
@@ -19,9 +20,10 @@ app.use(routes);
 // // Handle exceptions
 app.use(filterExceptionMiddleware);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+let PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
 connect();
