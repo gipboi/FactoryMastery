@@ -8,12 +8,38 @@
   position: fixed;
   transition: width 0.2s ease-out, background-color 0.2s ease-out;
   padding: 0 10px 0 10px;
+  
+  // Add auto-scroll for desktop when content overflows
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .leftSideMenuMobile {
   width: $leftbar-width-mobile; /* Adjust this width to accommodate only icons */
   transition: width 0.2s ease-out;
-  overflow: hidden;
+  overflow-y: auto; // Enable vertical scrolling
+  -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+  scrollbar-width: thin; // Firefox thin scrollbar
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent; // Firefox scrollbar colors
+  overflow-y: auto;
+
+  // Webkit scrollbar styling for mobile
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
+  }
 }
 
 .logoSection {
@@ -24,6 +50,9 @@
   justify-content: center;
   cursor: pointer;
   margin: 15px 0;
+  
+  // Ensure logo section doesn't shrink on mobile
+  flex-shrink: 0;
 }
 
 .pageLink {
@@ -48,6 +77,9 @@
   align-self: start;
   text-align: left;
   padding-left: 5px;
+  
+  // Prevent section headers from shrinking
+  flex-shrink: 0;
 }
 
 .separator {
@@ -58,5 +90,46 @@
 
   .logOutSeparator {
     margin-top: 10px;
+  }
+}
+
+// Additional mobile-specific styles
+@media (max-width: 768px) {
+  .leftSideMenu {
+    // Apply mobile scrolling styles to main sidebar on mobile
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 2px;
+    }
+  }
+  
+  .leftSideMenuMobile {
+    // Reduce padding on very small mobile screens
+    padding: 0 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .leftSideMenuMobile {
+    // Further reduce padding for very small screens
+    padding: 0 3px;
+  }
+  
+  .logoSection {
+    height: 80px; // Slightly smaller logo section on very small screens
+    margin: 10px 0;
   }
 }

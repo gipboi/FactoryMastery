@@ -268,8 +268,11 @@ const LandingPage = () => {
                 _hover={{ bg: primary700 }}
                 className={styles.ctaButton}
                 mt={4}
+                onClick={() =>
+                  (window.location.href = `${window.location.protocol}//app.${mainhost}`)
+                }
               >
-                Start a Demo
+                Login
               </Button>
             </Stack>
           </DrawerBody>
