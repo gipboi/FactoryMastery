@@ -205,7 +205,8 @@ export class UserService {
         {
           _id: userId,
         },
-        userData
+        userData,
+        { new: true }
       );
 
       successHandler(res, updatedUser, "Update User Successfully");
@@ -267,7 +268,8 @@ export class UserService {
         },
         {
           encryptedPassword,
-        }
+        },
+        { new: true }
       ).populate("organization");
 
       const mailService = new MailService();

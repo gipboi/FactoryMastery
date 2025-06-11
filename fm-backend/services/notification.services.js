@@ -128,7 +128,8 @@ export class NotificationService {
         {
           _id: notificationId,
         },
-        notificationData
+        notificationData,
+        { new: true }
       );
 
       successHandler(

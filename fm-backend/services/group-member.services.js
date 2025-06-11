@@ -95,7 +95,8 @@ export class GroupMemberService {
             {
               _id: existedGroupMember.id,
             },
-            groupMember
+            groupMember,
+            { new: true }
           );
         }
       });
@@ -127,7 +128,8 @@ export class GroupMemberService {
         {
           _id: groupMemberId,
         },
-        groupData
+        groupData,
+        { new: true }
       );
 
       successHandler(

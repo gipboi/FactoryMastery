@@ -122,7 +122,8 @@ export class BlockService {
         {
           _id: blockId,
         },
-        blockData
+        blockData,
+        { new: true }
       ).populate("step");
 
       if (updatedBlock.stepId) {

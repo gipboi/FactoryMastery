@@ -125,7 +125,8 @@ export class IconService {
         {
           _id: iconId,
         },
-        iconData
+        iconData,
+        { new: true }
       );
 
       if (updatedIcon.processId) {

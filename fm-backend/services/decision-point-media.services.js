@@ -121,7 +121,8 @@ export class DecisionPointMediaService {
           {
             _id: decisionPointMediaId,
           },
-          decisionPointMediaData
+          decisionPointMediaData,
+          { new: true }
         );
 
       successHandler(

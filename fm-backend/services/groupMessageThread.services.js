@@ -192,7 +192,8 @@ export class GroupMessageThreadService {
           {
             _id: groupMessageThreadId,
           },
-          groupMessageThreadData
+          groupMessageThreadData,
+          { new: true }
         );
 
       successHandler(

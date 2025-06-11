@@ -355,7 +355,8 @@ export class CollectionService {
         {
           _id: collectionId,
         },
-        collectionData
+        collectionData,
+        { new: true }
       );
 
       successHandler(res, updatedCollection, 'Update Collection Successfully');

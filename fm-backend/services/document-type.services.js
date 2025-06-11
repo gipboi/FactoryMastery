@@ -116,7 +116,8 @@ export class DocumentTypeService {
         {
           _id: documentTypeId,
         },
-        documentTypeData
+        documentTypeData,
+        { new: true }
       );
 
       successHandler(

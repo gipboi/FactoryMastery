@@ -108,7 +108,8 @@ export class DecisionPointService {
         {
           _id: decisionPointId,
         },
-        decisionPointData
+        decisionPointData,
+        { new: true }
       );
 
       successHandler(

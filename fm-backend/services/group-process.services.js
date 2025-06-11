@@ -126,7 +126,8 @@ export class GroupProcessService {
         {
           _id: groupProcessId,
         },
-        groupProcessData
+        groupProcessData,
+        { new: true }
       );
 
       successHandler(

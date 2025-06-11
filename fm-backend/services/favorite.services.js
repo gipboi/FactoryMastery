@@ -116,7 +116,8 @@ export class FavoriteService {
         {
           _id: favoriteId,
         },
-        favoriteData
+        favoriteData,
+        { new: true }
       );
 
       successHandler(res, updatedFavorite, "Update Favorite Successfully");

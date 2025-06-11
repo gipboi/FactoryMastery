@@ -120,7 +120,8 @@ export class DecisionPointStepService {
         {
           _id: decisionPointStepId,
         },
-        decisionPointStepData
+        decisionPointStepData,
+        { new: true }
       );
 
       successHandler(

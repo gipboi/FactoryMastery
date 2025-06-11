@@ -113,7 +113,8 @@ export class MediaService {
         {
           _id: mediaId,
         },
-        mediaData
+        mediaData,
+        { new: true }
       );
 
       successHandler(res, updatedMedia, "Update Media Successfully");

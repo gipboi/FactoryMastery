@@ -26,35 +26,35 @@ export class AuthService {
   async login(req, res, next) {
     try {
       const { email, password } = req?.body;
-
-      //*INFO: Validate payload
-      if (!email) {
-        throw createError(400, "Email is required");
+      
+      // Early validation
+      if (!email || !password) {
+        throw createError(400, !email ? "Email is required" : "Password is required");
       }
-      if (!password) {
-        throw createError(400, "Password is required");
-      }
-
+  
+      // Single database query with lean() for better performance
       const userData = await User.findOne({
         email: toCaseInsensitive(email),
-      }).populate("organization");
-
+      })
+      .populate("organization", "name") // Only populate the name field
+      .lean() // Returns plain JavaScript object instead of Mongoose document
+      .exec();
+  
       if (!userData) {
         throw createError(400, "Email not exist");
       }
-
-      if (userData?.disabled) {
+  
+      if (userData.disabled) {
         throw createError(403, "User is disabled");
       }
-
-      const isValidPassword = await validatePassword(
-        password,
-        userData?.encryptedPassword
-      );
+  
+      // Validate password
+      const isValidPassword = await validatePassword(password, userData.encryptedPassword);
       if (!isValidPassword) {
         throw createError(404, "Invalid password!");
       }
-
+  
+      // Generate token
       const token = generateJWT({
         email: userData.email,
         id: userData._id,
@@ -64,38 +64,41 @@ export class AuthService {
         firstName: userData.firstName,
         lastName: userData.lastName,
       });
-
-      await User.findOneAndUpdate(
+  
+      const now = new Date();
+      
+      // Update user with minimal fields and no return of updated document
+      await User.updateOne(
+        { _id: userData._id },
         {
-          _id: userData,
-        },
-        {
-          tokens: token,
-          lastSignInAt: userData?.currentSignInAt ?? new Date(),
-          currentSignInAt: new Date(),
+          $set: {
+            tokens: token,
+            lastSignInAt: userData.currentSignInAt || now,
+            currentSignInAt: now,
+          }
         }
       );
-
-      successHandler(
-        res,
-        {
-          user: {
-            email: userData.email,
-            id: userData._id,
-            authRole: userData.authRole,
-            image: userData.image,
-            fullName: userData.fullName,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            tokens: token,
-            organizationId: userData.organizationId,
-            organization: {
-              name: userData?.organization?.[0]?.name ?? "",
-            },
+  
+      // Prepare response data
+      const responseData = {
+        user: {
+          email: userData.email,
+          id: userData._id,
+          authRole: userData.authRole,
+          image: userData.image,
+          fullName: userData.fullName,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          tokens: token,
+          organizationId: userData.organizationId,
+          organization: {
+            name: userData.organization?.[0]?.name || userData.organization?.name || "",
           },
         },
-        "Login Successfully"
-      );
+      };
+  
+      successHandler(res, responseData, "Login Successfully");
+      
     } catch (error) {
       handleError(next, error, "services/auth.services.ts", "login");
     }
@@ -140,7 +143,8 @@ export class AuthService {
         },
         {
           resetPasswordToken,
-        }
+        },
+        { new: true }
       );
 
       await mailService.sendEmail({
@@ -183,7 +187,8 @@ export class AuthService {
         {
           encryptedPassword,
           resetPasswordToken: "",
-        }
+        },
+        { new: true }
       );
 
       successHandler(res, {}, "Reset password Successfully");

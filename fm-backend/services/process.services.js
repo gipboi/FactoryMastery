@@ -176,7 +176,8 @@ export class ProcessService {
 				{
 					_id: processId,
 				},
-				processData
+				processData,
+				{ new: true }
 			);
 
 			const listRelatedUser =

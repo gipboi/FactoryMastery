@@ -107,7 +107,8 @@ export class GroupService {
         {
           _id: groupId,
         },
-        groupData
+        groupData,
+        { new: true }
       );
 
       successHandler(

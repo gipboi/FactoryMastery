@@ -42,7 +42,8 @@ export class OrganizationService {
         {
           _id: organizationId,
         },
-        organizationData
+        organizationData,
+        { new: true }
       );
 
       successHandler(res, updatedOrganization, "Update Organization Success");

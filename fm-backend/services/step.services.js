@@ -152,7 +152,8 @@ export class StepService {
         {
           _id: stepId,
         },
-        stepData
+        stepData,
+        { new: true }
       );
 
       if (updatedStep.processId) {

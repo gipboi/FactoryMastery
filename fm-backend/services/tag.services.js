@@ -107,7 +107,8 @@ export class TagService {
         {
           _id: tagId,
         },
-        tagData
+        tagData,
+        { new: true }
       );
 
       successHandler(res, updatedTag, "Update Tag Successfully");

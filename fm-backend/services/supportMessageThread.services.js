@@ -320,7 +320,8 @@ export class SupportMessageThreadService {
 				},
 				{
 					lastMessageAt: new Date(),
-				}
+				},
+				{ new: true }
 			),
 		]);
 
@@ -499,7 +500,8 @@ export class SupportMessageThreadService {
 						...(supportMessageThreadData?.claimedBy
 							? { claimedBy: supportMessageThreadData?.claimedBy }
 							: { claimedBy: undefined }),
-					}
+					},
+					{ new: true }
 				)
 					.populate({
 						path: 'step',
