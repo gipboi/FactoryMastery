@@ -28,19 +28,20 @@ import {
 import { db } from 'config/firebase';
 import { IThreadGroup } from 'interfaces/message';
 import { MESSAGE_UNSEEN_COLOR } from 'pages/SupportInboxPage/constants';
+const LIMIT = 20;
 
 const GeneralInbox = () => {
   const { messageStore, organizationStore, userStore } = useStores();
-  const { generalMessageThreads, currentGeneralThreadId } = messageStore;
+  const { generalMessageThreads, currentGeneralThreadId, totalThreadCount } = messageStore;
   const { organization } = organizationStore;
   const { currentUser, users } = userStore;
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const limit: number = Number(params.get('generalLimit')) || 20;
+  const limit: number = Number(params.get('generalLimit')) || LIMIT;
   const keyword = trim(params.get('generalKeyword') || '');
 
   const isTablet: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.LG);
@@ -173,19 +174,26 @@ const GeneralInbox = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (containerRef.current) {
-        containerRef.current?.scrollTo({
-          top: containerRef.current.scrollHeight,
-          behavior: 'smooth',
-        });
+        const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+        
+        // Check if scrolled to bottom
+        const isAtBottom = Math.abs(scrollHeight - (clientHeight + scrollTop)) <= 3;
+        console.log("isAtBottom", isAtBottom)
+        if (isAtBottom) {
+          if (totalThreadCount >= limit) {
+            params.set('generalLimit', `${limit + LIMIT}`);
+            navigate(`${routes.messages.value}?${params.toString()}`);
+          }
+        }
       }
     };
-
+  
     const currentRef = containerRef.current;
     currentRef?.addEventListener('scroll', handleScroll);
     return () => {
       currentRef?.removeEventListener('scroll', handleScroll);
     };
-  }, [containerRef.current, limit]);
+  }, [containerRef.current, limit, totalThreadCount]);
 
   return (
     <VStack width="full" height="full" spacing={0}>
@@ -218,7 +226,8 @@ const GeneralInbox = () => {
             overflowX="hidden"
             padding={4}
             spacing={1}
-          >
+            ref={containerRef}
+            >
             {getValidArray(generalMessageThreads).map(
               (generalMessageThread) => {
                 const id = generalMessageThread?.id;

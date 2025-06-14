@@ -33,6 +33,7 @@ import { IOption } from 'types/common';
 import { getValidArray } from 'utils/common';
 import FilterDropdown from '../FilterDropdown';
 import CustomDateRangePickerWithMask from 'components/CustomDaterRangePickerWithMask';
+import PrioritySelector from 'components/PrioritySelector';
 
 const PICKER_DATE_FORMAT = 'MM/dd/yyyy';
 const DATE_INPUT_FORMAT = '##/##/#### - ##/##/####';

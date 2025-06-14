@@ -46,7 +46,7 @@ const StepDetail = ({ collections, process, step }: IStepDetailProps) => {
         fontSize="16px"
         lineHeight="24px"
         color={canShowStep ? "gray.500" : "gray.700"}
-        paddingLeft="32px"
+        paddingLeft={canShowCollection ? "32px" : ""}
       >
         {icon ? (
           <IconBuilder icon={icon} size={24} isActive />

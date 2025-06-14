@@ -7,11 +7,12 @@ const router = express.Router();
 router
   .route("/")
   .get(authController.authenticate, supportMessageThreadController.get);
-router.route("/").post(
+
+  router.route("/").post(
   authController.authenticate,
-  // authController.isAdmin,
   supportMessageThreadController.create
 );
+
 router.route("/aggregate").post(
   authController.authenticate,
   // authController.isAdmin,

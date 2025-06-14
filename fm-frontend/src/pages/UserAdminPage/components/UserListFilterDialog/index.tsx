@@ -208,76 +208,7 @@ const UserListFilterDialog = ({
                   spacing={{ base: 4, md: 6 }}
                   flex={1}
                 >
-                  {/* User Types */}
-                  <Box width="full">
-                    <Text
-                      color="gray.700"
-                      fontSize={{ base: "sm", md: "md" }}
-                      lineHeight={6}
-                      fontWeight={500}
-                      mb={{ base: 3, md: 4 }}
-                    >
-                      User Types
-                    </Text>
-                    <Stack
-                      direction={{ base: 'column', sm: 'row' }}
-                      width="full"
-                      justifyContent={{ base: 'flex-start', sm: 'space-between' }}
-                      spacing={{ base: 3, sm: 4 }}
-                      align="flex-start"
-                    >
-                      <FormGroup
-                        className={styles.checkboxInputWrapper}
-                        check
-                        inline
-                      >
-                        <Input
-                          type="checkbox"
-                          id={AuthRoleNameEnum.ORG_ADMIN}
-                          value={AuthRoleNameEnum.ORG_ADMIN}
-                          innerRef={refUserTypes}
-                          {...registerUserTypes}
-                        />
-                        <Label 
-                          check 
-                          htmlFor={AuthRoleNameEnum.ORG_ADMIN}
-                          style={{ 
-                            fontSize: isMobile ? '14px' : '16px',
-                            marginLeft: '8px'
-                          }}
-                        >
-                          Organization Admin
-                        </Label>
-                      </FormGroup>
-
-                      <FormGroup
-                        className={styles.checkboxInputWrapper}
-                        check
-                        inline
-                      >
-                        <Input
-                          type="checkbox"
-                          id={AuthRoleNameEnum.SUPER_ADMIN}
-                          value={AuthRoleNameEnum.SUPER_ADMIN}
-                          innerRef={refUserTypes}
-                          {...registerUserTypes}
-                        />
-                        <Label 
-                          check 
-                          htmlFor={AuthRoleNameEnum.SUPER_ADMIN}
-                          style={{ 
-                            fontSize: isMobile ? '14px' : '16px',
-                            marginLeft: '8px'
-                          }}
-                        >
-                          Super Admin
-                        </Label>
-                      </FormGroup>
-                    </Stack>
-                  </Box>
-
-                  {/* Organizations Multi-Select */}
-                  <Box width="full">
+                 <Box width="full">
                     <MultiSelectFilter
                       name="organizations"
                       label="Organizations"
