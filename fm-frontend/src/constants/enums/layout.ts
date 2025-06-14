@@ -15,9 +15,11 @@ export enum LeftSideBarIdEnum {
   GROUP = 14,
   ADMIN = 15,
   MESSAGE = 16,
+  REPORT = 31,
 
   // SETTING
   DOCUMENT_TYPE = 21,
   TAG = 22,
-  ICON_BUILDER = 23
+  ICON_BUILDER = 23,
+
 }

@@ -9,6 +9,7 @@ import { ReactComponent as IconBuilderIcon } from 'assets/icons/sidebar-icon-bui
 import { ReactComponent as TagIcon } from 'assets/icons/tag.svg';
 import { ReactComponent as UserIcon } from 'assets/icons/user.svg';
 import { ReactComponent as MessageIcon } from 'assets/icons/message.svg';
+import { ReactComponent as StatisticIcon } from 'assets/icons/statistical.svg';
 import LogoIcon from 'assets/images/logo-left-sidebar.png';
 import TextLogoIcon from 'assets/images/text-logo.png';
 import cx from 'classnames';
@@ -69,6 +70,12 @@ const operationItems = [
 		icon: <MessageIcon width={24} height={24} />,
 		link: routes.messages.value,
 	},
+	{
+		id: LeftSideBarIdEnum.REPORT,
+		title: 'Reports',
+		icon: <StatisticIcon width={24} height={24} />,
+		link: routes.reports.value,
+	}
 ];
 
 const adminOperationItems = [

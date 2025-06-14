@@ -35,6 +35,10 @@ const routes = {
       value: (subdomain: string) =>
         `${subdomain}.${REACT_APP_BASE_PATH}/search`,
     },
+    report: {
+      value: (subdomain: string) =>
+        `${subdomain}.${REACT_APP_BASE_PATH}/reports`,
+    },
   },
   processes: {
     value: "/processes",
@@ -99,6 +103,9 @@ const routes = {
   },
   messages: {
     value: "/messages",
+  },
+  reports: {
+    value: "/reports",
   },
   report: {
     organization: {

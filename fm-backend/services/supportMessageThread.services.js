@@ -280,6 +280,7 @@ export class SupportMessageThreadService {
 			subject: req?.subject,
 			processId: req?.processId,
 			lastMessageAt: new Date(),
+			priority: req?.priority
 		});
 
 		const participantIds = await this.getParticipantIdsByProcessId(
@@ -362,6 +363,7 @@ export class SupportMessageThreadService {
 			organizationId: req.organizationId,
 			stepId: req.stepId,
 			lastMessageAt: new Date(),
+			priority: req?.priority
 		});
 
 		const participantIds = await this.getParticipantIds(req.stepId);

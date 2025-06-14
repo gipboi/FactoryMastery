@@ -29,13 +29,9 @@ import ProcessRating from '../schemas/processRating.schema.js';
 import { getProcessDetailPdfTemplate } from '../utils/process.js';
 import { CmsService } from './cms.services.js';
 import CollectionProcess from '../schemas/collectionProcess.schema.js';
-import chromium from '@sparticuz/chromium';
-import os from 'os';
 import { NODE_ENV } from '../config/index.js';
 
 const DocumentExportPath = './export';
-
-console.log('puppeteer.executablePath', puppeteer.executablePath());
 
 const ObjectId = mongoose.Types.ObjectId;
 

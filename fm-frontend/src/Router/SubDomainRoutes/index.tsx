@@ -15,6 +15,7 @@ import InboxPage from "pages/InboxPage";
 import LoginPage from "pages/LoginPage";
 import ProcessDetailPage from "pages/ProcessDetailPage";
 import ProcessPage from "pages/ProcessPage";
+import ReportPage from "pages/ReportPage";
 import ResetPasswordPage from "pages/ResetPasswordPage";
 import TagPage from "pages/TagPage";
 import UserDetailPage from "pages/UserDetailPage";
@@ -104,6 +105,7 @@ const SubDomainRoutes = () => {
             element={<CollectionDetailPage />}
           />
           <Route path={routes.messages.value} element={<InboxPage />} />
+          <Route path={routes.reports.value} element={<ReportPage />} />
 
           <Route path="*" element={<DashboardPage />} />
         </Routes>

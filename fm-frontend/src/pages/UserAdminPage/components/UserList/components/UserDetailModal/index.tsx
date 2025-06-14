@@ -363,13 +363,6 @@ const UserDetailModal = ({
                           <Radio
                             colorScheme="primary"
                             width="240px"
-                            value={String(AuthRoleNameEnum.ORG_ADMIN)}
-                          >
-                            {AuthRoleNameEnum.ORG_ADMIN}
-                          </Radio>
-                          <Radio
-                            colorScheme="primary"
-                            width="240px"
                             value={String(AuthRoleNameEnum.SUPER_ADMIN)}
                           >
                             {AuthRoleNameEnum.SUPER_ADMIN}
@@ -380,25 +373,6 @@ const UserDetailModal = ({
                   />
                 </FormInput>
               </Box>
-              {userType === String(AuthRoleIdEnum.ORG_ADMIN) && (
-                <FilterDropdown
-                  isOpenModal={isOpen}
-                  isSelectSingleOption={true}
-                  name={'organizations'}
-                  label="Organization"
-                  placeholder="Search organizations by name"
-                  storeOptions={getValidArray(allOrganizations)}
-                  filteredOptions={getValidArray([])}
-                  selectedOptions={selectedOrganizations}
-                  setSelectedOptions={(options: IOption<string>[]) =>
-                    handleSelectedOptions(
-                      options,
-                      'organizations',
-                      setSelectedOrganizations
-                    )
-                  }
-                />
-              )}
             </VStack>
           </ModalBody>
           <Divider color="gray.200" margin={0} />

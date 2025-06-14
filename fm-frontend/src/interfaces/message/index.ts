@@ -3,6 +3,7 @@ import { IStepWithRelations } from "interfaces/step";
 import { IUser } from "../user";
 import { EMediaThumbnail } from "constants/media";
 import { OptionType } from "pages/SupportInboxPage/constants";
+import { PriorityEnum } from "constants/enums/thread";
 
 export interface IMessageGroup {
   thread: IMessageGroupThreads;
@@ -88,6 +89,7 @@ export interface ISupportMessageThread {
   subject?: string;
   lastMessageAt: Date;
   status: SupportMessageThreadStatus;
+  priority?: PriorityEnum;
   step?: IStepWithRelations;
   process?: IProcessWithRelations;
   organizationId: string;
