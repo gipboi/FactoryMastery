@@ -35,9 +35,3 @@ This project uses environment variables to configure certain settings. These var
 		+ Access: http://summer.localhost:3000/
 		+ Username/Email: `test.bu@yopmail.com`
 		+ Password: `Fm@12345`
-
-* **Admin Testing Accounts**: For testing purposes, one default account is provided for the admin page. The credentials are:
-	- **Admin Page**:
-		+ Access: http://admin.localhost:3000/
-		+ Username/Email: `fm.sa@yopmail.com`
-		+ Password: `Fm@12345`

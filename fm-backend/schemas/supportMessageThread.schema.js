@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { SupportMessageThreadStatusEnum } from '../constants/enums/message.enum';
+import { SupportMessageThreadStatusEnum, SupportMessageThreadPriorityEnum } from '../constants/enums/message.enum';
 const Schema = mongoose.Schema;
 
 const supportMessageThreadSchema = new Schema(
@@ -10,6 +10,11 @@ const supportMessageThreadSchema = new Schema(
       enum: SupportMessageThreadStatusEnum,
       default: SupportMessageThreadStatusEnum.UNCLAIMED,
       require: true,
+    },
+    priority: {
+      type: String,
+      enum: SupportMessageThreadPriorityEnum,
+      require: false,
     },
     lastMessageAt: { type: Date },
     organizationId: { type: Schema.Types.ObjectId, require: true },

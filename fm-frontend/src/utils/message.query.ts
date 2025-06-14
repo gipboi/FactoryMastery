@@ -8,6 +8,7 @@ import {
 	ProcessPublishStatus,
 } from 'pages/SupportInboxPage/constants';
 import { getValidArray } from './common';
+import { IPriority } from 'components/PrioritySelector/constants';
 
 function getSupportThreadSort(sortBy?: ESupportThreadSortBy) {
 	if (sortBy === ESupportThreadSortBy.UNCLAIMED_FIRST) {
@@ -39,6 +40,7 @@ export function getSupportMessageThread(
 	isClaimedByOthers: boolean,
 	isResolved: boolean,
 	participants: IUserWithRelations[],
+	priority: IPriority | null,
 	isCount?: boolean
 ) {
 	let pipeline: any[] = [
@@ -52,6 +54,7 @@ export function getSupportMessageThread(
 						},
 					],
 				},
+				...(priority?.id ? { priority: priority?.id } : {}),
 			},
 		},
 		{
@@ -127,6 +130,9 @@ export function getSupportMessageThread(
 				claimedBy: {
 					$first: '$claimedBy',
 				},
+				priority: {
+					$first: '$priority',
+				}
 			},
 		},
 		{

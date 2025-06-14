@@ -171,22 +171,6 @@ const UserList = ({
               : ''}
           </Text>
         ),
-        organizations: (
-          <HStack>
-            <Text
-              className={cx(styles.pointer, {
-                [styles.disabledLabel]: user?.disabled,
-              })}
-              margin={0}
-              _hover={{
-                cursor: 'pointer',
-                color: currentTheme?.primaryColor ?? primary500,
-              }}
-            >
-              {user?.organization?.name ?? 'N/A'}
-            </Text>
-          </HStack>
-        ),
       };
     }
   );
@@ -210,11 +194,7 @@ const UserList = ({
       {
         Header: 'Last Login',
         accessor: ETableHeader.LAST_LOGIN,
-      },
-      {
-        Header: 'Organization',
-        accessor: ETableHeader.ORGANIZATION,
-      },
+      }
     ];
 
     return headers;

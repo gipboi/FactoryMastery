@@ -98,10 +98,9 @@ const UserPage = () => {
             (role) =>
               ![
                 AuthRoleNameEnum.SUPER_ADMIN,
-                AuthRoleNameEnum.ORG_ADMIN,
               ].includes(role as AuthRoleNameEnum)
           ))
-          ? [AuthRoleNameEnum.SUPER_ADMIN, AuthRoleNameEnum.ORG_ADMIN]
+          ? [AuthRoleNameEnum.SUPER_ADMIN]
           : validRoleIds;
       const paginationPipeline: AggregationPipeline = getUsersFilterPipeline(
         authStore.userDetail?.organizationId ?? '',
@@ -193,7 +192,7 @@ const UserPage = () => {
               }}
             />
           </InputGroup>
-          <Button
+          {/* <Button
             style={{ marginLeft: 16 }}
             backgroundColor="white"
             gap={{ base: 0, md: 2 }}
@@ -218,7 +217,7 @@ const UserPage = () => {
             >
               Filter
             </Text>
-          </Button>
+          </Button> */}
           {/* {!isBasicUser && (
             <ExportCsvButtonAsync
               text="Export"
@@ -279,11 +278,11 @@ const UserPage = () => {
         toggleAssignModal={toggleAssignModal}
         fetchUserList={fetchUserList}
       />
-      <UserListFilterDialog
+      {/* <UserListFilterDialog
         isOpen={showFilterDialog}
         toggle={() => setShowFilterDialog(!showFilterDialog)}
         onApplyFilter={() => setShowFilterDialog(false)}
-      />
+      /> */}
       <UserDetailModal
         isOpen={showCreateUserDialog}
         onClose={() => setShowCreateUserDialog(!showCreateUserDialog)}
