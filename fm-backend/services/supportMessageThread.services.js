@@ -23,6 +23,9 @@ import {
 	NotificationTypeEnum,
 } from '../constants/enums/notification.enum.js';
 import { SupportMessageThreadStatusValue } from '../constants/enums/message.enum.js';
+import { getThreadPriorityChangeTemplate } from '../utils/mail.js';
+import Organization from '../schemas/organization.schema.js';
+import { MailService } from './mail.service.js';
 
 class SupportMessageThreadUserSeenResponse {
 	thread;
@@ -242,9 +245,13 @@ export class SupportMessageThreadService {
 		try {
 			let supportMessageThreadData = req?.body;
 			const createdBy = req?.auth?._id;
+			const organizationId = req?.auth?.organizationId;
 			supportMessageThreadData = await this.validateSupportMessageThread(
 				supportMessageThreadData
 			);
+			const organizationData = await Organization.findOne({
+				_id: organizationId,
+			});
 			let data;
 
 			if (
@@ -254,12 +261,14 @@ export class SupportMessageThreadService {
 			) {
 				data = this.createNewSupportThreadWithoutStep(
 					supportMessageThreadData,
-					createdBy
+					createdBy,
+					organizationData
 				);
 			} else {
 				data = await this.createNewSupportThread(
 					supportMessageThreadData,
-					createdBy
+					createdBy,
+					organizationData
 				);
 			}
 
@@ -274,7 +283,7 @@ export class SupportMessageThreadService {
 		}
 	}
 
-	async createNewSupportThreadWithoutStep(req, createdBy) {
+	async createNewSupportThreadWithoutStep(req, createdBy, organizationData) {
 		const newThread = await SupportMessageThread.create({
 			organizationId: req?.organizationId,
 			subject: req?.subject,
@@ -343,6 +352,7 @@ export class SupportMessageThreadService {
 			deletedName: '',
 		};
 
+		// NOTI
 		Notification.insertMany(
 			getValidArray(supportMessageThreadUsers).map((threadUser) => {
 				return {
@@ -351,11 +361,45 @@ export class SupportMessageThreadService {
 				};
 			})
 		);
+		if (req?.priority) {
+			const mailService = new MailService();
+			const populateOptions = buildPopulateOptions([
+				{
+					relation: 'user',
+				},
+				{
+					relation: 'supportMessageThread',
+					scope: {
+						include: [
+							{
+								relation: 'step',
+							},
+							{
+								relation: 'process',
+							},
+						],
+					},
+				},
+			]);
+			const listDetailThread = await SupportMessageThreadUserSeen.find({
+				supportThreadId: newThread._id,
+			}).populate(populateOptions);
+
+			mailService.sendEmail({
+				to: listDetailThread?.map((x) => x?.user?.email ?? '')?.filter(Boolean),
+				subject: 'Leave a Thread',
+				htmlString: getThreadPriorityChangeTemplate({
+					threadName: req?.subject,
+					thread: newThread,
+					subdomain: organizationData?.subdomain,
+				}),
+			});
+		}
 
 		return newThread;
 	}
 
-	async createNewSupportThread(req, createdBy) {
+	async createNewSupportThread(req, createdBy, organizationData) {
 		const threads = await SupportMessageThread.find({
 			stepId: req.stepId,
 		})
@@ -371,6 +415,18 @@ export class SupportMessageThreadService {
 			lastMessageAt: new Date(),
 			priority: req?.priority,
 		});
+		const buildOptions = buildPopulateOptions([
+			{
+				relation: 'step',
+			},
+			{
+				relation: 'process',
+			},
+		]);
+
+		const threadData = await SupportMessageThread.findOne({
+			_id: newThread?.id,
+		}).populate(buildOptions);
 
 		const participantIds = await this.getParticipantIds(req.stepId);
 		const userSeenData =
@@ -417,6 +473,43 @@ export class SupportMessageThreadService {
 				};
 			})
 		);
+
+		if (req?.priority) {
+			const mailService = new MailService();
+			const populateOptions = buildPopulateOptions([
+				{
+					relation: 'user',
+				},
+				{
+					relation: 'supportMessageThread',
+					scope: {
+						include: [
+							{
+								relation: 'step',
+							},
+							{
+								relation: 'process',
+							},
+						],
+					},
+				},
+			]);
+			const listDetailThread = await SupportMessageThreadUserSeen.find({
+				supportThreadId: newThread._id,
+			}).populate(populateOptions);
+
+			mailService.sendEmail({
+				to: listDetailThread?.map((x) => x?.user?.email ?? '')?.filter(Boolean),
+				subject: 'Leave a Thread',
+				htmlString: getThreadPriorityChangeTemplate({
+					threadName: `${threadData?.step?.name}${
+						threadData?.process?.name ? ` | ${threadData?.process?.name}` : ''
+					}`,
+					thread: newThread,
+					subdomain: organizationData?.subdomain,
+				}),
+			});
+		}
 
 		return thread ?? newThread;
 	}
@@ -489,15 +582,41 @@ export class SupportMessageThreadService {
 		try {
 			const { supportMessageThreadId } = req.params;
 			const userId = req?.auth?._id;
+			const organizationId = req?.auth?.organizationId;
 			let supportMessageThreadData = req?.body;
 
-			const currentSupportMessageThread = await SupportMessageThread.findOne({
-				_id: supportMessageThreadId,
-			});
-
+			const [currentSupportMessageThread, organizationData] = await Promise.all(
+				[
+					SupportMessageThread.findOne({
+						_id: supportMessageThreadId,
+					}),
+					Organization.findOne({
+						_id: organizationId,
+					}),
+				]
+			);
 			if (!currentSupportMessageThread) {
 				throw createError(404, 'SupportMessageThread not found');
 			}
+
+			const populateOptions = buildPopulateOptions([
+				{
+					relation: 'user',
+				},
+				{
+					relation: 'supportMessageThread',
+					scope: {
+						include: [
+							{
+								relation: 'step',
+							},
+							{
+								relation: 'process',
+							},
+						],
+					},
+				},
+			]);
 
 			const [updatedSupportMessageThread, threadUsers] = await Promise.all([
 				SupportMessageThread.findOneAndUpdate(
@@ -519,7 +638,7 @@ export class SupportMessageThreadService {
 					.populate('process'),
 				SupportMessageThreadUserSeen.find({
 					supportThreadId: supportMessageThreadId,
-				}),
+				}).populate(populateOptions),
 			]);
 
 			const threadName = updatedSupportMessageThread?.stepId
@@ -576,6 +695,17 @@ export class SupportMessageThreadService {
 						};
 					})
 				);
+
+				const mailService = new MailService();
+				mailService.sendEmail({
+					to: threadUsers?.map((x) => x?.user?.email ?? '')?.filter(Boolean),
+					subject: 'Update a Thread',
+					htmlString: getThreadPriorityChangeTemplate({
+						threadName,
+						thread: updatedSupportMessageThread,
+						subdomain: organizationData?.subdomain,
+					}),
+				});
 			}
 
 			successHandler(
