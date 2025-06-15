@@ -702,7 +702,7 @@ export class SupportMessageThreadService {
 					subject: 'Update a Thread',
 					htmlString: getThreadPriorityChangeTemplate({
 						threadName,
-						thread: currentSupportMessageThread,
+						thread: updatedSupportMessageThread,
 						subdomain: organizationData?.subdomain,
 					}),
 				});
