@@ -45,7 +45,7 @@ import uniq from 'lodash/uniq';
 import { observer } from 'mobx-react';
 import IconBuilder from 'pages/IconBuilderPage/components/IconBuilder';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import routes from 'routes';
 import {
@@ -69,6 +69,7 @@ import { getSupportMessageStatus } from '../constants';
 import { IPriority } from 'components/PrioritySelector/constants';
 import EditablePriorityBox from 'components/EditablePriorityBox';
 import ChangePriorityModal from '../ChangePriorityModal';
+import { PriorityEnum } from 'constants/enums/thread';
 
 dayjs.extend(relativeTime);
 
@@ -101,6 +102,8 @@ const InboxDetail = (props: IInboxDetailProps) => {
 	const currentColor = currentTheme?.primaryColor ?? 'primary.500';
 	const status = selectedSupportThread?.status;
 	const navigate = useNavigate();
+  const location = useLocation();
+	const params = new URLSearchParams(location.search);
 	const fileInputRef = useRef<any>(null);
 	const [comment, setComment] = useState<string>('');
 	const [attachments, setAttachments] = useState<File[]>([]);
@@ -190,6 +193,13 @@ const InboxDetail = (props: IInboxDetailProps) => {
 		} catch (error: any) {
 			setIsEditing(false);
 			toast.error('Something wrong happened');
+		} finally {
+			if (priority?.id === PriorityEnum.URGENT) {
+				params.set('priority', priority?.id);
+				navigate(`${location.pathname}?${params.toString()}`, {
+					replace: true,
+				});
+			}
 		}
 	}
 

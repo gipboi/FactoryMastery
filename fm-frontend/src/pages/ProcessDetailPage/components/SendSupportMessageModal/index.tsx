@@ -36,6 +36,7 @@ import routes from 'routes';
 import { EInboxTab } from 'pages/SupportInboxPage/constants';
 import PrioritySelector from 'components/PrioritySelector';
 import { IPriority } from 'components/PrioritySelector/constants';
+import { PriorityEnum } from 'constants/enums/thread';
 interface INewSupportMessageModalProps {
 	isOpen: boolean;
 	process: IProcessWithRelations;
@@ -126,7 +127,11 @@ const SendSupportMessageModal = (props: INewSupportMessageModalProps) => {
 			messageStore.setIsClaimedByOthers(false);
 			messageStore.setIsUnclaimed(false);
 			messageStore.setIsResolved(false);
-			navigate(`${routes.messages.value}?tab=${EInboxTab.SUPPORT}`);
+			let url = `${routes.messages.value}?tab=${EInboxTab.SUPPORT}`
+			if (selectedPriority?.id === PriorityEnum.URGENT) {
+				url = `${url}&priority=${selectedPriority?.id}`
+			}
+			navigate(url);
 		}
 	}
 

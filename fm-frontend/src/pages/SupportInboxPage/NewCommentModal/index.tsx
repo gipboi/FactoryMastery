@@ -21,11 +21,13 @@ import AttachmentSection from 'components/AttachmentSection';
 import PrioritySelector from 'components/PrioritySelector';
 import { IPriority } from 'components/PrioritySelector/constants';
 import SvgIcon from 'components/SvgIcon';
+import { PriorityEnum } from 'constants/enums/thread';
 import { useStores } from 'hooks/useStores';
 import { ITheme } from 'interfaces/theme';
 import { observer } from 'mobx-react';
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { checkValidArray } from 'utils/common';
 import { handleUploadMultiple } from 'utils/upload';
@@ -54,6 +56,9 @@ const NewCommentModal = (props: INewCommentModalProps) => {
 	const [selectedPriority, setSelectedPriority] = useState<IPriority | null>(
 		null
 	);
+	const navigate = useNavigate();
+	const location = useLocation();
+	const params = new URLSearchParams(location.search);
 
 	const methods = useForm<INewCommentForm>();
 	const { handleSubmit, register, reset } = methods;
@@ -91,6 +96,12 @@ const NewCommentModal = (props: INewCommentModalProps) => {
 				console.error(error);
 			} finally {
 				setIsLoading(false);
+				if (selectedPriority?.id === PriorityEnum.URGENT) {
+					params.set('priority', selectedPriority.id);
+					navigate(`${location.pathname}?${params.toString()}`, {
+						replace: true,
+					});
+				}
 			}
 		}
 	}

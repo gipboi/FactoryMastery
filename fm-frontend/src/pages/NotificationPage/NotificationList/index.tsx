@@ -1,12 +1,10 @@
 import { seenNotification } from 'API/notification';
 import cx from 'classnames';
-import GlobalSpinner from 'components/GlobalSpinner';
 import { NotificationTypeEnum } from 'config/constant/enums/notification';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import { useStores } from 'hooks/useStores';
-import debounce from 'lodash/debounce';
 import { observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 import routes from 'routes';
