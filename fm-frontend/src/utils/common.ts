@@ -1,6 +1,7 @@
 import { PriorityEnum } from 'constants/enums/thread';
 import { LIMIT_PAGE_BREAK } from 'constants/pagination';
 import { SupportMessageThreadStatus } from 'interfaces/message';
+import { FiFlag } from 'react-icons/fi';
 
 export function checkValidArray<T>(array?: T[]): boolean {
 	return array ? Array.isArray(array) && array.length > 0 : false;
@@ -87,23 +88,31 @@ export function getPriorityConfig(priority?: PriorityEnum) {
 	switch (priority) {
 		case PriorityEnum.URGENT:
 			return {
-				color: 'red.500',
+				id: PriorityEnum.URGENT,
 				label: 'Urgent',
+				color: 'red.500',
+				icon: FiFlag,
 			};
 		case PriorityEnum.HIGH:
 			return {
-				color: 'orange.400',
+				id: PriorityEnum.HIGH,
 				label: 'High',
+				color: 'orange.400',
+				icon: FiFlag,
 			};
 		case PriorityEnum.NORMAL:
 			return {
-				color: 'blue.500',
+				id: PriorityEnum.NORMAL,
 				label: 'Normal',
+				color: 'blue.500',
+				icon: FiFlag,
 			};
 		case PriorityEnum.LOW:
 			return {
-				color: 'gray.400',
+				id: PriorityEnum.LOW,
 				label: 'Low',
+				color: 'gray.400',
+				icon: FiFlag,
 			};
 		default:
 			return null;

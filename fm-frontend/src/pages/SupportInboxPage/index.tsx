@@ -6,6 +6,7 @@ import {
 	Tag,
 	Text,
 	Tooltip,
+	useDisclosure,
 	VStack,
 } from '@chakra-ui/react';
 import GlobalSpinner from 'components/GlobalSpinner';
@@ -32,6 +33,8 @@ import InboxHeader from './InboxHeader';
 import { SupportMessageThreadStatus } from 'interfaces/message';
 import { getSupportMessageStatus, MESSAGE_UNSEEN_COLOR } from './constants';
 import { FiFlag } from 'react-icons/fi';
+import EmergencyContactModal from 'components/EmergencyContactModal';
+import { PriorityEnum } from 'constants/enums/thread';
 
 const LIMIT = 20;
 dayjs.extend(relativeTime);
@@ -53,8 +56,14 @@ const InboxPage = () => {
 	const location = useLocation();
 	const params = new URLSearchParams(location.search);
 	const limit: number = Number(params.get('supportLimit')) || 20;
-
+	const isUrgentThread: boolean =
+		(params.get('priority') || '') === PriorityEnum.URGENT;
 	const isTablet: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.LG);
+	const {
+		isOpen: isOpenSOSModal,
+		onOpen: onOpenSOSModal,
+		onClose: onCloseSOSModal,
+	} = useDisclosure();
 
 	function handleClickMessage(threadId: string): void {
 		messageStore.setCurrentSupportThreadId(threadId);
@@ -70,7 +79,16 @@ const InboxPage = () => {
 		setIsLoading(false);
 	}
 
+	function handleCloseSOSModal() {
+		params.delete('priority');
+		navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+		onCloseSOSModal();
+	}
+
 	useEffect(() => {
+		if (isUrgentThread) {
+			onOpenSOSModal();
+		}
 		setIsLoading(true);
 		userStore.getUsers({ where: { organizationId } });
 		messageStore.getTotalSupportMessageThreads(organizationId);
@@ -120,6 +138,11 @@ const InboxPage = () => {
 		};
 	}, [containerRef.current, limit, totalSupportThreadCount]);
 
+	useEffect(() => {
+		if (isUrgentThread) {
+			onOpenSOSModal();
+		}
+	}, [isUrgentThread]);
 	return (
 		<VStack width="full" height="full" spacing={0}>
 			{!isLoading && <InboxHeader fetchThreadList={fetchData} />}
@@ -266,36 +289,35 @@ const InboxPage = () => {
 												</>
 											)}
 										</HStack>
-                    <HStack maxW={300} w={150}>
-                      {priorityConfig && (
-                        <Tooltip
-                          label={`Priority: ${priorityConfig?.label}`}
-                          fontSize="sm"
-                          background="gray.700"
-                          color="white"
-                          borderRadius="4px"
-                        >
-                          <Box>
-                            <Icon
-                              as={FiFlag}
-                              boxSize={5}
-                              fill={priorityConfig?.color}
-                              color={priorityConfig?.color}
-                            />
-                          </Box>
-                        </Tooltip>
-                      )}
-                      <Text
-                        width="full"
-                        display="flex"
-                        justifyContent="flex-end"
-                        fontWeight={!isSeen ? 600 : 400}
-                        fontSize="sm"
-                      >
-                        {dayjs(supportThread?.thread?.lastMessageAt).fromNow()}
-                      </Text>
-                    </HStack>
-
+										<HStack maxW={300} w={150}>
+											{priorityConfig && (
+												<Tooltip
+													label={`Priority: ${priorityConfig?.label}`}
+													fontSize="sm"
+													background="gray.700"
+													color="white"
+													borderRadius="4px"
+												>
+													<Box>
+														<Icon
+															as={FiFlag}
+															boxSize={5}
+															fill={priorityConfig?.color}
+															color={priorityConfig?.color}
+														/>
+													</Box>
+												</Tooltip>
+											)}
+											<Text
+												width="full"
+												display="flex"
+												justifyContent="flex-end"
+												fontWeight={!isSeen ? 600 : 400}
+												fontSize="sm"
+											>
+												{dayjs(supportThread?.thread?.lastMessageAt).fromNow()}
+											</Text>
+										</HStack>
 									</HStack>
 									<HStack
 										width="full"
@@ -336,6 +358,11 @@ const InboxPage = () => {
 					)}
 				</HStack>
 			)}
+			<EmergencyContactModal
+				isOpen={isOpenSOSModal}
+				onOpen={onOpenSOSModal}
+				onClose={handleCloseSOSModal}
+			/>
 		</VStack>
 	);
 };

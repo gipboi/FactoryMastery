@@ -76,7 +76,7 @@ const DomainForm = ({
             error={!!errors.subdomain}
           />
           &nbsp;&nbsp;
-          <CardText className={styles.bold}>.factorymastery.com</CardText>
+          <CardText className={styles.bold}>.factorymastery.site</CardText>
         </div>
         <CardText
           style={{ visibility: errors.subdomain ? "visible" : "hidden" }}

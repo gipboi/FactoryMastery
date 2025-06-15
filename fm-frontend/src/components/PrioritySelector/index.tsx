@@ -15,36 +15,23 @@ import {
 import { FiFlag, FiHelpCircle } from 'react-icons/fi';
 import { GrClear } from 'react-icons/gr';
 import { PriorityEnum } from 'constants/enums/thread';
-import { IPriority } from './constants';
+import { IPriority, priorities } from './constants';
 
 const PrioritySelector = ({
 	selectedPriority,
 	setSelectedPriority,
 	disableLabel = false,
+	selectable = false,
 }: {
 	selectedPriority: IPriority | null;
-	setSelectedPriority: (React.Dispatch<React.SetStateAction<IPriority | null>> | ((priority: IPriority | null) => void));
+	setSelectedPriority:
+		| React.Dispatch<React.SetStateAction<IPriority | null>>
+		| ((priority: IPriority | null) => void);
 	disableLabel?: boolean;
+	selectable?: boolean;
 }) => {
 	const [searchValue, setSearchValue] = useState('');
 	const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
-
-	const priorities: IPriority[] = [
-		{
-			id: PriorityEnum.URGENT,
-			label: 'Urgent',
-			color: 'red.500',
-			icon: FiFlag,
-		},
-		{ id: PriorityEnum.HIGH, label: 'High', color: 'orange.400', icon: FiFlag },
-		{
-			id: PriorityEnum.NORMAL,
-			label: 'Normal',
-			color: 'blue.500',
-			icon: FiFlag,
-		},
-		{ id: PriorityEnum.LOW, label: 'Low', color: 'gray.400', icon: FiFlag },
-	];
 
 	const handlePrioritySelect = (priority: IPriority) => {
 		setSelectedPriority(priority);
@@ -97,15 +84,17 @@ const PrioritySelector = ({
 					</InputLeftElement>
 					<Input
 						placeholder="Priority"
-						value={searchValue}
+						value={selectedPriority ? selectedPriority?.label : searchValue}
 						onClick={() => setShowPriorityDropdown(!showPriorityDropdown)}
 						bg="white"
-						border="1px"
-						borderColor="gray.200"
-						_hover={{ borderColor: 'gray.300' }}
-						_focus={{ borderColor: 'blue.400', bg: 'white' }}
-						cursor="pointer"
 						readOnly
+						{...(!selectable ? {
+							border: "1px",
+							borderColor: "gray.200",
+							_hover: { borderColor: 'gray.300' },
+							_focus: { borderColor: 'blue.400', bg: 'white' },
+							cursor: "pointer"
+						} : {})}
 					/>
 				</InputGroup>
 

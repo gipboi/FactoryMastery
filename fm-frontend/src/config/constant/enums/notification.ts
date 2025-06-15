@@ -6,7 +6,8 @@ export enum NotificationTypeEnum {
   DELETED_PROCESS_NOTIFICATION = "DeletedProcessNotification",
   ARCHIVED_PROCESS_NOTIFICATION = "ArchivedProcessNotification",
 
-  UPDATED_THREAD_STATUS = 'UpdatedThreadStatus'
+  UPDATED_THREAD_STATUS = 'UpdatedThreadStatus',
+  UPDATED_THREAD_PRIORITY = 'UpdatedThreadPriority'
 }
 
 export enum NotificationActionEnum {
