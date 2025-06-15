@@ -166,7 +166,7 @@ const SignUpForm = () => {
         </GridItem>
         <GridItem className={styles.domainStyle}>
           <CardText className={styles.defaultLabel}>
-            .factorymastery.com
+            .factorymastery.site
           </CardText>
         </GridItem>
       </Grid>

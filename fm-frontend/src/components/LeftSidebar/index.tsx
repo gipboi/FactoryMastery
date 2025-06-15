@@ -70,12 +70,6 @@ const operationItems = [
 		icon: <MessageIcon width={24} height={24} />,
 		link: routes.messages.value,
 	},
-	{
-		id: LeftSideBarIdEnum.REPORT,
-		title: 'Reports',
-		icon: <StatisticIcon width={24} height={24} />,
-		link: routes.reports.value,
-	}
 ];
 
 const adminOperationItems = [
@@ -116,6 +110,8 @@ const LeftSidebar = (props: ILeftSidebarProps) => {
 	const { organization } = organizationStore;
 	const isBasicUser: boolean =
 		authStore?.userDetail?.authRole === AuthRoleNameEnum.BASIC_USER;
+	const isOrgAdmin =
+		authStore?.userDetail?.authRole === AuthRoleNameEnum.ORG_ADMIN;
 	const isMobile: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.MD);
 
 	const isSuperAdmin: boolean = subDomain === SUPER_ADMIN_DOMAIN;
@@ -144,6 +140,14 @@ const LeftSidebar = (props: ILeftSidebarProps) => {
 		}
 		return true;
 	});
+	if (isOrgAdmin && !operationItems?.some(x => x?.id === LeftSideBarIdEnum.REPORT)) {
+		operationItems.push({
+			id: LeftSideBarIdEnum.REPORT,
+			title: 'Reports',
+			icon: <StatisticIcon width={24} height={24} />,
+			link: routes.reports.value,
+		});
+	}
 
 	return (
 		<>
@@ -167,16 +171,16 @@ const LeftSidebar = (props: ILeftSidebarProps) => {
 					[styles.leftSideMenuMobile]: !showSidebarMobile,
 				})}
 				style={{
-          transform: isMobile 
-            ? showSidebarMobile 
-              ? 'translateX(0)' 
-              : 'translateX(-100%)'
-            : 'translateX(0)',
-          zIndex: isMobile ? 999 : 'auto',
-          transition: isMobile 
-            ? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
-            : 'width 0.3s ease-out, background-color 0.3s ease-out',
-        }}
+					transform: isMobile
+						? showSidebarMobile
+							? 'translateX(0)'
+							: 'translateX(-100%)'
+						: 'translateX(0)',
+					zIndex: isMobile ? 999 : 'auto',
+					transition: isMobile
+						? 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+						: 'width 0.3s ease-out, background-color 0.3s ease-out',
+				}}
 			>
 				<React.Fragment>
 					<VStack spacing={0}>
