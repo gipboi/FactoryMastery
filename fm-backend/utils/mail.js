@@ -67,3 +67,17 @@ export function getInvitationTemplate({
     </div>
   `;
 }
+
+export function getThreadPriorityChangeTemplate({ threadName, thread, subdomain }) {
+  const orgLink = getOrgDomain(subdomain);
+  const threadLink = `${orgLink}/messages?tab=Support&selectedThread=${thread?._id ?? thread?.id}`
+
+  return `
+    <div>  
+      <p>A thread, ${threadName}, has been created/updated with priority ${thread?.priority?.toUpperCase()}.</p>
+      <p>To know more details of the thread, please click the link below to view more info:</p>  
+      <p><a href="${threadLink}">${threadName}</a></p>  
+      <p>Best regards,<br>FM Team!</p>  
+    </div>  
+  `;
+}

@@ -56,6 +56,7 @@ const InboxPage = () => {
 	const location = useLocation();
 	const params = new URLSearchParams(location.search);
 	const limit: number = Number(params.get('supportLimit')) || 20;
+	const selectedThread: string = params.get('selectedThread') || '';
 	const isUrgentThread: boolean =
 		(params.get('priority') || '') === PriorityEnum.URGENT;
 	const isTablet: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.LG);
@@ -88,6 +89,11 @@ const InboxPage = () => {
 	useEffect(() => {
 		if (isUrgentThread) {
 			onOpenSOSModal();
+		}
+		if (selectedThread) {
+			messageStore.setCurrentSupportThreadId(selectedThread);
+			params.delete('selectedThread');
+			navigate(`${location.pathname}?${params.toString()}`, { replace: true });
 		}
 		setIsLoading(true);
 		userStore.getUsers({ where: { organizationId } });
