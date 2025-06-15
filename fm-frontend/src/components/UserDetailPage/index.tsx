@@ -237,6 +237,10 @@ const UserDetailPage = () => {
               <DetailField label="Full Name">
                 <Text fontSize={{ base: "14px", md: "16px" }}>{getName(userDetail)}</Text>
               </DetailField>
+
+              <DetailField label="Phone Number">
+                <Text fontSize={{ base: "14px", md: "16px" }}>{userDetail?.mobilePhone ?? userDetail?.workPhone}</Text>
+              </DetailField>
               
               <DetailField label="Email Address">
                 <Text 

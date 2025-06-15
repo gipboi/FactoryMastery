@@ -280,24 +280,28 @@ export class SupportMessageThreadService {
 			subject: req?.subject,
 			processId: req?.processId,
 			lastMessageAt: new Date(),
-			priority: req?.priority
+			priority: req?.priority,
 		});
 
 		const participantIds = await this.getParticipantIdsByProcessId(
 			req?.processId
 		);
-		const adminIds = await User.find({
-			organizationId: req?.organizationId,
-			$or: [
-				{ authRole: AuthRoleEnum.ORG_ADMIN },
-				{ authRole: AuthRoleEnum.MANAGER },
-			],
-		}, '_id');
-		const userSeenData = participantIds?.map((adminId) => ({
-			userId: String(adminId),
-			supportThreadId: newThread._id,
-			lastSeenAt: new Date(),
-		})) ?? [];
+		const adminIds = await User.find(
+			{
+				organizationId: req?.organizationId,
+				$or: [
+					{ authRole: AuthRoleEnum.ORG_ADMIN },
+					{ authRole: AuthRoleEnum.MANAGER },
+				],
+			},
+			'_id'
+		);
+		const userSeenData =
+			participantIds?.map((adminId) => ({
+				userId: String(adminId),
+				supportThreadId: newThread._id,
+				lastSeenAt: new Date(),
+			})) ?? [];
 
 		if (!adminIds.some((id) => id.toString() === req?.userId.toString())) {
 			userSeenData.push({
@@ -306,6 +310,8 @@ export class SupportMessageThreadService {
 				lastSeenAt: new Date(),
 			});
 		}
+
+		const supportMessageThreadUsers = unionBy(userSeenData, 'userId');
 
 		await Promise.all([
 			SupportMessageThreadUserSeen.insertMany(userSeenData),
@@ -363,15 +369,16 @@ export class SupportMessageThreadService {
 			organizationId: req.organizationId,
 			stepId: req.stepId,
 			lastMessageAt: new Date(),
-			priority: req?.priority
+			priority: req?.priority,
 		});
 
 		const participantIds = await this.getParticipantIds(req.stepId);
-		const userSeenData = participantIds?.map((participantId) => ({
-			userId: String(participantId),
-			supportThreadId: newThread._id,
-			lastSeenAt: new Date(),
-		})) ?? [];
+		const userSeenData =
+			participantIds?.map((participantId) => ({
+				userId: String(participantId),
+				supportThreadId: newThread._id,
+				lastSeenAt: new Date(),
+			})) ?? [];
 
 		userSeenData.push({
 			userId: String(req.userId),
@@ -515,40 +522,56 @@ export class SupportMessageThreadService {
 				}),
 			]);
 
-			SupportMessageThreadStatusHistory.create({
-				threadId: supportMessageThreadId,
+			const threadName = updatedSupportMessageThread?.stepId
+				? `${updatedSupportMessageThread?.step?.name} | ${updatedSupportMessageThread?.step?.process?.name}`
+				: updatedSupportMessageThread?.processId
+				? updatedSupportMessageThread?.process?.name
+				: updatedSupportMessageThread?.subject;
+
+			let notification = {
+				processId: updatedSupportMessageThread?.processId,
+				stepId: updatedSupportMessageThread.stepId,
+				messageThreadId: supportMessageThreadId,
+				organizationId: updatedSupportMessageThread?.organizationId,
+				type: NotificationTypeEnum.UPDATED_THREAD_PRIORITY,
+				title: '',
 				userId,
-				status: supportMessageThreadData?.status,
-			});
+				createdBy: userId,
+				deletedName: threadName || '',
+			};
 
 			if (supportMessageThreadData?.status) {
-				const threadName = updatedSupportMessageThread?.stepId
-					? `${updatedSupportMessageThread?.step?.name} | ${updatedSupportMessageThread?.step?.process?.name}`
-					: updatedSupportMessageThread?.processId
-					? updatedSupportMessageThread?.process?.name
-					: updatedSupportMessageThread?.subject;
-
-				const notification = {
-					processId: updatedSupportMessageThread?.processId,
-					stepId: updatedSupportMessageThread.stepId,
-					messageThreadId: supportMessageThreadId,
-					organizationId: updatedSupportMessageThread?.organizationId,
-					type: NotificationTypeEnum.UPDATED_THREAD_STATUS,
-					title: NotificationTitleMappedEnum.UPDATED_THREAD_STATUS(
-						threadName,
-						SupportMessageThreadStatusValue?.[
-							supportMessageThreadData?.status
-						] ?? SupportMessageThreadStatusValue[0]
-					),
+				SupportMessageThreadStatusHistory.create({
+					threadId: supportMessageThreadId,
 					userId,
-					createdBy: userId,
-					deletedName: threadName || '',
-				};
+					status: supportMessageThreadData?.status,
+				});
 
 				Notification.insertMany(
 					getValidArray(threadUsers).map((threadUser) => {
 						return {
 							...notification,
+							title: NotificationTitleMappedEnum.UPDATED_THREAD_STATUS(
+								threadName,
+								SupportMessageThreadStatusValue?.[
+									supportMessageThreadData?.status
+								] ?? SupportMessageThreadStatusValue[0]
+							),
+							userId: threadUser?.userId,
+						};
+					})
+				);
+			}
+
+			if (supportMessageThreadData?.priority) {
+				Notification.insertMany(
+					getValidArray(threadUsers).map((threadUser) => {
+						return {
+							...notification,
+							title: NotificationTitleMappedEnum.UPDATED_THREAD_PRIORITY(
+								threadName,
+								supportMessageThreadData?.priority
+							),
 							userId: threadUser?.userId,
 						};
 					})

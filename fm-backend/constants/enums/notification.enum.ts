@@ -9,7 +9,8 @@ export enum NotificationTypeEnum {
   DELETED_PROCESS_NOTIFICATION = "DeletedProcessNotification",
   ARCHIVED_PROCESS_NOTIFICATION = "ArchivedProcessNotification",
 
-  UPDATED_THREAD_STATUS = 'UpdatedThreadStatus'
+  UPDATED_THREAD_STATUS = 'UpdatedThreadStatus',
+  UPDATED_THREAD_PRIORITY = 'UpdatedThreadPriority'
 }
 
 export enum NotificationActionEnum {
@@ -32,4 +33,6 @@ export enum NotificationTitleEnum {
 export const NotificationTitleMappedEnum = {
   UPDATED_THREAD_STATUS: (threadName: string, status: string) =>
     `has an update on thread ${threadName}'s status to "${status}"`,
+  UPDATED_THREAD_PRIORITY: (threadName: string, priority: string) =>
+    `has an update on thread ${threadName}'s priority to "${priority?.toUpperCase()}"`
 }

@@ -52,6 +52,7 @@ function NotificationBell() {
           { type: NotificationTypeEnum.DELETED_PROCESS_NOTIFICATION },
           { type: NotificationTypeEnum.ARCHIVED_PROCESS_NOTIFICATION },
           { type: NotificationTypeEnum.UPDATED_THREAD_STATUS },
+          { type: NotificationTypeEnum.UPDATED_THREAD_PRIORITY },
         ],
       },
       include: [
