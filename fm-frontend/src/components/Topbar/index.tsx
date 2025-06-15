@@ -835,6 +835,36 @@ const TopBar = (props: ITopBarProps) => {
 								hasManageMode={false}
 							/>
 						)}
+
+						
+						{/* ----------------REPORTS----------------- */}
+						{!!matchPath(location?.pathname, routes.reports.value) && (
+							<HeaderBar
+								title={
+									<HStack spacing={1}>
+										<SvgIcon
+											iconName="home"
+											size={isMobile ? 20 : 24}
+											cursor="pointer"
+											onClick={() =>
+												navigate(routes.dashboard.value, { replace: true })
+											}
+										/>
+										<ChevronRightIcon />
+										<Text
+											cursor="pointer"
+											fontWeight={500}
+											fontSize={isMobile ? "sm" : "md"}
+										>
+											Reports
+										</Text>
+									</HStack>
+								}
+								hasManageMode={false}
+							/>
+						)}
+
+						
 					</Flex>
 				</Stack>
 			</div>
