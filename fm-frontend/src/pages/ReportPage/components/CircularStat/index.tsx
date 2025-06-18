@@ -15,8 +15,8 @@ import {
 
 interface CircularStatProps {
 	title: string;
-	value: number;
-	max: number;
+	value: number | undefined;
+	max: string | number | undefined;
 	color: string;
 	icon: IconType;
 	subtitle?: string;
@@ -30,7 +30,7 @@ const CircularStat: React.FC<CircularStatProps> = ({
 	icon,
 	subtitle,
 }) => {
-	const percentage = (value / max) * 100;
+	const percentage = (Number(value) / Number(max)) * 100;
 	const bgColor = useColorModeValue('white', 'gray.800');
 	const borderColor = useColorModeValue('gray.100', 'gray.600');
 
