@@ -12,10 +12,12 @@ import {
 	useColorModeValue,
 } from '@chakra-ui/react';
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import { EPeriod } from 'constants/report/period';
+import { formatLastPeriod } from 'utils/report';
 
 interface StatCardProps {
 	title: string;
-	value: string | number;
+	value: string | number | undefined;
 	change?: string;
 	changeType?: 'increase' | 'decrease';
 	icon: IconType;
@@ -25,6 +27,8 @@ interface StatCardProps {
 		text: string;
 		color: string;
 	};
+	period?: string | undefined;
+	onClickText?: () => void;
 }
 
 const StatCard: React.FC<StatCardProps> = ({
@@ -36,6 +40,8 @@ const StatCard: React.FC<StatCardProps> = ({
 	color,
 	helpText,
 	badge,
+	period,
+	onClickText,
 }) => {
 	const bgColor = useColorModeValue('white', 'gray.800');
 	const borderColor = useColorModeValue('gray.100', 'gray.600');
@@ -43,6 +49,7 @@ const StatCard: React.FC<StatCardProps> = ({
 		'0px 1px 3px rgba(0, 0, 0, 0.1)',
 		'0px 1px 3px rgba(0, 0, 0, 0.3)'
 	);
+	const formatLastPeriodString: string = period ? `vs ${formatLastPeriod(period as EPeriod)}` : 'vs last week'
 
 	return (
 		<Card
@@ -71,9 +78,25 @@ const StatCard: React.FC<StatCardProps> = ({
 						</HStack>
 					</HStack>
 
-					<Text fontSize="2xl" fontWeight="bold" color="gray.900">
-						{value}
-					</Text>
+					{!!onClickText ? (
+						<Text
+							fontSize="2xl"
+							fontWeight="bold"
+							color="gray.900"
+							cursor="pointer"
+							onClick={onClickText}
+						>
+							{value}
+						</Text>
+					) : (
+						<Text
+							fontSize="2xl"
+							fontWeight="bold"
+							color="gray.900"
+						>
+							{value}
+						</Text>
+					)}
 
 					{change && (
 						<HStack spacing={1}>
@@ -90,7 +113,7 @@ const StatCard: React.FC<StatCardProps> = ({
 								{change}
 							</Text>
 							<Text fontSize="sm" color="gray.500">
-								vs last week
+								{formatLastPeriodString}
 							</Text>
 						</HStack>
 					)}
@@ -106,4 +129,4 @@ const StatCard: React.FC<StatCardProps> = ({
 	);
 };
 
-export default StatCard
+export default StatCard;
