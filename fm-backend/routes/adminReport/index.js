@@ -9,4 +9,6 @@ router.route("/organization/table").post(authController.authenticate, authContro
 router.route("/organizations/:organizationId").patch(authController.authenticate, authController.isSuperAdmin, adminReportController.updateAdminOrganizationById);
 router.route("/organizations/detail/:organizationId").post(authController.authenticate, authController.isSuperAdmin, adminReportController.getCompanyReportDetail);
 
+router.get('/dashboard', authController.authenticate, authController.isOrgAdmin, adminReportController.getDashboardReport);
+
 export { router as adminReportRoute };

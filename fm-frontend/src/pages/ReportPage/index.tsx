@@ -9,13 +9,10 @@ import {
 	VStack,
 	Badge,
 	Progress,
-	Icon,
 	Button,
 	SimpleGrid,
 	Container,
 	useColorModeValue,
-	CircularProgress,
-	CircularProgressLabel,
 	Table,
 	Thead,
 	Tbody,
@@ -40,21 +37,18 @@ import {
 	Cell,
 	Area,
 	AreaChart,
+	Tooltip as RechartsTooltip,
 } from 'recharts';
 import {
 	FiDownload,
 	FiUsers,
-	FiMessageSquare,
 	FiStar,
-	FiClock,
-	FiAlertCircle,
 	FiLayers,
 	FiActivity,
 	FiHeart,
 	FiTarget,
 	FiZap,
 } from 'react-icons/fi';
-import { HiOfficeBuilding } from 'react-icons/hi';
 import useBreakPoint from 'hooks/useBreakPoint';
 import { CustomDateRangePickerWithMask } from 'components/CustomDaterRangePickerWithMask';
 import { EBreakPoint } from 'constants/theme';
@@ -70,8 +64,21 @@ import {
 import { getTimeRangeByPeriod } from 'pages/CompanyReportPage';
 import StatCard from './components/StatCard';
 import CircularStat from './components/CircularStat';
+import { useStores } from 'hooks/useStores';
+import { observer } from 'mobx-react';
+import { MdGroups } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
+import routes from 'routes';
+import { getPeriodLabel } from './uteil';
+import UserTypeTag from 'pages/UserPage/components/UserList/components/UserTypeTag';
+import { AuthRoleNameEnum } from 'constants/user';
+import styles from '../UserPage/components/UserList/userList.module.scss';
+import { primary500 } from 'themes/globalStyles';
+import { toast } from 'react-toastify';
 
 const ReportPage: React.FC = () => {
+	const { reportStore, spinnerStore, userStore } = useStores();
+	const { dashboardReport } = reportStore;
 	const methods = useForm();
 	const { setValue, control } = methods;
 	const isMobile: boolean = useBreakPoint(EBreakPoint.BASE, EBreakPoint.MD);
@@ -85,117 +92,331 @@ const ReportPage: React.FC = () => {
 	const borderColor = useColorModeValue('gray.100', 'gray.600');
 	const period: string = `${currentPeriod?.value}`;
 	const modifiedDate: Date[] = useWatch({ control, name: 'modifiedDate' });
+	const navigate = useNavigate();
 
-	// Mock data - replace with real data from your API
-	const stats = {
-		overview: {
-			companies: { value: 24, change: '12%', changeType: 'increase' },
-			processes: { value: 156, change: '8%', changeType: 'increase' },
-			collections: { value: 89, change: '15%', changeType: 'increase' },
-			users: { value: 342, change: '5%', changeType: 'increase' },
-		},
-		processes: {
-			totalSteps: 1247,
-			completedSteps: 1089,
-			avgRating: 4.2,
-			pendingReview: 23,
-			favorites: 89,
-			highRated: 67,
-		},
-		users: {
-			activeUsers: 287,
-			totalUsers: 342,
-			viewers: 198,
-			editors: 89,
-			admins: 12,
-			newThisWeek: 15,
-			highActivity: 45,
-		},
-		messages: {
-			totalMessages: 2156,
-			threads: 89,
-			unreadMessages: 23,
-			avgResponseTime: '2.4h',
-		},
-		content: {
-			documentTypes: 12,
-			tags: 67,
-			favorites: 234,
-			iconBuilders: 8,
-		},
+	async function onSubmit(): Promise<void> {
+		const [startTime, endTime] = modifiedDate;
+		if (startTime && endTime) {
+			spinnerStore.showLoading();
+			await reportStore.getOrganizationReportDetail({
+				startDate: startTime,
+				endDate: endTime,
+				period,
+			});
+			spinnerStore.hideLoading();
+		}
+	}
+
+	const exportAllData = () => {
+		const arrayToCSV = (data: any, headers: any) => {
+			const csvHeaders = headers.join(',');
+			const csvRows = data.map((row: any) =>
+				headers
+					.map((header: any) => {
+						const value = row[header];
+						let cellValue = '';
+						if (typeof value === 'object' && value !== null) {
+							cellValue = Object.entries(value)
+								.map(([k, v]) => `${k}: ${v}`)
+								.join('; ');
+						} else {
+							cellValue = String(value || '');
+						}
+						const escapedValue = cellValue.replace(/"/g, '""');
+						return escapedValue.includes(',')
+							? `"${escapedValue}"`
+							: escapedValue;
+					})
+					.join(',')
+			);
+			return [csvHeaders, ...csvRows].join('\n');
+		};
+
+		const createSectionDivider = (title: any) => {
+			const line = '━'.repeat(60);
+			return `${line}\n${title.toUpperCase()}\n${line}`;
+		};
+
+		const createReadableOverview = (overview: any) => {
+			const rows = [];
+			rows.push(['📊 METRIC', '📈 VALUE', '🔄 CHANGE', '📋 TYPE']);
+			rows.push(['', '', '', '']);
+
+			Object.entries(overview).forEach(
+				([key, data]: [key: any, value: any]) => {
+					const metric = key.charAt(0).toUpperCase() + key.slice(1);
+					const icon = getMetricIcon(key);
+					rows.push([
+						`${icon} ${metric}`,
+						data?.value || 0,
+						data?.change || 'N/A',
+						data?.changeType || 'N/A',
+					]);
+				}
+			);
+
+			return rows.map((row) => row.join(',')).join('\n');
+		};
+
+		const getMetricIcon = (key: any) => {
+			const icons = {
+				collections: '📁',
+				processes: '⚙️',
+				groups: '👥',
+				users: '👤',
+				totalSteps: '📋',
+				avgRating: '⭐',
+				favorites: '❤️',
+			};
+			return icons?.[key as keyof typeof icons] || '📌';
+		};
+
+		const createProcessStats = (processStats: any) => {
+			const rows = [];
+			rows.push(['📊 PROCESS METRIC', '📈 VALUE']);
+			rows.push(['', '']);
+
+			Object.entries(processStats).forEach(
+				([key, value]: [key: any, value: any]) => {
+					if (key === 'mostFavoriteProcess') {
+						rows.push(['🏆 Most Favorite Process ID', value?.id || 'N/A']);
+						rows.push(['🏆 Most Favorite Process Name', value?.name || 'N/A']);
+					} else {
+						const metric = key.replace(/([A-Z])/g, ' $1').toLowerCase();
+						const formattedMetric =
+							metric.charAt(0).toUpperCase() + metric.slice(1);
+						const icon = getMetricIcon(key);
+						rows.push([`${icon} ${formattedMetric}`, value]);
+					}
+				}
+			);
+
+			return rows.map((row) => row.join(',')).join('\n');
+		};
+
+		const createCollectionStats = (collectionStats: any) => {
+			const rows = [];
+			rows.push(['📁 COLLECTION METRIC', '📈 VALUE']);
+			rows.push(['', '']);
+
+			Object.entries(collectionStats).forEach(
+				([key, value]: [key: any, value: any]) => {
+					if (key === 'mostFavoriteCollection') {
+						rows.push(['🏆 Most Favorite Collection ID', value?.id || 'N/A']);
+						rows.push([
+							'🏆 Most Favorite Collection Name',
+							value?.name || 'N/A',
+						]);
+					} else {
+						const metric = key.replace(/([A-Z])/g, ' $1').toLowerCase();
+						const formattedMetric =
+							metric.charAt(0).toUpperCase() + metric.slice(1);
+						rows.push([`❤️ ${formattedMetric}`, value]);
+					}
+				}
+			);
+
+			return rows.map((row) => row.join(',')).join('\n');
+		};
+
+		const createUserStats = (userStats: any) => {
+			const rows = [];
+			rows.push(['👤 USER METRIC', '📊 COUNT']);
+			rows.push(['', '']);
+
+			Object.entries(userStats).forEach(([key, value]) => {
+				if (key !== '_id') {
+					const metric = key.replace(/([A-Z])/g, ' $1').toLowerCase();
+					const formattedMetric =
+						metric.charAt(0).toUpperCase() + metric.slice(1);
+					const icon = getUserIcon(key);
+					rows.push([`${icon} ${formattedMetric}`, value || 0]);
+				}
+			});
+
+			return rows.map((row) => row.join(',')).join('\n');
+		};
+
+		const getUserIcon = (key: any) => {
+			const icons = {
+				totalUsers: '👥',
+				activeUsers: '🟢',
+				viewers: '👁️',
+				editors: '✏️',
+				admins: '👑',
+				newThisWeek: '✨',
+				highActivity: '🔥',
+			};
+			return icons?.[key as keyof typeof icons] || '👤';
+		};
+
+		const createThreadStats = (threadData: any) => {
+			const rows = [];
+			rows.push(['🧵 THREAD METRIC', '📊 COUNT']);
+			rows.push(['', '']);
+
+			Object.entries(threadData.stats).forEach(([key, value]) => {
+				const metric = key.charAt(0).toUpperCase() + key.slice(1);
+				const icon = getThreadIcon(key);
+				rows.push([`${icon} ${metric}`, value]);
+			});
+
+			return rows.map((row) => row.join(',')).join('\n');
+		};
+
+		const getThreadIcon = (key: any) => {
+			const icons = {
+				total: '📊',
+				unclaimed: '🔴',
+				claimed: '🔵',
+				resolved: '✅',
+				critical: '🚨',
+				high: '🟠',
+				medium: '🟡',
+				low: '⚪',
+			};
+			return icons?.[key as keyof typeof icons] || '🧵';
+		};
+
+		const downloadCSV = (csvContent: any, filename: any) => {
+			const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+			const link = document.createElement('a');
+			const url = URL.createObjectURL(blob);
+			link.setAttribute('href', url);
+			link.setAttribute('download', filename);
+			link.style.visibility = 'hidden';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		};
+
+		let allCSV = '';
+
+		const headerLine = '★'.repeat(80);
+		allCSV += `${headerLine}\n`;
+		allCSV += `🏢 DASHBOARD REPORT EXPORT\n`;
+		allCSV += `📅 Generated: ${new Date().toLocaleString()}\n`;
+		allCSV += `⏰ Period: ${dashboardReport?.period || 'All Time'}\n`;
+		allCSV += `${headerLine}\n\n`;
+
+		allCSV += createSectionDivider('📊 OVERVIEW STATISTICS');
+		allCSV += '\n';
+		allCSV += createReadableOverview(dashboardReport?.stats?.overview || {});
+		allCSV += '\n\n';
+
+		allCSV += createSectionDivider('⚙️ PROCESS STATISTICS');
+		allCSV += '\n';
+		allCSV += createProcessStats(dashboardReport?.stats?.processes || {});
+		allCSV += '\n\n';
+
+		if (dashboardReport?.stats?.collections) {
+			allCSV += createSectionDivider('📁 COLLECTION STATISTICS');
+			allCSV += '\n';
+			allCSV += createCollectionStats(dashboardReport.stats.collections);
+			allCSV += '\n\n';
+		}
+
+		allCSV += createSectionDivider('👤 USER STATISTICS');
+		allCSV += '\n';
+		allCSV += createUserStats(dashboardReport?.stats?.users || {});
+		allCSV += '\n\n';
+
+		if (dashboardReport?.charts?.threadData) {
+			allCSV += createSectionDivider('🧵 THREAD STATISTICS');
+			allCSV += '\n';
+			allCSV += createThreadStats(dashboardReport.charts.threadData);
+			allCSV += '\n\n';
+		}
+
+		allCSV += createSectionDivider('⭐ PROCESS RATINGS DETAIL');
+		allCSV += '\n';
+		allCSV += '🏆 Process Name,⭐ Rating,❤️ Favorites,👤 Users\n';
+		allCSV += ',,,\n';
+		allCSV += arrayToCSV(dashboardReport?.charts?.processRatingData || [], [
+			'name',
+			'rating',
+			'favorites',
+			'users',
+		]);
+		allCSV += '\n\n';
+
+		allCSV += createSectionDivider('📈 USER ACTIVITY DETAIL');
+		allCSV += '\n';
+		allCSV += '👤 User Name,🔥 Activity,👑 Role,⚙️ Processes,🔐 Logins\n';
+		allCSV += ',,,,\n';
+		allCSV += arrayToCSV(dashboardReport?.charts?.userActivityData || [], [
+			'name',
+			'activity',
+			'role',
+			'processes',
+			'logins',
+		]);
+		allCSV += '\n\n';
+
+		allCSV += createSectionDivider('📋 PROCESS TYPES');
+		allCSV += '\n';
+		allCSV += '📝 Type Name,📊 Count,🎨 Color\n';
+		allCSV += ',,\n';
+		allCSV += arrayToCSV(dashboardReport?.charts?.processTypeData || [], [
+			'name',
+			'value',
+			'color',
+		]);
+		allCSV += '\n\n';
+
+		if (dashboardReport?.charts?.weeklyActivityData) {
+			allCSV += createSectionDivider('📅 WEEKLY ACTIVITY');
+			allCSV += '\n';
+			allCSV += '📅 Day,👤 Users,⚙️ Processes,❤️ Favorites\n';
+			allCSV += ',,,\n';
+			allCSV += arrayToCSV(dashboardReport.charts.weeklyActivityData, [
+				'day',
+				'users',
+				'processes',
+				'favorites',
+			]);
+			allCSV += '\n\n';
+		}
+
+		if (dashboardReport?.charts?.threadData?.statusDistribution) {
+			allCSV += createSectionDivider('📊 THREAD STATUS DISTRIBUTION');
+			allCSV += '\n';
+			allCSV += '📋 Status,📊 Count,🎨 Color\n';
+			allCSV += ',,\n';
+			allCSV += arrayToCSV(
+				dashboardReport.charts.threadData.statusDistribution,
+				['name', 'value', 'color']
+			);
+			allCSV += '\n\n';
+		}
+
+		if (dashboardReport?.charts?.threadData?.priorityDistribution) {
+			allCSV += createSectionDivider('🚨 THREAD PRIORITY DISTRIBUTION');
+			allCSV += '\n';
+			allCSV += '🎯 Priority,📊 Count,🎨 Color\n';
+			allCSV += ',,\n';
+			allCSV += arrayToCSV(
+				dashboardReport.charts.threadData.priorityDistribution,
+				['name', 'value', 'color']
+			);
+			allCSV += '\n\n';
+		}
+
+		const footerLine = '★'.repeat(80);
+		allCSV += `${footerLine}\n`;
+		allCSV += `📄 End of Report - Generated by Dashboard System\n`;
+		allCSV += `${footerLine}`;
+
+		const filename = `dashboard-report-${
+			new Date().toISOString().split('T')[0]
+		}.csv`;
+		downloadCSV(allCSV, filename);
+
+		toast.success('✅ Export CSV data of organization successfully!', {
+			autoClose: 3000,
+			closeButton: true,
+		});
 	};
-
-	// Chart data
-	const processRatingData = [
-		{ name: 'Manufacturing Setup', rating: 4.8, favorites: 45, users: 120 },
-		{ name: 'Quality Control', rating: 4.6, favorites: 38, users: 98 },
-		{ name: 'Inventory Management', rating: 4.3, favorites: 29, users: 87 },
-		{ name: 'Safety Protocols', rating: 4.1, favorites: 22, users: 76 },
-		{ name: 'Maintenance Schedule', rating: 3.9, favorites: 18, users: 65 },
-		{ name: 'Equipment Calibration', rating: 3.7, favorites: 15, users: 54 },
-	];
-
-	const userActivityData = [
-		{
-			name: 'Sarah Johnson',
-			activity: 95,
-			role: 'Admin',
-			processes: 23,
-			logins: 89,
-		},
-		{
-			name: 'Mike Chen',
-			activity: 87,
-			role: 'Editor',
-			processes: 19,
-			logins: 76,
-		},
-		{
-			name: 'Emily Davis',
-			activity: 82,
-			role: 'Editor',
-			processes: 17,
-			logins: 68,
-		},
-		{
-			name: 'John Smith',
-			activity: 78,
-			role: 'Viewer',
-			processes: 12,
-			logins: 45,
-		},
-		{
-			name: 'Lisa Wilson',
-			activity: 73,
-			role: 'Editor',
-			processes: 14,
-			logins: 52,
-		},
-		{
-			name: 'David Brown',
-			activity: 67,
-			role: 'Viewer',
-			processes: 8,
-			logins: 34,
-		},
-	];
-
-	const weeklyActivityData = [
-		{ day: 'Mon', users: 245, processes: 34, favorites: 12 },
-		{ day: 'Tue', users: 289, processes: 42, favorites: 18 },
-		{ day: 'Wed', users: 312, processes: 38, favorites: 15 },
-		{ day: 'Thu', users: 298, processes: 45, favorites: 22 },
-		{ day: 'Fri', users: 267, processes: 29, favorites: 14 },
-		{ day: 'Sat', users: 198, processes: 18, favorites: 8 },
-		{ day: 'Sun', users: 176, processes: 12, favorites: 6 },
-	];
-
-	const processTypeData = [
-		{ name: 'Manufacturing', value: 45, color: '#3182CE' },
-		{ name: 'Quality', value: 25, color: '#38A169' },
-		{ name: 'Safety', value: 20, color: '#D69E2E' },
-		{ name: 'Maintenance', value: 10, color: '#E53E3E' },
-	];
 
 	useEffect(() => {
 		const { startTime, endTime } = getTimeRangeByPeriod(
@@ -205,12 +426,16 @@ const ReportPage: React.FC = () => {
 		setIsDisabled(currentPeriod.value !== EPeriod.CUSTOM);
 	}, [currentPeriod.value]);
 
+	useEffect(() => {
+		if (modifiedDate) {
+			onSubmit();
+		}
+	}, [modifiedDate]);
+
 	return (
 		<Box bg={bgColor} p={6} borderRadius={8}>
 			<Container maxW="auto" m={0}>
-				{/* Header */}
 				<VStack align="flex-start" spacing={6} mb={8}>
-					{/* Filters */}
 					<Stack
 						spacing={4}
 						w="full"
@@ -257,6 +482,7 @@ const ReportPage: React.FC = () => {
 								colorScheme="blue"
 								variant="outline"
 								size="sm"
+								onClick={exportAllData}
 							>
 								Export CSV
 							</Button>
@@ -267,46 +493,56 @@ const ReportPage: React.FC = () => {
 				{/* Main Overview Stats */}
 				<SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
 					<StatCard
-						title="Total Companies"
-						value={stats.overview.companies.value}
-						change={stats.overview.companies.change}
-						changeType={stats.overview.companies.changeType as any}
-						icon={HiOfficeBuilding}
-						color="blue.500"
-						helpText="Organizations registered"
-					/>
-					<StatCard
-						title="Total Processes"
-						value={stats.overview.processes.value}
-						change={stats.overview.processes.change}
-						changeType={stats.overview.processes.changeType as any}
-						icon={FiActivity}
-						color="green.500"
-						helpText="Active workflows"
-						badge={{
-							text: `${stats.processes.highRated} high-rated`,
-							color: 'green',
-						}}
-					/>
-					<StatCard
+						period={period}
 						title="Total Collections"
-						value={stats.overview.collections.value}
-						change={stats.overview.collections.change}
-						changeType={stats.overview.collections.changeType as any}
+						value={dashboardReport?.stats.overview.collections.value}
+						change={dashboardReport?.stats.overview.collections.change}
+						changeType={
+							dashboardReport?.stats.overview.collections.changeType as any
+						}
 						icon={FiLayers}
 						color="purple.500"
 						helpText="Content groupings"
 					/>
 					<StatCard
+						period={period}
+						title="Total Processes"
+						value={dashboardReport?.stats.overview.processes.value}
+						change={dashboardReport?.stats.overview.processes.change}
+						changeType={
+							dashboardReport?.stats.overview.processes.changeType as any
+						}
+						icon={FiActivity}
+						color="green.500"
+						helpText="Active workflows"
+						badge={{
+							text: `${dashboardReport?.stats.processes.highRated} high-rated`,
+							color: 'green',
+						}}
+					/>
+					<StatCard
+						period={period}
+						title="Total Groups"
+						value={dashboardReport?.stats?.overview?.groups?.value}
+						change={dashboardReport?.stats?.overview?.groups?.change}
+						changeType={
+							dashboardReport?.stats?.overview?.groups?.changeType as any
+						}
+						icon={MdGroups}
+						color="blue.500"
+						helpText="Total number of active groups"
+					/>
+					<StatCard
+						period={period}
 						title="Total Users"
-						value={stats.overview.users.value}
-						change={stats.overview.users.change}
-						changeType={stats.overview.users.changeType as any}
+						value={dashboardReport?.stats.overview.users.value}
+						change={dashboardReport?.stats.overview.users.change}
+						changeType={dashboardReport?.stats.overview.users.changeType as any}
 						icon={FiUsers}
 						color="orange.500"
 						helpText="Active participants"
 						badge={{
-							text: `${stats.users.highActivity} highly active`,
+							text: `${dashboardReport?.stats.users.highActivity} highly active`,
 							color: 'orange',
 						}}
 					/>
@@ -316,40 +552,232 @@ const ReportPage: React.FC = () => {
 				<SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
 					<CircularStat
 						title="Process Favorites"
-						value={stats.processes.favorites}
-						max={stats.overview.processes.value}
+						value={dashboardReport?.stats.processes.favorites}
+						max={dashboardReport?.stats.overview.processes.value}
 						color="pink.500"
 						icon={FiHeart}
 						subtitle="Most favorited processes"
 					/>
 					<CircularStat
 						title="High-Rated Processes"
-						value={stats.processes.highRated}
-						max={stats.overview.processes.value}
+						value={dashboardReport?.stats.processes.highRated}
+						max={dashboardReport?.stats.overview.processes.value}
 						color="yellow.500"
 						icon={FiStar}
 						subtitle="4+ star rating"
 					/>
 					<CircularStat
-						title="Highly Active Users"
-						value={stats.users.highActivity}
-						max={stats.overview.users.value}
-						color="green.500"
-						icon={FiZap}
-						subtitle="80%+ activity score"
+						title="Collection Favorites"
+						value={dashboardReport?.stats.collections.favorites}
+						max={dashboardReport?.stats.overview.collections.value}
+						color="teal.500"
+						icon={FiHeart}
+						subtitle="Most favorited collections"
 					/>
 					<CircularStat
-						title="Process Completion"
-						value={stats.processes.completedSteps}
-						max={stats.processes.totalSteps}
-						color="blue.500"
-						icon={FiTarget}
-						subtitle="Steps completed"
+						title="Highly Active Users"
+						value={dashboardReport?.stats.users.highActivity}
+						max={dashboardReport?.stats.overview.users.value}
+						color="green.500"
+						icon={FiZap}
+						subtitle={`80%+ activity score`}
+					/>
+				</SimpleGrid>
+
+				{/* Detailed Stats Grid */}
+				<SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} spacing={6} mb={8}>
+					<StatCard
+						period={period}
+						title="Average Process Rating"
+						value={`${dashboardReport?.stats.processes.avgRating}/5.0`}
+						change="0.3"
+						changeType="increase"
+						icon={FiStar}
+						color="yellow.500"
+						helpText="User satisfaction score"
+					/>
+
+					<StatCard
+						period={period}
+						title="Most Favorited Process"
+						value={
+							dashboardReport?.stats?.processes?.mostFavoriteProcess?.name ??
+							'No favorites at this time range'
+						}
+						icon={FiHeart}
+						color="pink.500"
+						helpText={`${
+							dashboardReport?.stats?.processes?.favorites
+						} favorites ${getPeriodLabel(period as EPeriod)}`}
+						badge={{ text: 'Top Pick', color: 'pink' }}
+						onClickText={() => {
+							if (dashboardReport?.stats?.processes?.mostFavoriteProcess?.id) {
+								navigate(
+									routes.processes.processId.value(
+										dashboardReport?.stats?.processes?.mostFavoriteProcess?.id
+									)
+								);
+							}
+						}}
+					/>
+
+					<StatCard
+						period={period}
+						title="Most Favorited Collection"
+						value={
+							dashboardReport?.stats?.collections?.mostFavoriteCollection
+								?.name ?? 'No favorites at this time range'
+						}
+						icon={FiHeart}
+						color="teal.500"
+						helpText={`${
+							dashboardReport?.stats?.collections?.favorites
+						} favorites ${getPeriodLabel(period as EPeriod)}`}
+						badge={{ text: 'Top Pick', color: 'teal' }}
+						onClickText={() => {
+							if (
+								dashboardReport?.stats?.collections?.mostFavoriteCollection?.id
+							) {
+								navigate(
+									routes.collections.collectionId.value(
+										dashboardReport?.stats?.collections?.mostFavoriteCollection
+											?.id
+									)
+								);
+							}
+						}}
 					/>
 				</SimpleGrid>
 
 				{/* Charts Section */}
 				<SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6} mb={8}>
+					{/* Status Distribution */}
+					<Card bg={cardBgColor} borderColor={borderColor} borderWidth="1px">
+						<CardBody p={6}>
+							<VStack align="flex-start" spacing={4}>
+								<Heading size="md" color="gray.900">
+									Thread Status Distribution
+								</Heading>
+								<Box w="full" h="300px">
+									<ResponsiveContainer width="100%" height="100%">
+										<PieChart>
+											<Pie
+												data={
+													dashboardReport?.charts?.threadData
+														?.statusDistribution
+												}
+												cx="50%"
+												cy="50%"
+												labelLine={false}
+												label={({ name, percent }) =>
+													`${name} ${(percent * 100).toFixed(0)}%`
+												}
+												outerRadius={80}
+												fill="#8884d8"
+												dataKey="value"
+											>
+												{dashboardReport?.charts?.threadData?.statusDistribution?.map(
+													(entry, index) => (
+														<Cell key={`cell-${index}`} fill={entry.color} />
+													)
+												)}
+											</Pie>
+											<RechartsTooltip />
+										</PieChart>
+									</ResponsiveContainer>
+								</Box>
+							</VStack>
+						</CardBody>
+					</Card>
+
+					<Card bg={cardBgColor} borderColor={borderColor} borderWidth="1px">
+						<CardBody p={6}>
+							<VStack align="flex-start" spacing={4}>
+								<Heading size="md" color="gray.900">
+									Priority Distribution
+								</Heading>
+								<Box w="full" h="300px">
+									<ResponsiveContainer width="100%" height="100%">
+										<PieChart>
+											<Pie
+												data={
+													dashboardReport?.charts?.threadData
+														?.priorityDistribution
+												}
+												cx="50%"
+												cy="50%"
+												labelLine={false}
+												label={({ name, percent }) =>
+													`${name} ${(percent * 100).toFixed(0)}%`
+												}
+												outerRadius={80}
+												fill="#8884d8"
+												dataKey="value"
+											>
+												{dashboardReport?.charts?.threadData?.priorityDistribution?.map(
+													(entry, index) => (
+														<Cell key={`cell-${index}`} fill={entry.color} />
+													)
+												)}
+											</Pie>
+											<RechartsTooltip />
+										</PieChart>
+									</ResponsiveContainer>
+								</Box>
+							</VStack>
+						</CardBody>
+					</Card>
+				</SimpleGrid>
+
+				{/* Charts Section */}
+				<SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6} mb={8}>
+					{/* Process Type Distribution Pie Chart */}
+					<Card bg={cardBgColor} borderColor={borderColor} borderWidth="1px">
+						<CardBody p={6}>
+							<VStack align="flex-start" spacing={4}>
+								<Heading size="md" color="gray.900">
+									Document Type Distribution
+								</Heading>
+								<Box w="full" h="300px">
+									<ResponsiveContainer width="100%" height="100%">
+										<PieChart>
+											<Pie
+												data={dashboardReport?.charts?.processTypeData}
+												cx="50%"
+												cy="50%"
+												labelLine={false}
+												label={({
+													name,
+													percent,
+												}: {
+													name: string;
+													percent: number;
+												}) => `${name} ${(percent * 100).toFixed(0)}%`}
+												outerRadius={80}
+												fill="#8884d8"
+												dataKey="value"
+											>
+												{dashboardReport?.charts?.processTypeData.map(
+													(
+														entry: {
+															name: string;
+															value: number;
+															color: string;
+														},
+														index
+													) => (
+														<Cell key={`cell-${index}`} fill={entry.color} />
+													)
+												)}
+											</Pie>
+											<Tooltip />
+										</PieChart>
+									</ResponsiveContainer>
+								</Box>
+							</VStack>
+						</CardBody>
+					</Card>
+
 					{/* Process Rating & Favorites Bar Chart */}
 					<Card bg={cardBgColor} borderColor={borderColor} borderWidth="1px">
 						<CardBody p={6}>
@@ -359,7 +787,7 @@ const ReportPage: React.FC = () => {
 								</Heading>
 								<Box w="full" h="300px">
 									<ResponsiveContainer width="100%" height="100%">
-										<BarChart data={processRatingData}>
+										<BarChart data={dashboardReport?.charts?.processRatingData}>
 											<CartesianGrid strokeDasharray="3 3" />
 											<XAxis
 												dataKey="name"
@@ -382,44 +810,6 @@ const ReportPage: React.FC = () => {
 							</VStack>
 						</CardBody>
 					</Card>
-
-					{/* Process Type Distribution Pie Chart */}
-					<Card bg={cardBgColor} borderColor={borderColor} borderWidth="1px">
-						<CardBody p={6}>
-							<VStack align="flex-start" spacing={4}>
-								<Heading size="md" color="gray.900">
-									Process Distribution
-								</Heading>
-								<Box w="full" h="300px">
-									<ResponsiveContainer width="100%" height="100%">
-										<PieChart>
-											<Pie
-												data={processTypeData}
-												cx="50%"
-												cy="50%"
-												labelLine={false}
-												label={({
-													name,
-													percent,
-												}: {
-													name: string;
-													percent: number;
-												}) => `${name} ${(percent * 100).toFixed(0)}%`}
-												outerRadius={80}
-												fill="#8884d8"
-												dataKey="value"
-											>
-												{processTypeData.map((entry, index) => (
-													<Cell key={`cell-${index}`} fill={entry.color} />
-												))}
-											</Pie>
-											<Tooltip />
-										</PieChart>
-									</ResponsiveContainer>
-								</Box>
-							</VStack>
-						</CardBody>
-					</Card>
 				</SimpleGrid>
 
 				{/* Weekly Activity Chart */}
@@ -436,7 +826,7 @@ const ReportPage: React.FC = () => {
 							</Heading>
 							<Box w="full" h="300px">
 								<ResponsiveContainer width="100%" height="100%">
-									<AreaChart data={weeklyActivityData}>
+									<AreaChart data={dashboardReport?.charts?.weeklyActivityData}>
 										<CartesianGrid strokeDasharray="3 3" />
 										<XAxis dataKey="day" />
 										<YAxis />
@@ -485,7 +875,12 @@ const ReportPage: React.FC = () => {
 								<Heading size="md" color="gray.900">
 									Most Active Users
 								</Heading>
-								<Badge colorScheme="blue" variant="subtle">
+								<Badge
+									colorScheme="blue"
+									variant="subtle"
+									padding={2}
+									borderRadius={4}
+								>
 									Top 6 Users
 								</Badge>
 							</HStack>
@@ -502,121 +897,76 @@ const ReportPage: React.FC = () => {
 										</Tr>
 									</Thead>
 									<Tbody>
-										{userActivityData.map((user, index) => (
-											<Tr key={index}>
-												<Td>
-													<HStack spacing={3}>
-														<Avatar size="sm" name={user.name} />
-														<Text fontWeight="medium">{user.name}</Text>
-													</HStack>
-												</Td>
-												<Td>
-													<Badge
-														colorScheme={
-															user.role === 'Admin'
-																? 'purple'
-																: user.role === 'Editor'
-																? 'blue'
-																: 'gray'
-														}
-														variant="subtle"
-													>
-														{user.role}
-													</Badge>
-												</Td>
-												<Td isNumeric>
-													<Text fontWeight="bold" color="green.500">
-														{user.activity}%
-													</Text>
-												</Td>
-												<Td isNumeric>{user.processes}</Td>
-												<Td isNumeric>{user.logins}</Td>
-												<Td>
-													<Progress
-														value={user.activity}
-														colorScheme={
-															user.activity >= 80
-																? 'green'
-																: user.activity >= 60
-																? 'yellow'
-																: 'red'
-														}
-														size="sm"
-														w="100px"
-														borderRadius="full"
-													/>
-												</Td>
-											</Tr>
-										))}
+										{dashboardReport?.charts?.userActivityData?.map(
+											(user, index) => (
+												<Tr key={index}>
+													<Td>
+														<HStack spacing={3}>
+															<Avatar
+																size={'sm'}
+																src={user?.image}
+																name={user?.name}
+																className={styles.avatar}
+																width={'30px !important'}
+																height={'30px !important'}
+															/>
+															<Text
+																className={styles.pointer}
+																margin={0}
+																_hover={{
+																	cursor: 'pointer',
+																	color: primary500,
+																}}
+																onClick={() => {
+																	userStore.setManageModeInUserDetail(false);
+																	navigate(
+																		routes.users.userId.value(String(user?._id))
+																	);
+																}}
+															>
+																{user?.name ?? 'N/A'}
+															</Text>
+														</HStack>
+													</Td>
+													<Td>
+														<UserTypeTag
+															role={user?.role as AuthRoleNameEnum}
+														/>
+													</Td>
+													<Td isNumeric>
+														<Text fontWeight="bold" color="green.500">
+															{user.activity}%
+														</Text>
+													</Td>
+													<Td isNumeric>{user.processes}</Td>
+													<Td isNumeric>{user.logins}</Td>
+													<Td>
+														<Progress
+															value={user.activity}
+															colorScheme={
+																user.activity >= 80
+																	? 'green'
+																	: user.activity >= 60
+																	? 'yellow'
+																	: 'red'
+															}
+															size="sm"
+															w="100px"
+															borderRadius="full"
+														/>
+													</Td>
+												</Tr>
+											)
+										)}
 									</Tbody>
 								</Table>
 							</TableContainer>
 						</VStack>
 					</CardBody>
 				</Card>
-
-				{/* Detailed Stats Grid */}
-				<SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} spacing={6} mb={8}>
-					<StatCard
-						title="Average Process Rating"
-						value={`${stats.processes.avgRating}/5.0`}
-						change="0.3"
-						changeType="increase"
-						icon={FiStar}
-						color="yellow.500"
-						helpText="User satisfaction score"
-					/>
-
-					<StatCard
-						title="Most Favorited Process"
-						value="Manufacturing Setup"
-						icon={FiHeart}
-						color="pink.500"
-						helpText="45 favorites this week"
-						badge={{ text: 'Top Pick', color: 'pink' }}
-					/>
-
-					<StatCard
-						title="Pending Reviews"
-						value={stats.processes.pendingReview}
-						icon={FiAlertCircle}
-						color="red.500"
-						helpText="Processes awaiting approval"
-					/>
-
-					<StatCard
-						title="Total Messages"
-						value={stats.messages.totalMessages}
-						change="23%"
-						changeType="increase"
-						icon={FiMessageSquare}
-						color="#3F51B5"
-						helpText="All communications"
-					/>
-
-					<StatCard
-						title="Avg Response Time"
-						value={stats.messages.avgResponseTime}
-						change="0.3h"
-						changeType="decrease"
-						icon={FiClock}
-						color="gray.500"
-						helpText="Support response time"
-					/>
-
-					<StatCard
-						title="User Favorites"
-						value={stats.content.favorites}
-						change="18%"
-						changeType="increase"
-						icon={FiStar}
-						color="yellow.600"
-						helpText="Bookmarked content"
-					/>
-				</SimpleGrid>
 			</Container>
 		</Box>
 	);
 };
 
-export default ReportPage;
+export default observer(ReportPage);
