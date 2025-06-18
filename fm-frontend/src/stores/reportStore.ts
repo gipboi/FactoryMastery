@@ -28,11 +28,6 @@ import {
 	getCompanyReport,
 	getCompanyReportDetail,
 	getCompanyReportTable,
-	getUserReport,
-	getProcessReport,
-	getCollectionReport,
-	getActivityReport,
-	exportReport,
 	getDashboardReport,
 } from 'API/report';
 
