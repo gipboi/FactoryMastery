@@ -14,6 +14,7 @@ const supportMessageThreadSchema = new Schema(
     priority: {
       type: String,
       enum: SupportMessageThreadPriorityEnum,
+      default: SupportMessageThreadPriorityEnum.LOW,
       require: false,
     },
     lastMessageAt: { type: Date },
