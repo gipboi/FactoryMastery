@@ -412,7 +412,7 @@ const ReportPage: React.FC = () => {
 		}.csv`;
 		downloadCSV(allCSV, filename);
 
-		toast.success('✅ Export CSV data of organization successfully!', {
+		toast.success('Export CSV data of organization successfully!', {
 			autoClose: 3000,
 			closeButton: true,
 		});
